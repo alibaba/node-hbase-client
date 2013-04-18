@@ -48,7 +48,7 @@ describe('test/out_stream.test.js', function () {
 
   describe('writeLong()', function () {
     
-    it('should convert Long to bytes', function () {
+    it('should convert Long to 8 bytes', function () {
       var values = [
         -1, -11,
         -99, 
@@ -81,7 +81,7 @@ describe('test/out_stream.test.js', function () {
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
         out.writeLong(v);
-        // console.log(i, mockSocket.bytes)
+        mockSocket.bytes.should.length(8);
         testJavaBytes('writeLong', v, mockSocket.bytes);
       }
     });
@@ -90,7 +90,7 @@ describe('test/out_stream.test.js', function () {
 
   describe('writeInt()', function () {
     
-    it('should convert Int to bytes', function () {
+    it('should convert Int to 4 bytes', function () {
       var values = [
         -1, -11,
         -99, 
@@ -107,8 +107,72 @@ describe('test/out_stream.test.js', function () {
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
         out.writeInt(v);
-        // console.log(i, mockSocket.bytes)
+        mockSocket.bytes.should.length(4);
         testJavaBytes('writeInt', v, mockSocket.bytes);
+      }
+    });
+
+  });
+
+  describe('writeBoolean()', function () {
+    
+    it('should convert Boolean to 1 byte', function () {
+      var values = [
+        true, false,
+      ];
+      for (var i = 0; i < values.length; i++) {
+        var v = values[i];
+        out.writeBoolean(v);
+        mockSocket.bytes.should.length(1);
+        testJavaBytes('writeBoolean', v, mockSocket.bytes);
+      }
+    });
+
+  });
+
+  describe('writeByte()', function () {
+    
+    it('should convert int to 1 byte', function () {
+      var values = [
+        1, 2, 3, 100,
+        -127, -128, 127, 128,
+        -1, 255, 254, 
+      ];
+      for (var i = 0; i < values.length; i++) {
+        var v = values[i];
+        out.writeByte(v);
+        mockSocket.bytes.should.length(1);
+        testJavaBytes('writeByte', v, mockSocket.bytes);
+      }
+    });
+
+  });
+
+  describe('writeChar() and writeShort()', function () {
+    
+    it('should convert Char/Short to 2 bytes', function () {
+      var values = [
+        -1, -11,
+        -99, 
+        -100,
+        -32767,
+        -32768,
+
+        1, 11, 50, 99, 100, 1000, 10000, 
+        32766,
+        32767,
+        32768, 32769, 32770,
+        65535, 65536,
+      ];
+      for (var i = 0; i < values.length; i++) {
+        var v = values[i];
+        out.writeChar(v);
+        mockSocket.bytes.should.length(2);
+        testJavaBytes('writeChar', v, mockSocket.bytes);
+
+        out.writeShort(v);
+        mockSocket.bytes.should.length(2);
+        testJavaBytes('writeChar', v, mockSocket.bytes);
       }
     });
 
