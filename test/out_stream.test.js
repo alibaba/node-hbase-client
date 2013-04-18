@@ -15,7 +15,7 @@ var fs = require('fs');
 var path = require('path');
 var OutStream = require('../lib/out_stream');
 
-var fixtures = path.join(__dirname, 'fixtures');
+var fixtures = path.join(__dirname, 'fixtures', 'out_stream');
 
 describe('test/out_stream.test.js', function () {
   
