@@ -25,3 +25,7 @@ Put rowkey:123 name:test 到 user 表
 * 如果错误返回，则根据错误做对应的处理
   * region server 错误 (NotServingRegionException)，则表示 META 已经更新，需要重新获取 META ，重复上述步骤
   * 其他错误，重试
+
+## Java环境
+
+* [mac 之配置java src.jar文件](http://xiuqiuka-hotmail-com.iteye.com/blog/1128242)
