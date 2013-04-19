@@ -10,46 +10,19 @@
  * Module dependencies.
  */
 
+var utils = require('./support/utils');
 var should = require('should');
-var fs = require('fs');
-var path = require('path');
 var OutStream = require('../lib/out_stream');
 
-var fixtures = path.join(__dirname, 'fixtures', 'out_stream');
-
 describe('test/out_stream.test.js', function () {
-  
-  var mockSocket = {
-    bytes: null,
-    write: function (bytes, offset, length) {
-      offset = offset || 0;
-      length = length || bytes.length;
-      this.bytes = bytes.slice(offset, length);
-    }
-  };
 
-  var testJavaBytes = function (method, v, bytes) {
-    var javaBytes = fs.readFileSync(path.join(fixtures, method + '_' + v + '.java.bytes'));
-    if (javaBytes.length !== bytes.length) {
-      console.log('%s(%s): js:', method, v, bytes, 'java:', javaBytes);
-    }
-    bytes.length.should.equal(javaBytes.length, method + ' ' + v);
-    // console.log(v, bytes, javaBytes)
-    // bytes.should.eql(javaBytes);
-    for (var i = 0; i < bytes.length; i++) {
-      if (bytes[i] !== javaBytes[i]) {
-        console.log('%s(%s): js:', method, v, bytes, 'java:', javaBytes);
-      }
-      bytes[i].should.equal(javaBytes[i]);;
-    }
-  };
-
-  var out = new OutStream(mockSocket);
+  var testJavaBytes = utils.createTestBytes('out_stream');
 
   describe('writeLong()', function () {
     
     it('should convert Long to 8 bytes', function () {
       var values = [
+        0,
         -1, -11,
         -99, 
         -100, 
@@ -77,9 +50,13 @@ describe('test/out_stream.test.js', function () {
         10010010010010010, 
         90071992547409,
         9007199254740992, // Math.pow(2, 53), max number
+        Math.pow(2, 53),
+        // 0x7fffffffffffffff,
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
+        var mockSocket = utils.mockSocket();
+        var out = new OutStream(mockSocket);
         out.writeLong(v);
         mockSocket.bytes.should.length(8);
         testJavaBytes('writeLong', v, mockSocket.bytes);
@@ -92,6 +69,7 @@ describe('test/out_stream.test.js', function () {
     
     it('should convert Int to 4 bytes', function () {
       var values = [
+        0,
         -1, -11,
         -99, 
         -100,
@@ -106,6 +84,8 @@ describe('test/out_stream.test.js', function () {
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
+        var mockSocket = utils.mockSocket();
+        var out = new OutStream(mockSocket);
         out.writeInt(v);
         mockSocket.bytes.should.length(4);
         testJavaBytes('writeInt', v, mockSocket.bytes);
@@ -122,6 +102,8 @@ describe('test/out_stream.test.js', function () {
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
+        var mockSocket = utils.mockSocket();
+        var out = new OutStream(mockSocket);
         out.writeBoolean(v);
         mockSocket.bytes.should.length(1);
         testJavaBytes('writeBoolean', v, mockSocket.bytes);
@@ -134,12 +116,15 @@ describe('test/out_stream.test.js', function () {
     
     it('should convert int to 1 byte', function () {
       var values = [
+        0,
         1, 2, 3, 100,
         -127, -128, 127, 128,
         -1, 255, 254, 
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
+        var mockSocket = utils.mockSocket();
+        var out = new OutStream(mockSocket);
         out.writeByte(v);
         mockSocket.bytes.should.length(1);
         testJavaBytes('writeByte', v, mockSocket.bytes);
@@ -166,10 +151,14 @@ describe('test/out_stream.test.js', function () {
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
+        var mockSocket = utils.mockSocket();
+        var out = new OutStream(mockSocket);
         out.writeChar(v);
         mockSocket.bytes.should.length(2);
         testJavaBytes('writeChar', v, mockSocket.bytes);
 
+        var mockSocket = utils.mockSocket();
+        var out = new OutStream(mockSocket);
         out.writeShort(v);
         mockSocket.bytes.should.length(2);
         testJavaBytes('writeChar', v, mockSocket.bytes);
