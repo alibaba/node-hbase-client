@@ -15,6 +15,7 @@ require('buffer').INSPECT_MAX_BYTES = 1000;
 var should = require('should');
 var fs = require('fs');
 var path = require('path');
+var InStream = require('../../').InStream;
 
 var fixtures = path.join(path.dirname(__dirname), 'fixtures');
 
@@ -24,18 +25,23 @@ exports.createTestBytes = function (pathname) {
 
     // console.log('%s(%s): \njs:  ', method, v, bytes, '\njava:', javaBytes);
     if (javaBytes.length !== bytes.length) {
-      console.log('%s(%s): \njs:', method, v, bytes, '\nja:', javaBytes);
+      console.log('%s(%s): \njs  :', method, v, bytes, '\njava:', javaBytes);
     }
     bytes.length.should.equal(javaBytes.length, method + ' ' + v);
     // console.log(v, bytes, javaBytes)
     // bytes.should.eql(javaBytes);
     for (var i = 0; i < bytes.length; i++) {
       if (bytes[i] !== javaBytes[i]) {
-        console.log('%s(%s): \njs:', method, v, bytes, '\nja:', javaBytes);
+        console.log('%s(%s): \njs  :', method, v, bytes, '\njava:', javaBytes);
       }
       bytes[i].should.equal(javaBytes[i]);
     }
   };
+};
+
+exports.createTestStream = function (dir, filename) {
+  var filepath = path.join(fixtures, dir, filename + '.java.bytes');
+  return new InStream(fs.createReadStream(filepath));
 };
 
 exports.mockSocket = function () {

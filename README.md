@@ -2,7 +2,7 @@
 
 ![logo](https://raw.github.com/TBEDP/node-hbase-client/master/logo.png)
 
-Asynchronous HBase client for nodejs.
+Asynchronous HBase client for nodejs, pure javascript implementation.
 
 * [hbase-client](https://github.com/apache/hbase/tree/trunk/hbase-client)
 

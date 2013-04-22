@@ -10,6 +10,7 @@
  * Module dependencies.
  */
 
+var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
 var WritableUtils = require('../lib/writable_utils');
@@ -19,9 +20,9 @@ describe('test/writable_utils.test.js', function () {
   
   var testJavaBytes = utils.createTestBytes('writable_utils');
 
-  describe('writeVLong()', function () {
+  describe('writeVLong() and readVLong()', function () {
     
-    it('should convert Long to bytes', function () {
+    it('should convert Long to bytes', function (done) {
       var values = [
         0,
         -1, -11,
@@ -64,17 +65,26 @@ describe('test/writable_utils.test.js', function () {
         // 90071992547409,
         // 9007199254740992, // Math.pow(2, 53), max number
       ];
-      for (var i = 0; i < values.length; i++) {
-        var v = values[i];
+
+      done = pedding(values.length, done);
+
+      values.forEach(function (v) {
         var mockSocket = utils.mockSocket();
         var out = new OutStream(mockSocket);
         WritableUtils.writeVLong(out, v);
         mockSocket.bytes.length.should.above(0);
         testJavaBytes('writeVLong', v, mockSocket.bytes);
-      }
+
+        var filename = 'writeVLong_' + v;
+        var io = utils.createTestStream('writable_utils', filename);
+        WritableUtils.readVLong(io, function (err, readV) {
+          should.not.exists(err);
+          readV.should.equal(v);
+          done();
+        });
+      });
+
     });
 
   });
-
-
 });

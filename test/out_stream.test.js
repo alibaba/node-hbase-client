@@ -23,7 +23,8 @@ describe('test/out_stream.test.js', function () {
     it('should convert Long to 8 bytes', function () {
       var values = [
         0,
-        -1, -11,
+        -1, 
+        -11,
         -99, 
         -100, 
         -999999999,
@@ -36,7 +37,9 @@ describe('test/out_stream.test.js', function () {
         -100100100100, 
         -100100100100100, 
         -10010010010010010, 
-        // -1099511627776, // - Math.pow(2, 40)
+        -1099511627776, // - Math.pow(2, 40)
+        '-9223372036854775808',
+        '-9223372036854775807',
 
         1, 11, 50, 99, 100, 1000, 10000, 100000, 1000000,
         2147483646, 2147483645, 2147483644,
@@ -49,9 +52,14 @@ describe('test/out_stream.test.js', function () {
         100100100100100, 
         10010010010010010, 
         90071992547409,
+        Math.pow(2, 50), // 1125899906842624
+        Math.pow(2, 50) - 1, // 1125899906842623
         9007199254740992, // Math.pow(2, 53), max number
         Math.pow(2, 53),
-        // 0x7fffffffffffffff,
+        9007199254740990,
+        Math.pow(2, 53) - 1, // 9007199254740991
+        1007199254740990,
+        '9223372036854775807', // max long
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
