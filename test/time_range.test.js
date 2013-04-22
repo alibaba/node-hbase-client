@@ -15,7 +15,7 @@ var Long = require('long');
 var utils = require('./support/utils');
 var should = require('should');
 var TimeRange = require('../lib/time_range');
-var OutStream = require('../lib/out_stream');
+var DataOutputBuffer = require('../').DataOutputBuffer;
 
 describe('test/time_range.test.js', function () {
   
@@ -41,11 +41,11 @@ describe('test/time_range.test.js', function () {
         var allTime = item[2];
 
         var tr = new TimeRange(min, max, allTime);
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
+        var out = new DataOutputBuffer();
         tr.write(out);
-        mockSocket.bytes.length.should.above(0);
-        testJavaBytes('write_' + min, max, mockSocket.bytes);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write_' + min, max, bytes);
       }
     });
 

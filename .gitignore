@@ -1,4 +1,5 @@
 lib-cov
+coverage.html
 node_modules
 *.seed
 *.log

@@ -13,8 +13,8 @@ test: install
 		$(TESTS)
 
 test-cov: install lib-cov
-	@UTILITY_COV=1 $(MAKE) test REPORTER=dot
-	@UTILITY_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
+	@NODE_HBASE_CLENT_COV=1 $(MAKE) test REPORTER=dot
+	@NODE_HBASE_CLENT_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
 
 lib-cov:
 	@rm -rf $@

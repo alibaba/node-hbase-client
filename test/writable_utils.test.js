@@ -13,8 +13,8 @@
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
-var WritableUtils = require('../lib/writable_utils');
-var OutStream = require('../lib/out_stream');
+var WritableUtils = require('../').WritableUtils;
+var DataOutputBuffer = require('../').DataOutputBuffer;
 
 describe('test/writable_utils.test.js', function () {
   
@@ -69,11 +69,11 @@ describe('test/writable_utils.test.js', function () {
       done = pedding(values.length, done);
 
       values.forEach(function (v) {
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
+        var out = new DataOutputBuffer();
         WritableUtils.writeVLong(out, v);
-        mockSocket.bytes.length.should.above(0);
-        testJavaBytes('writeVLong', v, mockSocket.bytes);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('writeVLong', v, bytes);
 
         var filename = 'writeVLong_' + v;
         var io = utils.createTestStream('writable_utils', filename);

@@ -1,5 +1,5 @@
 /*!
- * node-hbase-client - test/out_stream.test.js
+ * node-hbase-client - test/data_output_buffer.test.js
  * Copyright(c) 2013 fengmk2 <fengmk2@gmail.com>
  * MIT Licensed
  */
@@ -12,11 +12,11 @@
 
 var utils = require('./support/utils');
 var should = require('should');
-var OutStream = require('../lib/out_stream');
+var DataOutputBuffer = require('../lib/data_output_buffer');
 
-describe('test/out_stream.test.js', function () {
+describe('test/data_output_buffer.test.js', function () {
 
-  var testJavaBytes = utils.createTestBytes('out_stream');
+  var testJavaBytes = utils.createTestBytes('data_output_buffer');
 
   describe('writeLong()', function () {
     
@@ -63,11 +63,11 @@ describe('test/out_stream.test.js', function () {
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
+        var out = new DataOutputBuffer();
         out.writeLong(v);
-        mockSocket.bytes.should.length(8);
-        testJavaBytes('writeLong', v, mockSocket.bytes);
+        var data = out.getData();
+        data.should.length(8);
+        testJavaBytes('writeLong', v, data);
       }
     });
 
@@ -92,11 +92,11 @@ describe('test/out_stream.test.js', function () {
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
+        var out = new DataOutputBuffer();
         out.writeInt(v);
-        mockSocket.bytes.should.length(4);
-        testJavaBytes('writeInt', v, mockSocket.bytes);
+        var data = out.getData();
+        data.should.length(4);
+        testJavaBytes('writeInt', v, data);
       }
     });
 
@@ -110,11 +110,11 @@ describe('test/out_stream.test.js', function () {
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
+        var out = new DataOutputBuffer();
         out.writeBoolean(v);
-        mockSocket.bytes.should.length(1);
-        testJavaBytes('writeBoolean', v, mockSocket.bytes);
+        var data = out.getData();
+        data.should.length(1);
+        testJavaBytes('writeBoolean', v, data);
       }
     });
 
@@ -131,11 +131,11 @@ describe('test/out_stream.test.js', function () {
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
+        var out = new DataOutputBuffer();
         out.writeByte(v);
-        mockSocket.bytes.should.length(1);
-        testJavaBytes('writeByte', v, mockSocket.bytes);
+        var data = out.getData();
+        data.should.length(1);
+        testJavaBytes('writeByte', v, data);
       }
     });
 
@@ -159,17 +159,18 @@ describe('test/out_stream.test.js', function () {
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
-        out.writeChar(v);
-        mockSocket.bytes.should.length(2);
-        testJavaBytes('writeChar', v, mockSocket.bytes);
 
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
+        var out = new DataOutputBuffer();
+        out.writeChar(v);
+        var data = out.getData();
+        data.should.length(2);
+        testJavaBytes('writeChar', v, data);
+
+        var out = new DataOutputBuffer();
         out.writeShort(v);
-        mockSocket.bytes.should.length(2);
-        testJavaBytes('writeChar', v, mockSocket.bytes);
+        var data = out.getData();
+        data.should.length(2);
+        testJavaBytes('writeChar', v, data);
       }
     });
 

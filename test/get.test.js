@@ -14,7 +14,7 @@ var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
 var Get = require('../lib/get');
-var OutStream = require('../lib/out_stream');
+var DataOutputBuffer = require('../').DataOutputBuffer;
 
 describe('test/get.test.js', function () {
   
@@ -39,12 +39,12 @@ describe('test/get.test.js', function () {
         var get = new Get(row);
         get.addColumn(family, qualifier);
         get.setMaxVersions(maxVersions)
-        var mockSocket = utils.mockSocket();
-        var out = new OutStream(mockSocket);
+        var out = new DataOutputBuffer();
         get.write(out);
-        mockSocket.bytes.length.should.above(0);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
         testJavaBytes('write_' + family + '_' + qualifier + '_' + maxVersions, 
-          row, mockSocket.bytes);
+          row, bytes);
       }
     });
 
