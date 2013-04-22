@@ -15,7 +15,7 @@ require('buffer').INSPECT_MAX_BYTES = 1000;
 var should = require('should');
 var fs = require('fs');
 var path = require('path');
-var InStream = require('../../').InStream;
+var DataInputStream = require('../../').DataInputStream;
 
 var fixtures = path.join(path.dirname(__dirname), 'fixtures');
 
@@ -41,7 +41,7 @@ exports.createTestBytes = function (pathname) {
 
 exports.createTestStream = function (dir, filename) {
   var filepath = path.join(fixtures, dir, filename + '.java.bytes');
-  return new InStream(fs.createReadStream(filepath));
+  return new DataInputStream(fs.createReadStream(filepath));
 };
 
 exports.mockSocket = function () {
