@@ -53,8 +53,7 @@ describe('test/time_range.test.js', function () {
 
   describe('readFields()', function () {
     
-    it('should convert bytes to TimeRange', function (done) {
-      done = pedding(cases.length, done);
+    it('should convert bytes to TimeRange', function () {
       cases.forEach(function (item) {
         var min = item[0];
         var max = item[1];
@@ -62,16 +61,13 @@ describe('test/time_range.test.js', function () {
 
         var tr = new TimeRange(min, max, allTime);
 
-        var filename = 'write_' + min + '_' + max;
-        var io = utils.createTestStream('time_range', filename);
+        var filename = 'time_range/write_' + min + '_' + max;
+        var io = utils.createDataInputBuffer(filename);
         var tr = new TimeRange();
-        tr.readFields(io, function (err, newTR) {
-          should.not.exists(err);
-          tr.minStamp.toString().should.equal(min.toString());
-          tr.maxStamp.toString().should.equal(max.toString());
-          tr.allTime.should.equal(allTime);
-          done();
-        });
+        tr.readFields(io);
+        tr.minStamp.toString().should.equal(min.toString());
+        tr.maxStamp.toString().should.equal(max.toString());
+        tr.allTime.should.equal(allTime);
       });
       
     });

@@ -52,29 +52,26 @@ describe('test/get.test.js', function () {
 
   describe('readFields()', function () {
     
-    it('should convert bytes to Get', function (done) {
-      done = pedding(cases.length, done);
+    it('should convert bytes to Get', function () {
       cases.forEach(function (item) {
         var row = item[2];
         var family = item[0];
         var qualifier = item[1];
         var maxVersions = item[3];
-        var filename = 'write_' + family + '_' + qualifier + '_' + maxVersions + '_' + row;
-        var io = utils.createTestStream('get', filename);
+        var filename = 'get/write_' + family + '_' + qualifier + '_' + maxVersions + '_' + row;
+        var io = utils.createDataInputBuffer(filename);
+        // var get = Get.call(null);
         var get = new Get();
-        get.readFields(io, function (err, newGet) {
-          should.not.exists(err);
-          get.row.should.eql(new Buffer(row));
-          get.familyMap.should.have.keys(family);
-          get.familyMap.f.should.eql([qualifier]);
-          get.version.should.equal(2);
-          get.maxVersions.should.equal(maxVersions);
-          get.attributes.should.eql({});
-          get.cacheBlocks.should.equal(true);
-          should.not.exists(get.filter);
-          get.hasFilter.should.equal(false);
-          done();
-        });
+        get.readFields(io);
+        get.row.should.eql(new Buffer(row));
+        get.familyMap.should.have.keys(family);
+        get.familyMap.f.should.eql([new Buffer(qualifier)]);
+        get.version.should.equal(2);
+        get.maxVersions.should.equal(maxVersions);
+        get.attributes.should.eql({});
+        get.cacheBlocks.should.equal(true);
+        should.not.exists(get.filter);
+        get.hasFilter.should.equal(false);
       });
       
     });

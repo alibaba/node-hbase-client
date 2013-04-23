@@ -15,7 +15,9 @@ require('buffer').INSPECT_MAX_BYTES = 1000;
 var should = require('should');
 var fs = require('fs');
 var path = require('path');
-var DataInputStream = require('../../').DataInputStream;
+var lib = require('../../');
+var DataInputStream = lib.DataInputStream;
+var DataInputBuffer = lib.DataInputBuffer;
 
 var fixtures = path.join(path.dirname(__dirname), 'fixtures');
 
@@ -37,6 +39,11 @@ exports.createTestBytes = function (pathname) {
       bytes[i].should.equal(javaBytes[i]);
     }
   };
+};
+
+exports.createDataInputBuffer = function (filename) {
+  var filepath = path.join(fixtures, filename + '.java.bytes');
+  return new DataInputBuffer(fs.readFileSync(filepath));
 };
 
 exports.createTestStream = function (dir, filename) {
