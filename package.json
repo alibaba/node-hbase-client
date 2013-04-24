@@ -9,6 +9,7 @@
   "dependencies": {
     "long": "1.1.2",
     "debug": ">=0.7.2",
+    "zkjs": "3.4.x",
     "eventproxy": "0.2.2"
   },
   "devDependencies": {
