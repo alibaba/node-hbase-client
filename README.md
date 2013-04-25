@@ -4,28 +4,52 @@
 
 Asynchronous HBase client for nodejs, pure javascript implementation.
 
+* Current State: **Only test on Hbase 0.94**
 * [hbase-client](https://github.com/apache/hbase/tree/trunk/hbase-client)
 
-## Java Object Serialize
+## Install
 
-## HBase 通信过程
+```bash
+$ npm install hbase-client
+```
 
-### Put 举例
+## Usage
 
-Put rowkey:123 name:test 到 user 表
+### Get a row from a table
 
-1. Client 通过 ZooKeeper 获取到 ROOT 表所在的 region server address (IP:Port)
-2. ROOT 表只有一行记录，记录着 META 表所在的 region server address
-3. 通过读取 META 表确定 User tables 的分区信息
-4. 通过 rowkey:123 获取对应的 region server，然后将Put 信息发给它
+```js
+var HBase = require('hbase-client');
 
-返回结果：
+var client = HBase.create({
+  zookeeperHosts: [
+    '127.0.0.1:2181', '127.0.0.1:2182',
+  ],
+  zookeeperRoot: '/hbase-0.94',
+});
 
-* 如果正确返回，则代表数据已经写入成功
-* 如果错误返回，则根据错误做对应的处理
-  * region server 错误 (NotServingRegionException)，则表示 META 已经更新，需要重新获取 META ，重复上述步骤
-  * 其他错误，重试
+// Get `f1:name, f2:age` from `user` table.
+var param = new HBase.Get('foo');
+param.addColumn('f1', 'name');
+param.addColumn('f1', 'age');
 
-## Java环境
+client.get('user', param, function (err, result) {
+  console.log(err);
+  var kvs = result.raw();
+  for (var i = 0; i < kvs.length; i++) {
+    var kv = kvs[i];
+    console.log('key: `%s`, value: `%s`', kv.toString(), kv.getValue().toString());
+  }
+});
+```
 
-* [mac 之配置java src.jar文件](http://xiuqiuka-hotmail-com.iteye.com/blog/1128242)
+## License
+
+(The MIT License)
+
+Copyright (c) 2013 fengmk2 <fengmk2@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
