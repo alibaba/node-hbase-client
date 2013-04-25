@@ -68,7 +68,6 @@ describe('test/data_output_buffer.test.js', function () {
         out.writeLong(v);
         var data = out.getData();
         data.should.length(8);
-        console.log(v, data)
         testJavaBytes('writeLong', v, data);
       }
     });
