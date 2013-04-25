@@ -80,7 +80,19 @@ describe('test/client.test.js', function () {
 
   });
 
+  describe.only('get(table, get)', function () {
+    
+    it('should get a row from a table', function (done) {
+      var table = new Buffer('tcif_acookie_actions');
+      var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
+      client.get(table, row, function (err, result) {
+        should.not.exists(err);
+        console.log(result);
+        done();
+      });
+    });
 
+  });
 
 
 });
