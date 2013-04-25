@@ -60,6 +60,7 @@ describe('test/data_output_buffer.test.js', function () {
         Math.pow(2, 53) - 1, // 9007199254740991
         1007199254740990,
         '9223372036854775807', // max long
+        29,
       ];
       for (var i = 0; i < values.length; i++) {
         var v = values[i];
@@ -67,6 +68,7 @@ describe('test/data_output_buffer.test.js', function () {
         out.writeLong(v);
         var data = out.getData();
         data.should.length(8);
+        console.log(v, data)
         testJavaBytes('writeLong', v, data);
       }
     });
@@ -171,6 +173,26 @@ describe('test/data_output_buffer.test.js', function () {
         var data = out.getData();
         data.should.length(2);
         testJavaBytes('writeChar', v, data);
+      }
+    });
+
+  });
+
+  describe('writeUTF()', function () {
+    
+    it('should convert String to UTF bytes', function () {
+      var values = [
+        'getClosestRowBefore',
+        'getProtocolVersion',
+      ];
+      for (var i = 0; i < values.length; i++) {
+        var v = values[i];
+
+        var out = new DataOutputBuffer();
+        out.writeUTF(v);
+        var data = out.getData();
+        data.length.should.above(v.length);
+        testJavaBytes('writeUTF', v, data);
       }
     });
 

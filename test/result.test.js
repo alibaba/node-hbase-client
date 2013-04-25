@@ -19,11 +19,11 @@ describe('test/result.test.js', function () {
   
   var cases = [
     // row, size
-    ['e0abMDAwMDAwMDAwMDAwMDAxNQ==', 11],
-    ['4edaMDAwMDAwMDAwMDAwMDAxNg==', 11],
-    ['7c32MDAwMDAwMDAwMDAwMDAxNw==', 11],
-    ['0ed7MDAwMDAwMDAwMDAwMDAxOA==', 11],
-    ['f390MDAwMDAwMDAwMDAwMDAxOQ==', 11],
+    ['e0abMDAwMDAwMDAwMDAwMDAxNQ==', 13],
+    ['4edaMDAwMDAwMDAwMDAwMDAxNg==', 13],
+    ['7c32MDAwMDAwMDAwMDAwMDAxNw==', 13],
+    ['0ed7MDAwMDAwMDAwMDAwMDAxOA==', 13],
+    ['f390MDAwMDAwMDAwMDAwMDAxOQ==', 13],
   ];
 
   describe('readFields(io)', function () {
@@ -46,8 +46,15 @@ describe('test/result.test.js', function () {
           var value = kv.getValue();
           r.toString().should.equal(row);
           value.toString().should.include(row);
-          // console.log(r.toString(), ':', value.toString());
+          // console.log('row: %s, family: %s, qualifier: %s, value: %s, timestamp: %s',
+          //   r.toString(), 
+          //   kv.getFamily().toString(),
+          //   kv.getQualifier().toString(),
+          //   value.toString(),
+          //   kv.getTimestamp().toString()
+          // );
         }
+        // console.log('getValue(): %s', result.getValue(new Buffer('f'), new Buffer('history')));
       }
     });
 

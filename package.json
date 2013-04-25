@@ -10,6 +10,8 @@
     "long": "1.1.2",
     "debug": ">=0.7.2",
     "zkjs": "3.4.x",
+    "utility": ">=0.0.7",
+    "readable-stream": ">=1.0.2",
     "eventproxy": "0.2.2"
   },
   "devDependencies": {
