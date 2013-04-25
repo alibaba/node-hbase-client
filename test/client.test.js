@@ -15,6 +15,7 @@ var utils = require('./support/utils');
 var should = require('should');
 var Client = require('../').Client;
 var HConstants = require('../').HConstants;
+var Get = require('../').Get;
 var config = require('./config');
 
 describe('test/client.test.js', function () {
@@ -80,16 +81,72 @@ describe('test/client.test.js', function () {
 
   });
 
-  describe.only('get(table, get)', function () {
+  describe('get(table, get)', function () {
     
-    it('should get a row from a table', function (done) {
-      var table = new Buffer('tcif_acookie_actions');
-      var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
-      client.get(table, row, function (err, result) {
-        should.not.exists(err);
-        console.log(result);
-        done();
+    it('should get a row with f: from a table', function (done) {
+      var table = 'tcif_acookie_actions';
+      var rows = [
+        'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+        '4edaMDAwMDAwMDAwMDAwMDAxNg==',
+        '7c32MDAwMDAwMDAwMDAwMDAxNw==',
+        '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
+        'f390MDAwMDAwMDAwMDAwMDAxOQ==',
+      ];
+      done = pedding(rows.length, done);
+
+      rows.forEach(function (row) {
+        var get = new Get(row);
+        get.addColumn('f', 'history');
+        get.addColumn('f', 'qualifier2');
+        // get.maxVersions = 1;
+        client.get(table, get, function (err, result) {
+          should.not.exists(err);
+          var kvs = result.raw();
+          kvs.length.should.above(0);
+          for (var i = 0; i < kvs.length; i++) {
+            var kv = kvs[i];
+            kv.getRow().toString().should.equal(row);
+            kv.getValue().toString().should.include(row);
+            // console.log(kv.toString(), kv.getValue().toString());
+          }
+          done();
+        });
       });
+      
+    });
+
+    it('should get empty when row not exists', function (done) {
+      var table = 'tcif_acookie_actions';
+      var rows = [
+        '1234e0abMDAwMDAwMDAwMDAwMDAxNQ==not',
+        '45674edaMDAwMDAwMDAwMDAwMDAxNg==not',
+        '67897c32MDAwMDAwMDAwMDAwMDAxNw==not',
+        '92340ed7MDAwMDAwMDAwMDAwMDAxOA==not',
+        '2543f390MDAwMDAwMDAwMDAwMDAxOQ==not',
+      ];
+      done = pedding(rows.length, done);
+
+      rows.forEach(function (row) {
+        var get = new Get(row);
+        get.addColumn('f', 'history');
+        get.addColumn('f', 'qualifier2');
+        // get.maxVersions = 1;
+        client.get(table, get, function (err, result) {
+          should.not.exists(err);
+          var kvs = result.raw();
+          kvs.should.length(0);
+          should.not.exists(result.bytes);
+          // kvs.length.should.above(0);
+          // for (var i = 0; i < kvs.length; i++) {
+          //   var kv = kvs[i];
+          //   kv.getRow().toString().should.equal(row);
+          //   kv.getValue().toString().should.include(row);
+          //   // console.log(kv.toString(), kv.getValue().toString());
+          // }
+          done();
+        });
+      });
+      
     });
 
   });
