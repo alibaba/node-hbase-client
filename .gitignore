@@ -1,4 +1,5 @@
 lib-cov
+test/config.js
 coverage.html
 node_modules
 *.seed

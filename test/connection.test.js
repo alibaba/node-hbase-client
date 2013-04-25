@@ -42,12 +42,10 @@ describe('test/connection.test.js', function () {
     it('should return protocol version', function (done) {
       // var wantGetProtocolVersionSendData = new Buffer([0, 0, 0, 96, 0, 0, 0, 0, 1, 0, 18, 103, 101, 116, 80, 114, 111, 116, 111, 99, 111, 108, 86, 101, 114, 115, 105, 111, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 10, 44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 6, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);      
       // var wantHeader = new Buffer([44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].slice(0, 45));
-      connection.getProtocolVersion(null, null, function (err, info) {
+      connection.getProtocolVersion(null, null, function (err, version) {
         should.not.exists(err);
-        // console.log(info);
-        info.should.have.keys('declaredClass', 'instance');
-        info.instance.should.be.an.instanceof(Long);
-        info.instance.toNumber().should.equal(29);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
         done();
       });
     });
@@ -75,10 +73,8 @@ describe('test/connection.test.js', function () {
       var regionName = HRegionInfo.ROOT_REGIONINFO.regionName;
       var row = new Buffer('.META.,tcif_acookie_actions,f390MDAwMDAwMDAwMDAwMDAxOQ==,99999999999999,99999999999999');
       var family = new Buffer('info');
-      connection.getClosestRowBefore(regionName, row, family, function (err, info) {
+      connection.getClosestRowBefore(regionName, row, family, function (err, regionInfoRow) {
         should.not.exists(err);
-        info.should.have.keys('declaredClass', 'instance');
-        var regionInfoRow = info.instance;
         // var kvs = regionInfoRow.raw();
         // for (var i = 0; i < kvs.length; i++) {
         //   var kv = kvs[i];

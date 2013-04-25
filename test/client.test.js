@@ -26,19 +26,31 @@ describe('test/client.test.js', function () {
   
   describe('locateRegion()', function () {
     
-    it.skip('should locate root region', function (done) {
+    it('should locate root region', function (done) {
       client.locateRegion(HConstants.ROOT_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
         regionLocation.hostname.should.equal('dw48.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
-        console.log(regionLocation);
+        // console.log(regionLocation);
         done();
       });
     });
 
-    it.skip('should locate a region with table and row', function (done) {
+    it('should locate meta region', function (done) {
+      client.locateRegion(HConstants.META_TABLE_NAME, null, true, function (err, regionLocation) {
+        should.not.exists(err);
+        // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
+        regionLocation.hostname.should.equal('dw45.kgb.sqa.cm4');
+        regionLocation.port.should.equal(36020);
+        regionLocation.should.have.property('regionInfo');
+        // console.log(regionLocation);
+        done();
+      });
+    });
+
+    it('should locate a region with table and row', function (done) {
       // tcif_acookie_actions, f390MDAwMDAwMDAwMDAwMDAxOQ==
       var table = new Buffer('tcif_acookie_actions');
       var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
@@ -48,7 +60,20 @@ describe('test/client.test.js', function () {
         regionLocation.hostname.should.equal('dw48.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
-        console.log(regionLocation);
+        // console.log(regionLocation);
+        done();
+      });
+    });
+
+    it('should locate a region with not exists table', function (done) {
+      // tcif_acookie_actions, f390MDAwMDAwMDAwMDAwMDAxOQ==
+      var table = new Buffer('not-exists-table');
+      var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
+      client.locateRegion(table, row, true, function (err, regionLocation) {
+        should.exists(err);
+        err.name.should.equal('TableNotFoundException');
+        err.message.should.equal('Table \'not-exists-table\' was not found');
+        should.not.exists(regionLocation);
         done();
       });
     });
