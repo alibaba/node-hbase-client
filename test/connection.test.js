@@ -17,6 +17,9 @@ var should = require('should');
 var Connection = require('../').Connection;
 var ConnectionId = require('../').ConnectionId;
 var HRegionInfo = require('../').HRegionInfo;
+var HConstants = require('../').HConstants;
+var DataInputBuffer = require('../').DataInputBuffer;
+var Bytes = require('../').Bytes;
 var config = require('./config');
 
 describe('test/connection.test.js', function () {
@@ -75,12 +78,36 @@ describe('test/connection.test.js', function () {
       connection.getClosestRowBefore(regionName, row, family, function (err, info) {
         should.not.exists(err);
         info.should.have.keys('declaredClass', 'instance');
-        var regionInfo = info.instance;
-        var kvs = regionInfo.raw();
-        for (var i = 0; i < kvs.length; i++) {
-          var kv = kvs[i];
-          console.log(kv.toString());
+        var regionInfoRow = info.instance;
+        // var kvs = regionInfoRow.raw();
+        // for (var i = 0; i < kvs.length; i++) {
+        //   var kv = kvs[i];
+        //   console.log(kv.toString());
+        // }
+        var value = regionInfoRow.getValue(HConstants.CATALOG_FAMILY, HConstants.REGIONINFO_QUALIFIER);
+
+        // convert the row result into the HRegionLocation we need!
+        var io = new DataInputBuffer(value);
+        var regionInfo = new HRegionInfo();
+        regionInfo.readFields(io);
+        Bytes.equals(regionInfo.getTableName(), HConstants.META_TABLE_NAME).should.equal(true);
+        // console.log(regionInfo.getTableName().toString());
+        // should.ok(Bytes.equals(regionInfo.getTableName(), tableName));
+        regionInfo.isSplit().should.equal(false);
+        regionInfo.isOffline().should.equal(false);
+
+        value = regionInfoRow.getValue(HConstants.CATALOG_FAMILY, HConstants.SERVER_QUALIFIER);
+        var hostAndPort = "";
+        if (value !== null) {
+          hostAndPort = Bytes.toString(value);
         }
+        hostAndPort.should.match(/^[\w\.]+\:\d+$/);
+
+        // Instantiate the location
+        var item = hostAndPort.split(':');
+        var hostname = item[0];
+        var port = parseInt(item[1], 10);
+        // console.log(hostAndPort);
         done();
       });
     });
