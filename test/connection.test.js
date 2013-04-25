@@ -31,7 +31,6 @@ describe('test/connection.test.js', function () {
       port: '36020',
     }, null, null, 60000);
     connection = new Connection(remoteId);
-    connection.setupIOstreams();
     connection.on('connect', function () {
       done();
     });
