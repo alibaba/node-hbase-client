@@ -81,6 +81,55 @@ describe('test/client.test.js', function () {
 
   });
 
+  describe('getRow(table, row, columns)', function () {
+    
+    it('should get a row with columns', function (done) {
+      var table = 'tcif_acookie_actions';
+      var rows = [
+        'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+        '4edaMDAwMDAwMDAwMDAwMDAxNg==',
+        '7c32MDAwMDAwMDAwMDAwMDAxNw==',
+        '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
+        'f390MDAwMDAwMDAwMDAwMDAxOQ==',
+      ];
+      done = pedding(rows.length, done);
+
+      rows.forEach(function (row) {
+        client.getRow(table, row, ['f:history', 'f:qualifier2'], function (err, r) {
+          should.not.exists(err);
+          r.should.have.keys('f:history', 'f:qualifier2');
+          for (var k in r) {
+            r[k].toString().should.include(row);
+          }
+          done();
+        });
+      });
+      
+    });
+
+    it('should get empty when row not exists', function (done) {
+      var table = 'tcif_acookie_actions';
+      var rows = [
+        '1234e0abMDAwMDAwMDAwMDAwMDAxNQ==not',
+        '45674edaMDAwMDAwMDAwMDAwMDAxNg==not',
+        '67897c32MDAwMDAwMDAwMDAwMDAxNw==not',
+        '92340ed7MDAwMDAwMDAwMDAwMDAxOA==not',
+        '2543f390MDAwMDAwMDAwMDAwMDAxOQ==not',
+      ];
+      done = pedding(rows.length, done);
+
+      rows.forEach(function (row) {
+        client.getRow(table, row, ['f:history', 'f:qualifier2'], function (err, r) {
+          should.not.exists(err);
+          should.not.exists(r);
+          done();
+        });
+      });
+      
+    });
+
+  });
+
   describe('get(table, get)', function () {
     
     it('should get a row with f: from a table', function (done) {

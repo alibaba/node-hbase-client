@@ -17,7 +17,7 @@ $ npm install hbase-client
 
 ## Usage
 
-### Get a row from a table
+### `get(table, get, callback)`: Get a row from a table
 
 ```js
 var HBase = require('hbase-client');
@@ -41,6 +41,14 @@ client.get('user', param, function (err, result) {
     var kv = kvs[i];
     console.log('key: `%s`, value: `%s`', kv.toString(), kv.getValue().toString());
   }
+});
+```
+
+### `getRow(table, rowkey, columns, callback)`
+
+```js
+client.getRow(table, row, ['f:name', 'f:age'], function (err, r) {
+  r.should.have.keys('f:name', 'f:age');
 });
 ```
 
