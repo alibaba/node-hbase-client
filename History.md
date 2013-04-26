@@ -1,4 +1,11 @@
 
+0.0.2 / 2013-04-26 
+==================
+
+  * support `getRow(table, rowkey, columns, callback)`
+  * use zookeeper-watcher
+  * one hostport one connection
+
 0.0.1 / 2013-04-25 
 ==================
 

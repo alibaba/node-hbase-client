@@ -58,6 +58,20 @@ client.getRow(table, row, ['f:name', 'f:age'], function (err, r) {
 * benchmark
 * more stable
 
+## Authors
+
+```bash
+$ git summary 
+
+ project  : node-hbase-client
+ repo age : 6 weeks
+ active   : 9 days
+ commits  : 24
+ files    : 249
+ authors  : 
+    24  fengmk2                 100.0%
+```
+
 ## License
 
 (The MIT License)
