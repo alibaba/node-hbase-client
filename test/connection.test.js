@@ -123,7 +123,13 @@ describe('test/connection.test.js', function () {
         port: port++,
       }, null, null, 60000);
       conn = new Connection(remoteId);
+      done = pedding(2, done);
       conn.on('connect', function () {
+        done();
+      });
+      //must wait server side accept, If do not wait, something unexpected would happened
+      proxy.on('_connect', function () {
+        proxy.inStream._connections.should.equal(1);
         done();
       });
     });
@@ -173,19 +179,21 @@ describe('test/connection.test.js', function () {
 
     it('should return ConnectionClosedException when remote socket end after send data', function (done) {
       // send block and close
-      conn.getProtocolVersion(null, null, 1001, function (err, version) {
-        should.exists(err);
-        err.name.should.equal('ConnectionClosedException');
-        err.message.should.include('closed.');
-        
-        // again will be error
-        conn.getProtocolVersion(null, null, 1002, function (err, version) {
+      conn.once('close', function () {
+        conn.getProtocolVersion(null, null, 1001, function (err, version) {
           should.exists(err);
           err.name.should.equal('ConnectionClosedException');
           err.message.should.include('closed.');
-          done();
+          // again will be error
+          conn.getProtocolVersion(null, null, 1002, function (err, version) {
+            should.exists(err);
+            err.name.should.equal('ConnectionClosedException');
+            err.message.should.include('closed.');
+            done();
+          });
         });
       });
+      //close will destory all connections which are already connect to the proxy. same as server force down.
       proxy.close();
     });
 
