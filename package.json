@@ -20,7 +20,8 @@
     "moment": "*",
     "jscover": "*",
     "benchmark": "*",
-    "zkjs": "3.4.x",
+    "zkjs": "*",
+    "interceptor": "*",
     "mocha": "*"
   },
   "repository": {

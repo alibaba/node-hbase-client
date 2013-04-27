@@ -21,6 +21,7 @@ var HConstants = require('../').HConstants;
 var DataInputBuffer = require('../').DataInputBuffer;
 var Bytes = require('../').Bytes;
 var config = require('./config');
+var interceptor = require('interceptor');
 
 describe('test/connection.test.js', function () {
 
@@ -109,6 +110,86 @@ describe('test/connection.test.js', function () {
 
   });
 
+  describe('mock network error', function () {
+
+    var proxy = interceptor.create('dw48.kgb.sqa.cm4:36020');
+    var conn = null;
+    var port = 36021;
+    beforeEach(function (done) {
+      proxy.close();
+      proxy.listen(port);
+      var remoteId = new ConnectionId({
+        host: 'localhost',
+        port: port++,
+      }, null, null, 60000);
+      conn = new Connection(remoteId);
+      conn.on('connect', function () {
+        done();
+      });
+    });
+
+    it('should return protocol version', function (done) {
+      conn.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+    });
+
+    it('should return RemoteCallTimeoutException when block before send data', function (done) {
+      proxy.block();
+      conn.getProtocolVersion(null, null, 500, function (err, version) {
+        should.exists(err);
+        err.message.should.include('500 ms');
+        err.name.should.equal('RemoteCallTimeoutException');
+
+        proxy.open();
+        // after reopen, because server recive wrong data, server will close the socket.
+        conn.getProtocolVersion(null, null, 501, function (err, version) {
+          should.exists(err);
+          err.name.should.match(/(ConnectionClosedException|RemoteCallTimeoutException)/);
+          done();
+        });
+      });
+    });
+
+    it('should return RemoteCallTimeoutException when block after send data', function (done) {
+      conn.getProtocolVersion(null, null, 502, function (err, version) {
+        should.exists(err);
+        err.message.should.include('502 ms');
+        err.name.should.equal('RemoteCallTimeoutException');
+
+        proxy.open();
+        // after reopen, because server recive wrong data, server will close the socket.
+        conn.getProtocolVersion(null, null, 503, function (err, version) {
+          should.exists(err);
+          err.name.should.match(/(ConnectionClosedException|RemoteCallTimeoutException)/);
+          done();
+        });
+      });
+      proxy.block();
+    });
+
+    it('should return ConnectionClosedException when remote socket end after send data', function (done) {
+      // send block and close
+      conn.getProtocolVersion(null, null, 1001, function (err, version) {
+        should.exists(err);
+        err.name.should.equal('ConnectionClosedException');
+        err.message.should.include('closed.');
+        
+        // again will be error
+        conn.getProtocolVersion(null, null, 1002, function (err, version) {
+          should.exists(err);
+          err.name.should.equal('ConnectionClosedException');
+          err.message.should.include('closed.');
+          done();
+        });
+      });
+      proxy.close();
+    });
+
+  });
 
 });
 

@@ -17,6 +17,7 @@ var Client = require('../').Client;
 var HConstants = require('../').HConstants;
 var Get = require('../').Get;
 var config = require('./config');
+var interceptor = require('interceptor');
 
 describe('test/client.test.js', function () {
 
