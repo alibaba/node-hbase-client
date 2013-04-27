@@ -21,7 +21,7 @@
     "jscover": "*",
     "benchmark": "*",
     "zkjs": "*",
-    "interceptor": "*",
+    "interceptor": "0.1.0",
     "mocha": "*"
   },
   "repository": {
