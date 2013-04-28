@@ -50,20 +50,69 @@ describe('test/connection.test.js', function () {
       });
     });
 
-    // it('should locate a region with table and row', function (done) {
-    //   // tcif_acookie_actions, f390MDAwMDAwMDAwMDAwMDAxOQ==
-    //   var table = new Buffer('tcif_acookie_actions');
-    //   var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
-    //   client.locateRegion(table, row, true, function (err, regionLocation) {
-    //     should.not.exists(err);
-    //     // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-    //     regionLocation.hostname.should.equal('dw48.kgb.sqa.cm4');
-    //     regionLocation.port.should.equal(36020);
-    //     regionLocation.should.have.property('regionInfo');
-    //     console.log(regionLocation);
-    //     done();
-    //   });
-    // });
+    it('should return protocol version on 10 parallel calls', function (done) {
+      done = pedding(10, done);
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+      connection.getProtocolVersion(null, null, function (err, version) {
+        should.not.exists(err);
+        version.should.be.an.instanceof(Long);
+        version.toNumber().should.equal(29);
+        done();
+      });
+    });
 
   });
 
@@ -124,12 +173,13 @@ describe('test/connection.test.js', function () {
       }, null, null, 60000);
       conn = new Connection(remoteId);
       done = pedding(2, done);
+
       conn.on('connect', function () {
         done();
       });
       //must wait server side accept, If do not wait, something unexpected would happened
       proxy.on('_connect', function () {
-        proxy.inStream._connections.should.equal(1);
+        // proxy.inStream._connections.should.equal(1);
         done();
       });
     });
@@ -177,24 +227,41 @@ describe('test/connection.test.js', function () {
       proxy.block();
     });
 
-    it('should return ConnectionClosedException when remote socket end after send data', function (done) {
-      // send block and close
-      conn.once('close', function () {
-        conn.getProtocolVersion(null, null, 1001, function (err, version) {
+    it('should return ConnectionClosedException when remote socket close after send data', function (done) {
+      // send data before close
+      conn.getProtocolVersion(null, null, 1001, function (err, version) {
+        should.exists(err);
+        err.name.should.equal('ConnectionClosedException');
+        err.message.should.include('closed.');
+
+        // send data after close
+        conn.getProtocolVersion(null, null, 1002, function (err, version) {
           should.exists(err);
           err.name.should.equal('ConnectionClosedException');
           err.message.should.include('closed.');
-          // again will be error
-          conn.getProtocolVersion(null, null, 1002, function (err, version) {
-            should.exists(err);
-            err.name.should.equal('ConnectionClosedException');
-            err.message.should.include('closed.');
-            done();
-          });
+          done();
         });
       });
       //close will destory all connections which are already connect to the proxy. same as server force down.
       proxy.close();
+    });
+
+    it('should return ConnectionClosedException when client socket end() by itself.', function (done) {
+      // send data before close
+      conn.getProtocolVersion(null, null, 1001, function (err, version) {
+        should.exists(err);
+        err.name.should.equal('ConnectionClosedException');
+        err.message.should.include('closed.');
+
+        // send data after close
+        conn.getProtocolVersion(null, null, 1002, function (err, version) {
+          should.exists(err);
+          err.name.should.equal('ConnectionClosedException');
+          err.message.should.include('closed.');
+          done();
+        });
+      });
+      conn.socket.end();
     });
 
   });
