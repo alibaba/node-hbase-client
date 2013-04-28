@@ -64,12 +64,13 @@ client.getRow(table, row, ['f:name', 'f:age'], function (err, r) {
 $ git summary 
 
  project  : node-hbase-client
- repo age : 6 weeks
- active   : 9 days
- commits  : 24
+ repo age : 7 weeks
+ active   : 11 days
+ commits  : 30
  files    : 249
  authors  : 
-    24  fengmk2                 100.0%
+    29  fengmk2                 96.7%
+     1  不四                  3.3%
 ```
 
 ## License

@@ -1,4 +1,12 @@
 
+0.0.3 / 2013-04-28 
+==================
+
+  * not handle read after every call. fixed #4
+  * receiveResponse on nextTick; add more tests for network error cases. fixed #5
+  * fix interceptor's error
+  * add close, error, request timeout handle #5
+
 0.0.2 / 2013-04-26 
 ==================
 
