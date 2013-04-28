@@ -50,68 +50,19 @@ describe('test/connection.test.js', function () {
       });
     });
 
-    it('should return protocol version on 10 parallel calls', function (done) {
-      done = pedding(10, done);
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
-      connection.getProtocolVersion(null, null, function (err, version) {
-        should.not.exists(err);
-        version.should.be.an.instanceof(Long);
-        version.toNumber().should.equal(29);
-        done();
-      });
+    it('should return protocol version on 20 parallel calls', function (done) {
+      done = pedding(20, done);
+      var call = function () {
+        connection.getProtocolVersion(null, null, function (err, version) {
+          should.not.exists(err);
+          version.should.be.an.instanceof(Long);
+          version.toNumber().should.equal(29);
+          done();
+        });
+      };
+      for (var i = 0; i < 20; i++) {
+        call();
+      }
     });
 
   });
@@ -161,7 +112,7 @@ describe('test/connection.test.js', function () {
 
   describe('mock network error', function () {
 
-    var proxy = interceptor.create('dw48.kgb.sqa.cm4:36020');
+    var proxy = interceptor.create('dw48.kgb.sqa.cm4:36020', 100);
     var conn = null;
     var port = 36021;
     beforeEach(function (done) {
@@ -189,6 +140,15 @@ describe('test/connection.test.js', function () {
         should.not.exists(err);
         version.should.be.an.instanceof(Long);
         version.toNumber().should.equal(29);
+        done();
+      });
+    });
+
+    it('should return RemoteCallTimeoutException 90ms', function (done) {
+      conn.getProtocolVersion(null, null, 90, function (err, version) {
+        should.exists(err);
+        err.message.should.include('90 ms');
+        err.name.should.equal('RemoteCallTimeoutException');
         done();
       });
     });
