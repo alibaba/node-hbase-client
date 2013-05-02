@@ -20,6 +20,22 @@ var DataInputStream = lib.DataInputStream;
 var DataInputBuffer = lib.DataInputBuffer;
 
 var fixtures = path.join(path.dirname(__dirname), 'fixtures');
+exports.fixtures = fixtures;
+
+exports.checkBytes = function (bytes, javaBytes) {
+  if (javaBytes.length !== bytes.length) {
+    console.log('\njs  :', bytes, '\njava:', javaBytes);
+  }
+  bytes.length.should.equal(javaBytes.length);
+  // console.log(v, bytes, javaBytes)
+  // bytes.should.eql(javaBytes);
+  for (var i = 0; i < bytes.length; i++) {
+    if (bytes[i] !== javaBytes[i]) {
+      console.log('\njs  :', bytes, '\njava:', javaBytes);
+    }
+    bytes[i].should.equal(javaBytes[i]);
+  }
+};
 
 exports.createTestBytes = function (pathname) {
   return function (method, v, bytes) {

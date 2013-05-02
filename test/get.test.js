@@ -13,7 +13,7 @@
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
-var Get = require('../lib/get');
+var Get = require('../').Get;
 var DataOutputBuffer = require('../').DataOutputBuffer;
 
 describe('test/get.test.js', function () {

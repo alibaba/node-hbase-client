@@ -20,6 +20,7 @@ exports.HConstants = require(libdir + '/hconstants');
 // base object
 exports.TimeRange = require(libdir + '/time_range');
 exports.Get = require(libdir + '/get');
+exports.Put = require(libdir + '/put');
 exports.Result = require(libdir + '/result');
 exports.HRegionInfo = require(libdir + '/hregion_info');
 
