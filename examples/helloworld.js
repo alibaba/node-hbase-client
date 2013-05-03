@@ -19,6 +19,14 @@ var client = HBase.create({
   zookeeperRoot: '/hbase-0.94',
 });
 
+// Put
+var put = new HBase.Put('foo');
+put.add('f1', 'name', 'foo');
+put.add('f1', 'age', '18');
+client.put('user', put, function (err) {
+  console.log(err);
+});
+
 // Get `f1:name, f2:age` from `user` table.
 var param = new HBase.Get('foo');
 param.addColumn('f1', 'name');

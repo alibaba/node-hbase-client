@@ -8,7 +8,7 @@ Asynchronous HBase client for nodejs, pure javascript implementation.
 
 * Current State: **Only test on Hbase 0.94**
 * [hbase-client](https://github.com/apache/hbase/tree/trunk/hbase-client)
-* jscoverage: [75%](http://fengmk2.github.com/coverage/node-hbase-client.html)
+* jscoverage: [82%](http://fengmk2.github.com/coverage/node-hbase-client.html)
 
 ## Install
 
@@ -53,11 +53,31 @@ client.getRow(table, row, ['f:name', 'f:age'], function (err, r) {
 });
 ```
 
+### `put(table, put, callback)`: Put a row to table
+
+```js
+var put = new HBase.Put('foo');
+put.add('f1', 'name', 'foo');
+put.add('f1', 'age', '18');
+client.put('user', put, function (err) {
+  console.log(err);
+});
+```
+
+### `putRow(table, row, data, callback)`
+
+```js
+client.putRow(table, row, {'f1:name': 'foo name', 'f1:age': '18'}, function (err) {
+  should.not.exists(err);
+});
+```
+
 ## TODO
 
-* support `put`
-* benchmark
-* more stable
+- [x] support `put`
+- [ ] benchmark
+- [ ] more stable
+- [ ] multi actions
 
 ## Authors
 

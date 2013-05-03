@@ -16,6 +16,7 @@ var should = require('should');
 var Client = require('../').Client;
 var HConstants = require('../').HConstants;
 var Get = require('../').Get;
+var Put = require('../').Put;
 var config = require('./config');
 var interceptor = require('interceptor');
 
@@ -194,6 +195,50 @@ describe('test/client.test.js', function () {
           //   // console.log(kv.toString(), kv.getValue().toString());
           // }
           done();
+        });
+      });
+      
+    });
+
+  });
+  
+  describe('put(table, put)', function () {
+    
+    it('should put a row with f: to a table', function (done) {
+      var table = 'tcif_acookie_actions';
+      var rows = [
+        'e0ab1-puttest',
+        '4eda2-puttest',
+        '7c323-puttest',
+        '0ed74-puttest',
+        'f3905-puttest',
+      ];
+      done = pedding(rows.length, done);
+
+      rows.forEach(function (row) {
+        var put = new Put(row);
+        put.add('f', 'history', 'history: put test 测试数据 ' + row);
+        put.add('f', 'qualifier2', 'qualifier2: put test 数据2 ' + row);
+        client.put(table, put, function (err, result) {
+          // console.log(arguments)
+          should.not.exists(err);
+          should.not.exists(result);
+
+          var get = new Get(row);
+          get.addColumn('f', 'history');
+          get.addColumn('f', 'qualifier2');
+          client.get(table, get, function (err, result) {
+            should.not.exists(err);
+            var kvs = result.raw();
+            kvs.length.should.above(0);
+            for (var i = 0; i < kvs.length; i++) {
+              var kv = kvs[i];
+              kv.getRow().toString().should.equal(row);
+              kv.getValue().toString().should.include(row);
+              // console.log(kv.toString(), kv.getValue().toString());
+            }
+            done();
+          });
         });
       });
       
