@@ -21,6 +21,7 @@ exports.HConstants = require(libdir + '/hconstants');
 exports.TimeRange = require(libdir + '/time_range');
 exports.Get = require(libdir + '/get');
 exports.Put = require(libdir + '/put');
+exports.Scan = require(libdir + '/scan');
 exports.Result = require(libdir + '/result');
 exports.HRegionInfo = require(libdir + '/hregion_info');
 
