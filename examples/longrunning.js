@@ -16,13 +16,15 @@ var utility = require('utility');
 
 var client = HBase.create(config);
 
+var now = Date.now();
+
 var j = 0;
 function callPut() {
   console.time('put');
-  var row = utility.md5('test row' + j++);
-  client.putRow('tcif_acookie_actions', row, {
-    'f:history': 'history ' + row,
-    'f:qualifier2': 'qualifier2 ' + row,
+  var row = utility.md5(now + 'test row' + j++);
+  client.putRow('tcif_acookie_user', row, {
+    'cf1:history': 'history ' + row + ' ' + j,
+    'cf1:qualifier2': 'qualifier2 ' + row + ' ' + j,
   }, function (err) {
     err && console.log(err);
     console.timeEnd('put');
@@ -32,12 +34,12 @@ function callPut() {
 var i = 0;
 function callGet() {
   console.time('get');
-  var row = utility.md5('test row' + i++);
+  var row = utility.md5(now + 'test row' + i++);
   // Get `f1:name, f2:age` from `user` table.
   var param = new HBase.Get(row);
-  param.addColumn('f', 'history');
-  param.addColumn('f', 'qualifier2');
-  client.get('tcif_acookie_actions', param, function (err, result) {
+  param.addColumn('cf1', 'history');
+  param.addColumn('cf1', 'qualifier2');
+  client.get('tcif_acookie_user', param, function (err, result) {
     err && console.log(err);
     var kvs = result.raw();
     for (var i = 0; i < kvs.length; i++) {

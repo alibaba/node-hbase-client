@@ -24,6 +24,7 @@ exports.Put = require(libdir + '/put');
 exports.Scan = require(libdir + '/scan');
 exports.Result = require(libdir + '/result');
 exports.HRegionInfo = require(libdir + '/hregion_info');
+exports.HRegionLocation = require(libdir + '/hregion_location');
 
 // io
 exports.HbaseObjectWritable = require(libdir + '/io/hbase_object_writable');

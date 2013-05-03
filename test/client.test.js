@@ -10,6 +10,7 @@
  * Module dependencies.
  */
 
+var Long = require('long');
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
@@ -19,6 +20,12 @@ var Get = require('../').Get;
 var Put = require('../').Put;
 var config = require('./config');
 var interceptor = require('interceptor');
+var HRegionInfo = require('../').HRegionInfo;
+var Scan = require('../').Scan;
+var DataInputBuffer = require('../').DataInputBuffer;
+var Bytes = require('../').Bytes;
+var HRegionLocation = require('../').HRegionLocation;
+
 
 describe('test/client.test.js', function () {
 
@@ -198,6 +205,105 @@ describe('test/client.test.js', function () {
         });
       });
       
+    });
+
+  });
+
+  describe('getScanner(table, scan)', function () {
+    
+    var region = function (regionInfoRow) {
+      var value = regionInfoRow.getValue(HConstants.CATALOG_FAMILY, HConstants.REGIONINFO_QUALIFIER);
+      var io = new DataInputBuffer(value);
+      var regionInfo = new HRegionInfo();
+      regionInfo.readFields(io);
+      value = regionInfoRow.getValue(HConstants.CATALOG_FAMILY, HConstants.SERVER_QUALIFIER);
+      var hostAndPort = "";
+      if (value !== null) {
+        hostAndPort = Bytes.toString(value);
+      }
+      // Instantiate the location
+      var item = hostAndPort.split(':');
+      var hostname = item[0];
+      var port = parseInt(item[1], 10);
+      var location = new HRegionLocation(regionInfo, hostname, port);
+      return location;
+    };
+
+    it('should scan a table region info in .meta. with next()', function (done) {
+      var tableName = Bytes.toBytes('tcif_acookie_user');
+      var startRow = HRegionInfo.createRegionName(tableName, 
+        HConstants.EMPTY_START_ROW, HConstants.ZEROES, false);
+      var scan = new Scan(startRow);
+      scan.addFamily(HConstants.CATALOG_FAMILY);
+      client.getScanner(HConstants.META_TABLE_NAME, scan, function (err, scanner) {
+        should.not.exists(err);
+        should.exists(scanner);
+        scanner.should.have.property('id').with.be.instanceof(Long);
+        scanner.should.have.property('server');
+
+        var count = 0;
+        var next = function () {
+          scanner.next(function (err, regionInfoRow) {
+            should.not.exists(err);
+            if (!regionInfoRow) {
+              // console.log('total', count);
+              return scanner.close(done);
+            }
+            var location = region(regionInfoRow);
+            if (!Bytes.equals(location.regionInfo.tableName, tableName)) {
+              // console.log('total', count);
+              return scanner.close(done);
+            }
+            count++;
+            // console.log(location.toString());
+            next();
+          });
+        };
+
+        next();
+        
+      });
+    });
+
+    it('should scan a table region info in .meta. with next(numberOfRows)', function (done) {
+      var tableName = Bytes.toBytes('tcif_acookie_user');
+      var startRow = HRegionInfo.createRegionName(tableName, 
+        HConstants.EMPTY_START_ROW, HConstants.ZEROES, false);
+      var scan = new Scan(startRow);
+      scan.addFamily(HConstants.CATALOG_FAMILY);
+      client.getScanner(HConstants.META_TABLE_NAME, scan, function (err, scanner) {
+        should.not.exists(err);
+        should.exists(scanner);
+        scanner.should.have.property('id').with.be.instanceof(Long);
+        scanner.should.have.property('server');
+
+        var next = function (numberOfRows) {
+          scanner.next(numberOfRows, function (err, rows) {
+            should.not.exists(err);
+            if (rows.length === 0) {
+              return scanner.close(done);
+            }
+            var closed = false;
+            rows.forEach(function (regionInfoRow) {
+              var location = region(regionInfoRow);
+              if (!Bytes.equals(location.regionInfo.tableName, tableName)) {
+                closed = true;
+                return false;
+              }
+              // console.log(location.toString())
+            });
+            
+            if (closed) {
+              return scanner.close(done);
+            }
+            
+            next(numberOfRows);
+          });
+        };
+
+        next(10);
+        
+      });
     });
 
   });
