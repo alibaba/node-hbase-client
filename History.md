@@ -1,4 +1,11 @@
 
+0.0.4 / 2013-05-03 
+==================
+
+  * support Put fixed #3
+  * change prototype code style
+  * add coverage, remove htable.js
+
 0.0.3 / 2013-04-28 
 ==================
 
