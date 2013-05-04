@@ -251,12 +251,45 @@ describe('test/client.test.js', function () {
             }
             var location = region(regionInfoRow);
             if (!Bytes.equals(location.regionInfo.tableName, tableName)) {
-              // console.log('total', count);
+              console.log('total', count);
               return scanner.close(done);
             }
             count++;
             // console.log(location.toString());
-            next();
+            // console.log(location.regionInfo.startKey.toString(),
+            //   location.regionInfo.endKey.toString());
+            // should get closet
+            client.locateRegion(location.regionInfo.tableName, location.regionInfo.startKey, true, 
+            function (err, loc) {
+              should.not.exists(err);
+              // console.log(loc.toString());
+              loc.toString().should.equal(location.toString());
+              loc.hostname.should.equal(location.hostname);
+              loc.port.should.equal(location.port);
+              loc.regionInfo.startKey.should.eql(location.regionInfo.startKey);
+              loc.regionInfo.endKey.should.eql(location.regionInfo.endKey);
+
+              if (location.regionInfo.endKey.length === 0) {
+                return next();
+              }
+
+              // endKey + 1 => next region
+              var endKey = new Buffer(location.regionInfo.endKey.toString() + 1);
+              // console.log(endKey, endKey.toString())
+              client.locateRegion(location.regionInfo.tableName, endKey, true, 
+              function (err, loc) {
+                should.not.exists(err);
+                // console.log(loc.toString());
+                // loc.toString().should.equal(location.toString());
+                // loc.hostname.should.equal(location.hostname);
+                // loc.port.should.equal(location.port);
+                loc.regionInfo.startKey.should.eql(location.regionInfo.endKey);
+                if (loc.regionInfo.endKey.length > 0) {
+                  Bytes.compareTo(loc.regionInfo.endKey, location.regionInfo.endKey).should.above(0);
+                }
+                next();
+              });        
+            });            
           });
         };
 

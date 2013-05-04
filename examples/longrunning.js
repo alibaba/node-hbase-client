@@ -44,7 +44,7 @@ function callGet() {
     var kvs = result.raw();
     for (var i = 0; i < kvs.length; i++) {
       var kv = kvs[i];
-      console.log('[%s] key: `%s`, value: `%s`', new Date(), kv.toString(), kv.getValue().toString());
+      // console.log('[%s] key: `%s`, value: `%s`', new Date(), kv.toString(), kv.getValue().toString());
     }
     console.timeEnd('get');
     // console.log('size: %d', kvs.length);
