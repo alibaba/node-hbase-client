@@ -42,11 +42,14 @@ function callGet() {
   client.get('tcif_acookie_user', param, function (err, result) {
     err && console.log(err);
     var kvs = result.raw();
-    for (var i = 0; i < kvs.length; i++) {
-      var kv = kvs[i];
-      // console.log('[%s] key: `%s`, value: `%s`', new Date(), kv.toString(), kv.getValue().toString());
-    }
+    // for (var i = 0; i < kvs.length - 1; i++) {
+    //   var kv = kvs[i];
+    //   // console.log('[%s] key: `%s`, value: `%s`', new Date(), kv.toString(), kv.getValue().toString());
+    // }
     console.timeEnd('get');
+    if (i % 100 === 0) {
+      console.log(i, row);
+    }
     // console.log('size: %d', kvs.length);
   });
 }
@@ -57,5 +60,5 @@ setTimeout(function () {
   setInterval(function () {
     callGet();
     callPut();
-  }, 100);
+  }, 20);
 }, 1000);
