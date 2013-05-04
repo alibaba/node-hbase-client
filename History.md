@@ -1,4 +1,13 @@
 
+0.0.5 / 2013-05-04 
+==================
+
+  * prefetchRegionCache() after getClosestRowBefore(). fixed #9 Scan meta, get a table region
+  * locateRegion all side region row with startKey #9
+  * add scan and scanner #9
+  * add scan writable
+  * add more debug info
+
 0.0.4 / 2013-05-03 
 ==================
 
