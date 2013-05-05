@@ -28,12 +28,14 @@ var putResult = {
   fail: 0,
   total: 0,
   use: 0,
+  start: 0,
 };
 var getResult = {
   success: 0,
   fail: 0,
   total: 0,
   use: 0,
+  start: 0,
 };
 
 var putStop = false;
@@ -63,11 +65,12 @@ function callPut(callback) {
       putResult.success++;
     }
     if (putStop || putResult.total % 10000 === 0) {
+      var use = Date.now() - putResult.start;
       console.log('---------------- Put() --------------------');
       console.log('Concurrency: %d', concurrency);
       console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
-        putResult.use,
-        (putResult.total / putResult.use * 1000).toFixed(0), 
+        use,
+        (putResult.total / use * 1000).toFixed(0), 
         (putResult.use / putResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', putResult.total, putResult.success, putResult.fail);
       console.log('-------------------------------------------');
@@ -104,11 +107,12 @@ function callGet(callback) {
       getResult.success++;
     }
     if (getStop || getResult.total % 10000 === 0) {
+      var use = Date.now() - getResult.start;
       console.log('---------------- Get() --------------------');
       console.log('Concurrency: %d', concurrency);
       console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
-        getResult.use,
-        (getResult.total / getResult.use * 1000).toFixed(0), 
+        use,
+        (getResult.total / use * 1000).toFixed(0), 
         (getResult.use / getResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
       console.log('-------------------------------------------');
@@ -139,11 +143,12 @@ function callGetRow(callback) {
       getResult.success++;
     }
     if (getStop || getResult.total % 10000 === 0) {
+      var use = Date.now() - getResult.start;
       console.log('---------------- GetRow() --------------------');
       console.log('Concurrency: %d', concurrency);
       console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
-        getResult.use,
-        (getResult.total / getResult.use * 1000).toFixed(0), 
+        use,
+        (getResult.total / use * 1000).toFixed(0), 
         (getResult.use / getResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
       console.log('-------------------------------------------');
@@ -165,8 +170,11 @@ callGet();
 
 setTimeout(function () {
   for (var i = 0; i < concurrency; i++) {
-    // runner(callPut);
-    runner(callGet);
+    putResult.start = Date.now();
+    runner(callPut);
+    
+    // getResult.start = Date.now();
+    // runner(callGet);
     // runner(callGetRow);
   }
 }, 1000);
