@@ -1,0 +1,102 @@
+
+                      +---------+ 
+                      | client  | 
+                      +----+----+
+                           |
+                 +---------+-----------+---------------------+------------------------+
+                 |                     |               0     |                  N     |
+          +------+-----+        +------+-----+        +------+-----+  1 ... N  +------+-----+
+          | connection |        | connection |        | connection | ......... | connection |
+          +------+-----+        +------+-----+        +------+-----+           +------+-----+
+                 |                     |                     |                        |
+          |      |     ^               |                     |                        |
+      Writable   |     |      getClosestRowBefore      get, put, scan           get, put, scan
+          |      |  Readable           |                     |                        |
+          V      |     |               |                     |                        |
+                 |                     |                     |                        |
+                 |                     |                     |                        |
+        +--------+-------+    +--------+-------+    +--------+-------+       +--------+-------+
+        | root    server |    | meta    server |    | region  server |  ...  | region  server |
+        +----------------+    +----------------+    +----------------+       +--------+-------+
+
+
+Protocol: RegionInterface.java 
+@see https://github.com/apache/hbase/blob/0.94/src/main/java/org/apache/hadoop/hbase/ipc/HRegionInterface.java
+
+```java
+/**
+ * Return all the data for the row that matches <i>row</i> exactly,
+ * or the one that immediately preceeds it.
+ *
+ * @param regionName region name
+ * @param row row key
+ * @param family Column family to look for row in.
+ * @return map of values
+ * @throws IOException e
+ */
+public Result getClosestRowBefore(final byte [] regionName, final byte [] row, final byte [] family) throws IOException;
+
+/**
+ * Perform Get operation.
+ * @param regionName name of region to get from
+ * @param get Get operation
+ * @return Result
+ * @throws IOException e
+ */
+public Result get(byte [] regionName, Get get) throws IOException;
+
+/**
+ * Put data into the specified region
+ * @param regionName region name
+ * @param put the data to be put
+ * @throws IOException e
+ */
+public void put(final byte [] regionName, final Put put)throws IOException;
+
+/**
+ * Deletes all the KeyValues that match those found in the Delete object,
+ * if their ts <= to the Delete. In case of a delete with a specific ts it
+ * only deletes that specific KeyValue.
+ * @param regionName region name
+ * @param delete delete object
+ * @throws IOException e
+ */
+public void delete(final byte[] regionName, final Delete delete) throws IOException;
+
+/**
+ * Opens a remote scanner with a RowFilter.
+ *
+ * @param regionName name of region to scan
+ * @param scan configured scan object
+ * @return scannerId scanner identifier used in other calls
+ * @throws IOException e
+ */
+public long openScanner(final byte [] regionName, final Scan scan) throws IOException;
+
+/**
+ * Get the next set of values
+ * @param scannerId clientId passed to openScanner
+ * @return map of values; returns null if no results.
+ * @throws IOException e
+ */
+public Result next(long scannerId) throws IOException;
+
+/**
+ * Get the next set of values
+ * @param scannerId clientId passed to openScanner
+ * @param numberOfRows the number of rows to fetch
+ * @return Array of Results (map of values); array is empty if done with this
+ * region and null if we are NOT to go to the next region (happens when a
+ * filter rules that the scan is done).
+ * @throws IOException e
+ */
+public Result [] next(long scannerId, int numberOfRows) throws IOException;
+
+/**
+ * Close a scanner
+ *
+ * @param scannerId the scanner id returned by openScanner
+ * @throws IOException e
+ */
+public void close(long scannerId) throws IOException;
+```
