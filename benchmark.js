@@ -29,7 +29,13 @@ var putResult = {
   use: 0,
 };
 
+var stop = false;
+var MAX_NUM = 100000;
+
 function callPut() {
+  if (stop) {
+    return;
+  }
   var row = utility.md5(now + 'test row' + j++);
   var startTime = Date.now();
   client.putRow('tcif_acookie_user', row, {
@@ -37,13 +43,18 @@ function callPut() {
     'cf1:qualifier2': 'qualifier2 ' + row + ' ' + j,
   }, function (err) {
     putResult.total++;
+    if (putResult.total >= MAX_NUM) {
+      console.log('stop');
+      stop = true;
+    }
     putResult.use += Date.now() - startTime;
     if (err) {
+      console.log(err);
       putResult.fail++;
     } else {
       putResult.success++;
     }
-    if (putResult.total % 1000 === 0) {
+    if (stop || putResult.total % 1000 === 0) {
       console.log('Concurrency: %d', concurrency);
       console.log('Put QPS: %d\nRT %d ms', 
         (putResult.total / putResult.use * 1000).toFixed(0), 
