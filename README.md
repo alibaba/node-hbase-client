@@ -72,10 +72,78 @@ client.putRow(table, row, {'f1:name': 'foo name', 'f1:age': '18'}, function (err
 });
 ```
 
+## Benchmark
+
+Only one node process, one connection for one region(hostname:port).
+
+### Get()
+
+```bash
+---------------- Get() --------------------
+Concurrency: 1
+QPS: 1600
+RT 0.62 ms
+Total 20000, Success: 20000, Fail: 0
+-------------------------------------------
+
+---------------- Get() --------------------
+Concurrency: 2
+QPS: 1639
+RT 0.61 ms
+Total 310000, Success: 310000, Fail: 0
+-------------------------------------------
+
+---------------- Get() --------------------
+Concurrency: 5
+QPS: 681
+RT 1.47 ms
+Total 20000, Success: 20000, Fail: 0
+-------------------------------------------
+
+---------------- Get() --------------------
+Concurrency: 10
+QPS: 355
+RT 2.82 ms
+Total 20000, Success: 20000, Fail: 0
+-------------------------------------------
+```
+
+### Put()
+
+```bash
+---------------- Put() --------------------
+Concurrency: 1
+QPS: 607
+RT 1.65 ms
+Total 21000, Success: 21000, Fail: 0
+-------------------------------------------
+
+---------------- Put() --------------------
+Concurrency: 2
+QPS: 557
+RT 1.8 ms
+Total 20000, Success: 20000, Fail: 0
+-------------------------------------------
+
+---------------- Put() --------------------
+Concurrency: 6
+QPS: 417
+RT 2.4 ms
+Total 128000, Success: 128000, Fail: 0
+-------------------------------------------
+
+---------------- Put() --------------------
+Concurrency: 10
+QPS: 297
+RT 3.36 ms
+Total 20000, Success: 20000, Fail: 0
+-------------------------------------------
+```
+
 ## TODO
 
 - [x] support `put`
-- [ ] benchmark
+- [x] benchmark
 - [x] more stable
 - [ ] multi actions
 

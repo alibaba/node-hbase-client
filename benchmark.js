@@ -62,10 +62,11 @@ function callPut(callback) {
     } else {
       putResult.success++;
     }
-    if (putStop || putResult.total % 1000 === 0) {
+    if (putStop || putResult.total % 10000 === 0) {
       console.log('---------------- Put() --------------------');
       console.log('Concurrency: %d', concurrency);
-      console.log('QPS: %d\nRT %d ms', 
+      console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
+        putResult.use,
         (putResult.total / putResult.use * 1000).toFixed(0), 
         (putResult.use / putResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', putResult.total, putResult.success, putResult.fail);
@@ -102,10 +103,11 @@ function callGet(callback) {
     } else {
       getResult.success++;
     }
-    if (getStop || getResult.total % 1000 === 0) {
+    if (getStop || getResult.total % 10000 === 0) {
       console.log('---------------- Get() --------------------');
       console.log('Concurrency: %d', concurrency);
-      console.log('QPS: %d\nRT %d ms', 
+      console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
+        getResult.use,
         (getResult.total / getResult.use * 1000).toFixed(0), 
         (getResult.use / getResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
@@ -136,10 +138,11 @@ function callGetRow(callback) {
     } else {
       getResult.success++;
     }
-    if (getStop || getResult.total % 1000 === 0) {
+    if (getStop || getResult.total % 10000 === 0) {
       console.log('---------------- GetRow() --------------------');
       console.log('Concurrency: %d', concurrency);
-      console.log('QPS: %d\nRT %d ms', 
+      console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
+        getResult.use,
         (getResult.total / getResult.use * 1000).toFixed(0), 
         (getResult.use / getResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
