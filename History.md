@@ -1,4 +1,17 @@
 
+0.0.6 / 2013-05-05 
+==================
+
+  * add benchmark results to readme
+  * fixed QPS caculate wrong
+  * show use time
+  * add getRow and get() benchmark
+  * add benchmark.js fixed #7
+  * fixed #13 Maximum call stack size exceeded
+  * #7 add benchmark
+  * fixed #12 , use node-zookeeper-client instead of zkjs.
+  * Bytes.toLong move to WritableUtils.toLong
+
 0.0.5 / 2013-05-04 
 ==================
 
