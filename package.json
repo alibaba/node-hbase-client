@@ -9,7 +9,7 @@
   "dependencies": {
     "long": "1.1.2",
     "debug": ">=0.7.2",
-    "zookeeper-watcher": ">=0.0.3",
+    "zookeeper-watcher": ">=0.1.1",
     "utility": ">=0.0.7",
     "readable-stream": ">=1.0.2",
     "eventproxy": "0.2.2"

@@ -86,12 +86,12 @@ $ git summary
 
  project  : node-hbase-client
  repo age : 7 weeks
- active   : 11 days
- commits  : 30
- files    : 249
+ active   : 14 days
+ commits  : 43
+ files    : 266
  authors  : 
-    29  fengmk2                 96.7%
-     1  不四                  3.3%
+    42  fengmk2                 97.7%
+     1  不四                  2.3%
 ```
 
 ## License
