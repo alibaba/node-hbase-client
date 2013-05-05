@@ -65,7 +65,7 @@ function callPut(callback) {
     if (putStop || putResult.total % 1000 === 0) {
       console.log('---------------- Put() --------------------');
       console.log('Concurrency: %d', concurrency);
-      console.log('Put QPS: %d\nRT %d ms', 
+      console.log('QPS: %d\nRT %d ms', 
         (putResult.total / putResult.use * 1000).toFixed(0), 
         (putResult.use / putResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', putResult.total, putResult.success, putResult.fail);
@@ -76,6 +76,46 @@ function callPut(callback) {
 }
 
 function callGet(callback) {
+  if (getStop) {
+    return;
+  }
+  var row = utility.md5('test row' + i++);
+  var startTime = Date.now();
+  var param = new HBase.Get(row);
+  param.addColumn('cf1', 'history');
+  param.addColumn('cf1', 'qualifier2');
+  client.get('tcif_acookie_user', param, function (err, result) {
+    // var kvs = result.raw();
+    // for (var i = 0; i < kvs.length; i++) {
+    //   var kv = kvs[i];
+    //   console.log('key: `%s`, value: `%s`', kv.toString(), kv.getValue().toString());
+    // }
+    getResult.total++;
+    if (getResult.total >= MAX_NUM) {
+      console.log('getStop');
+      getStop = true;
+    }
+    getResult.use += Date.now() - startTime;
+    if (err) {
+      console.log(err);
+      getResult.fail++;
+    } else {
+      getResult.success++;
+    }
+    if (getStop || getResult.total % 1000 === 0) {
+      console.log('---------------- Get() --------------------');
+      console.log('Concurrency: %d', concurrency);
+      console.log('QPS: %d\nRT %d ms', 
+        (getResult.total / getResult.use * 1000).toFixed(0), 
+        (getResult.use / getResult.total).toFixed(2));
+      console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
+      console.log('-------------------------------------------');
+    }
+    callback && callback();
+  });
+}
+
+function callGetRow(callback) {
   if (getStop) {
     return;
   }
@@ -97,9 +137,9 @@ function callGet(callback) {
       getResult.success++;
     }
     if (getStop || getResult.total % 1000 === 0) {
-      console.log('---------------- Get() --------------------');
+      console.log('---------------- GetRow() --------------------');
       console.log('Concurrency: %d', concurrency);
-      console.log('Put QPS: %d\nRT %d ms', 
+      console.log('QPS: %d\nRT %d ms', 
         (getResult.total / getResult.use * 1000).toFixed(0), 
         (getResult.use / getResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
@@ -124,6 +164,7 @@ setTimeout(function () {
   for (var i = 0; i < concurrency; i++) {
     // runner(callPut);
     runner(callGet);
+    // runner(callGetRow);
   }
 }, 1000);
 

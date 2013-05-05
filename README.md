@@ -76,7 +76,7 @@ client.putRow(table, row, {'f1:name': 'foo name', 'f1:age': '18'}, function (err
 
 - [x] support `put`
 - [ ] benchmark
-- [ ] more stable
+- [x] more stable
 - [ ] multi actions
 
 ## Authors
