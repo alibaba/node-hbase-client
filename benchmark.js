@@ -22,21 +22,29 @@ console.log('concurrency %d', concurrency);
 var now = Date.now();
 
 var j = 0;
+var i = 0;
 var putResult = {
   success: 0,
   fail: 0,
   total: 0,
   use: 0,
 };
+var getResult = {
+  success: 0,
+  fail: 0,
+  total: 0,
+  use: 0,
+};
 
-var stop = false;
-var MAX_NUM = 100000;
+var putStop = false;
+var getStop = false;
+var MAX_NUM = 1000000;
 
-function callPut() {
-  if (stop) {
+function callPut(callback) {
+  if (putStop) {
     return;
   }
-  var row = utility.md5(now + 'test row' + j++);
+  var row = utility.md5('test row' + j++);
   var startTime = Date.now();
   client.putRow('tcif_acookie_user', row, {
     'cf1:history': 'history ' + row + ' ' + j,
@@ -44,8 +52,8 @@ function callPut() {
   }, function (err) {
     putResult.total++;
     if (putResult.total >= MAX_NUM) {
-      console.log('stop');
-      stop = true;
+      console.log('putStop');
+      putStop = true;
     }
     putResult.use += Date.now() - startTime;
     if (err) {
@@ -54,43 +62,68 @@ function callPut() {
     } else {
       putResult.success++;
     }
-    if (stop || putResult.total % 1000 === 0) {
+    if (putStop || putResult.total % 1000 === 0) {
+      console.log('---------------- Put() --------------------');
       console.log('Concurrency: %d', concurrency);
       console.log('Put QPS: %d\nRT %d ms', 
         (putResult.total / putResult.use * 1000).toFixed(0), 
         (putResult.use / putResult.total).toFixed(2));
       console.log('Total %d, Success: %d, Fail: %d', putResult.total, putResult.success, putResult.fail);
+      console.log('-------------------------------------------');
     }
+    callback && callback();
   });
 }
 
-// var i = 0;
-// function callGet() {
-//   console.time('get');
-//   var row = utility.md5(now + 'test row' + i++);
-//   // Get `f1:name, f2:age` from `user` table.
-//   var param = new HBase.Get(row);
-//   param.addColumn('cf1', 'history');
-//   param.addColumn('cf1', 'qualifier2');
-//   client.get('tcif_acookie_user', param, function (err, result) {
-//     err && console.log(err);
-//     var kvs = result.raw();
-//     // for (var i = 0; i < kvs.length - 1; i++) {
-//     //   var kv = kvs[i];
-//     //   // console.log('[%s] key: `%s`, value: `%s`', new Date(), kv.toString(), kv.getValue().toString());
-//     // }
-//     console.timeEnd('get');
-//     if (i % 100 === 0) {
-//       console.log(i, row);
-//     }
-//     // console.log('size: %d', kvs.length);
-//   });
-// }
+function callGet(callback) {
+  if (getStop) {
+    return;
+  }
+  var row = utility.md5('test row' + i++);
+  var startTime = Date.now();
+  client.getRow('tcif_acookie_user', row, ['cf1:history', 'cf1:qualifier2'], function (err, rows) {
+    // console.log(rows)
+    
+    getResult.total++;
+    if (getResult.total >= MAX_NUM) {
+      console.log('getStop');
+      getStop = true;
+    }
+    getResult.use += Date.now() - startTime;
+    if (err) {
+      console.log(err);
+      getResult.fail++;
+    } else {
+      getResult.success++;
+    }
+    if (getStop || getResult.total % 1000 === 0) {
+      console.log('---------------- Get() --------------------');
+      console.log('Concurrency: %d', concurrency);
+      console.log('Put QPS: %d\nRT %d ms', 
+        (getResult.total / getResult.use * 1000).toFixed(0), 
+        (getResult.use / getResult.total).toFixed(2));
+      console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
+      console.log('-------------------------------------------');
+    }
+    callback && callback();
+  });
+}
 
-callPut();
+var NO = 0;
+function runner(fun) {
+  console.log('runner#%d start...', NO++);
+  var next = function () {
+    fun(next);
+  };
+  next();
+}
+
+callGet();
+
 setTimeout(function () {
   for (var i = 0; i < concurrency; i++) {
-    setInterval(callPut, 10);
+    // runner(callPut);
+    runner(callGet);
   }
 }, 1000);
 
