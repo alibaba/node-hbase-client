@@ -1,4 +1,10 @@
 
+0.0.7 / 2013-05-07 
+==================
+
+  * prefetch table all regions the first time; refetch regions when offline happen. #10 #16
+  * add communication protocol, diagram between client and server. fixed #14
+
 0.0.6 / 2013-05-05 
 ==================
 
