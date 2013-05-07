@@ -8,7 +8,7 @@ Asynchronous HBase client for nodejs, pure javascript implementation.
 
 * Current State: **Only test on Hbase 0.94**
 * [hbase-client](https://github.com/apache/hbase/tree/trunk/hbase-client)
-* jscoverage: [82%](http://fengmk2.github.com/coverage/node-hbase-client.html)
+* jscoverage: [83%](http://fengmk2.github.com/coverage/node-hbase-client.html)
 
 ## Install
 

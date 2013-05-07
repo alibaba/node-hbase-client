@@ -170,14 +170,14 @@ callGet();
 
 setTimeout(function () {
   for (var i = 0; i < concurrency; i++) {
-    putResult.start = Date.now();
-    runner(callPut);
+    // putResult.start = Date.now();
+    // runner(callPut);
     
-    // getResult.start = Date.now();
+    getResult.start = Date.now();
     // runner(callGet);
-    // runner(callGetRow);
+    runner(callGetRow);
   }
-}, 1000);
+}, 2000);
 
 
 // setTimeout(function () {

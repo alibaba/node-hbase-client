@@ -21,6 +21,7 @@
     "jscover": "*",
     "benchmark": "*",
     "zkjs": "*",
+    "mm": "*",
     "interceptor": "0.1.1",
     "mocha": "*"
   },

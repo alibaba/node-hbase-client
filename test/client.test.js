@@ -10,6 +10,7 @@
  * Module dependencies.
  */
 
+var mm = require('mm');
 var Long = require('long');
 var pedding = require('pedding');
 var utils = require('./support/utils');
@@ -33,6 +34,10 @@ describe('test/client.test.js', function () {
   before(function () {
     client = Client.create(config);
   });
+
+  after(function (done) {
+    setTimeout(done, 1000);
+  });
   
   describe('locateRegion()', function () {
     
@@ -40,7 +45,7 @@ describe('test/client.test.js', function () {
       client.locateRegion(HConstants.ROOT_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-        regionLocation.hostname.should.equal('dw48.kgb.sqa.cm4');
+        regionLocation.hostname.should.include('dw48.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
         // console.log(regionLocation);
@@ -52,7 +57,7 @@ describe('test/client.test.js', function () {
       client.locateRegion(HConstants.META_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-        regionLocation.hostname.should.equal('dw45.kgb.sqa.cm4');
+        regionLocation.hostname.should.include('dw46.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
         // console.log(regionLocation);
@@ -62,12 +67,12 @@ describe('test/client.test.js', function () {
 
     it('should locate a region with table and row', function (done) {
       // tcif_acookie_actions, f390MDAwMDAwMDAwMDAwMDAxOQ==
-      var table = new Buffer('tcif_acookie_actions');
+      var table = new Buffer('tcif_acookie_user');
       var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
-      client.locateRegion(table, row, true, function (err, regionLocation) {
+      client.locateRegion(table, row, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-        regionLocation.hostname.should.equal('dw48.kgb.sqa.cm4');
+        regionLocation.hostname.should.include('.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
         // console.log(regionLocation);
@@ -86,6 +91,96 @@ describe('test/client.test.js', function () {
         should.not.exists(regionLocation);
         done();
       });
+    });
+
+    it('should relocate table regions when offline error happen', function (done) {
+      var table = new Buffer('tcif_acookie_actions');
+      var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
+      var count = 0;
+      var mockGetClosestRowBefore = function (regions, r, info, callback) {
+        var self = this;
+        process.nextTick(function () {
+          if (r.toString().indexOf('tcif_acookie_actions') >= 0 && count === 0) {
+            count++;
+            return callback(new Error('RegionOfflineException'));
+          }
+          self.____getClosestRowBefore(regions, r, info, callback);
+        });
+      };
+      
+      client.locateRegion(table, row, true, function (err, regionLocation) {
+        should.not.exists(err);
+        regionLocation.hostname.should.include('.kgb.sqa.cm4');
+        regionLocation.port.should.equal(36020);
+        regionLocation.should.have.property('regionInfo');
+        regionLocation.__test__name = 'regionLocation1';
+
+        client.locateRegion(table, row, true, function (err, regionLocation2) {
+          should.not.exists(err);
+          should.exists(regionLocation2);
+          regionLocation2.should.equal(regionLocation);
+          regionLocation2.__test__name.should.equal(regionLocation.__test__name);
+          
+          // mock server offline
+          for (var k in client.servers) {
+            var server = client.servers[k];
+            server.____getClosestRowBefore = server.getClosestRowBefore;
+            mm(server, 'getClosestRowBefore', mockGetClosestRowBefore);
+          }
+
+          client.locateRegion(table, row, false, function (err, regionLocation3) {
+            mm.restore();
+            should.not.exists(err);
+            regionLocation3.should.not.have.property('__test__name');
+            regionLocation3.hostname.should.include('.kgb.sqa.cm4');
+            regionLocation3.port.should.equal(36020);
+            regionLocation3.should.have.property('regionInfo');
+            done();
+          });
+        });
+
+      });
+      
+    });
+
+    it('should return null when offline error happen more than retries', function (done) {
+      var table = new Buffer('tcif_acookie_actions');
+      var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
+      var count = 0;
+      var mockGetClosestRowBefore = function (regions, r, info, callback) {
+        var self = this;
+        process.nextTick(function () {
+          if (r.toString().indexOf('tcif_acookie_actions') >= 0 && count === 0) {
+            return callback(new Error('RegionOfflineException'));
+          }
+          self.____getClosestRowBefore(regions, r, info, callback);
+        });
+      };
+      
+      client.locateRegion(table, row, true, function (err, regionLocation) {
+        should.not.exists(err);
+        regionLocation.hostname.should.include('.kgb.sqa.cm4');
+        regionLocation.port.should.equal(36020);
+        regionLocation.should.have.property('regionInfo');
+        regionLocation.__test__name = 'regionLocation1';
+
+        // mock server offline
+        for (var k in client.servers) {
+          var server = client.servers[k];
+          server.____getClosestRowBefore = server.getClosestRowBefore;
+          mm(server, 'getClosestRowBefore', mockGetClosestRowBefore);
+        }
+
+        client.locateRegion(table, row, false, function (err, regionLocation3) {
+          mm.restore();
+          should.exists(err);
+          err.message.should.equal('RegionOfflineException');
+          should.not.exists(regionLocation3);
+          done();
+        });
+
+      });
+      
     });
 
   });
@@ -158,6 +253,7 @@ describe('test/client.test.js', function () {
         get.addColumn('f', 'qualifier2');
         // get.maxVersions = 1;
         client.get(table, get, function (err, result) {
+
           should.not.exists(err);
           var kvs = result.raw();
           kvs.length.should.above(0);
@@ -352,7 +448,7 @@ describe('test/client.test.js', function () {
         '0ed74-puttest',
         'f3905-puttest',
       ];
-      done = pedding(rows.length, done);
+      done = pedding(rows.length * 2, done);
 
       rows.forEach(function (row) {
         var put = new Put(row);
@@ -378,6 +474,15 @@ describe('test/client.test.js', function () {
             }
             done();
           });
+        });
+
+        client.putRow(table, row, {
+          'f:history': 'history: put test 测试数据 ' + row,
+          'f:qualifier2': 'qualifier2: put test 数据2 ' + row,
+        }, function (err, result) {
+          should.not.exists(err);
+          should.not.exists(result);
+          done();
         });
       });
       

@@ -16,7 +16,7 @@ var utility = require('utility');
 
 var client = HBase.create(config);
 
-var now = Date.now();
+var now = '1';
 
 var j = 0;
 function callPut() {
@@ -59,6 +59,6 @@ callPut();
 setTimeout(function () {
   setInterval(function () {
     callGet();
-    callPut();
+    // callPut();
   }, 20);
 }, 1000);
