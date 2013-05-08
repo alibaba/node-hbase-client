@@ -34,7 +34,6 @@ exports.DataInputBuffer = require(libdir + '/data_input_buffer');
 
 // ipc
 exports.Invocation = require(libdir + '/ipc/invocation');
-exports.ConnectionId = require(libdir + '/ipc/connection_id');
 
 exports.Connection = require(libdir + '/connection');
 exports.Client = require(libdir + '/client');

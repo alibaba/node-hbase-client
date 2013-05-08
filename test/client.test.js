@@ -185,6 +185,49 @@ describe('test/client.test.js', function () {
 
   });
 
+  describe('mock server close', function () {
+
+    before(function (done) {
+      // clean up all servers first
+      for (var k in client.servers) {
+        var server = client.servers[k];
+        server.close();
+      }
+      setTimeout(done, 500);
+    });
+
+    it('should clean all server relation regions cache', function (done) {
+      client.getRow('tcif_acookie_user', '1', ['cf1:history', 'cf1:qualifier2'], 
+      function (err, r) {
+        should.not.exists(err);
+        
+        var closeRS = [];
+        for (var k in client.servers) {
+          var server = client.servers[k];
+          closeRS.push(server.hostnamePort);
+          server.close();
+        }
+
+        setTimeout(function () {
+          for (var i = 0; i < closeRS.length; i++) {
+            should.not.exists(client.cachedServers[closeRS[i]]);
+          }
+          // console.log(client.cachedServers, closeRS)
+          client.getRow('tcif_acookie_user', '1', ['cf1:history', 'cf1:qualifier2'], 
+          function (err, r) {
+            should.not.exists(err);
+            // console.log(client.cachedServers, closeRS)
+            // should load remove regions again
+            for (var i = 0; i < closeRS.length; i++) {
+              client.cachedServers[closeRS[i]].should.equal(true);
+            }
+            done();
+          });
+        }, 1000);
+      });
+    });
+  });
+
   describe('getRow(table, row, columns)', function () {
     
     it('should get a row with columns', function (done) {
@@ -230,6 +273,16 @@ describe('test/client.test.js', function () {
         });
       });
       
+    });
+
+    it('should get NoSuchColumnFamilyException when Column family not exists', function (done) {
+      client.getRow('tcif_acookie_actions', '123123', ['foo:notexists'], function (err, r) {
+        should.exists(err);
+        err.name.should.equal('org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException');
+        err.message.should.include('org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException: Column family foo does not exist in region tcif_acookie_actions');
+        should.not.exists(r);
+        done();
+      });
     });
 
   });
@@ -347,7 +400,6 @@ describe('test/client.test.js', function () {
             }
             var location = region(regionInfoRow);
             if (!Bytes.equals(location.regionInfo.tableName, tableName)) {
-              console.log('total', count);
               return scanner.close(done);
             }
             count++;

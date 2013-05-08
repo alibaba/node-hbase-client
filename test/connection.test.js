@@ -15,7 +15,6 @@ var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
 var Connection = require('../').Connection;
-var ConnectionId = require('../').ConnectionId;
 var HRegionInfo = require('../').HRegionInfo;
 var HConstants = require('../').HConstants;
 var DataInputBuffer = require('../').DataInputBuffer;
@@ -27,11 +26,11 @@ describe('test/connection.test.js', function () {
 
   var connection = null;
   before(function (done) {
-    var remoteId = new ConnectionId({
+    connection = new Connection({
       host: 'dw48.kgb.sqa.cm4',
       port: '36020',
-    }, null, null, 60000);
-    connection = new Connection(remoteId);
+      logger: config.logger,
+    });
     connection.on('connect', function () {
       done();
     });
@@ -118,11 +117,11 @@ describe('test/connection.test.js', function () {
     beforeEach(function (done) {
       proxy.close();
       proxy.listen(port);
-      var remoteId = new ConnectionId({
+      conn = new Connection({
         host: 'localhost',
         port: port++,
-      }, null, null, 60000);
-      conn = new Connection(remoteId);
+        logger: config.logger,
+      });
       done = pedding(2, done);
 
       conn.on('connect', function () {
