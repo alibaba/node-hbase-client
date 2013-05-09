@@ -4,7 +4,7 @@
 
 Asynchronous HBase client for nodejs, pure javascript implementation.
 
-**This project is just developing, Please don't use it on production env.**
+~~**This project is just developing, Please don't use it on production env.**~~
 
 * Current State: **Only test on Hbase 0.94**
 * [hbase-client](https://github.com/apache/hbase/tree/trunk/hbase-client)
