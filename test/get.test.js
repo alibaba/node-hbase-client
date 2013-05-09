@@ -27,9 +27,7 @@ describe('test/get.test.js', function () {
   ];
 
   describe('write()', function () {
-    
     it('should convert Get to bytes', function () {
-      
       for (var i = 0; i < cases.length; i++) {
         var item = cases[i];
         var row = item[2];
@@ -47,7 +45,6 @@ describe('test/get.test.js', function () {
           row, bytes);
       }
     });
-
   });
 
   describe('readFields()', function () {
