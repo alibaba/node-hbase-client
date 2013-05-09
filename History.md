@@ -1,4 +1,11 @@
 
+0.1.0 / 2013-05-09 
+==================
+
+  * remove unused codes
+  * clean cache regions when region server socket close. fixed #16 #10
+  * remove zkjs deps
+
 0.0.7 / 2013-05-07 
 ==================
 
