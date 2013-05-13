@@ -11,9 +11,9 @@
  */
 
 var should = require('should');
-var HRegionInfo = require('../').HRegionInfo;
+var HRegionInfo = require('../lib/hregion_info');
 var utils = require('./support/utils');
-var Bytes = require('../').Bytes;
+var Bytes = require('../lib/util/bytes');
 
 
 describe('hregion_info.test.js', function () {

@@ -15,9 +15,9 @@ var path = require('path');
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
-var Put = require('../').Put;
-var HConstants = require('../').HConstants;
-var DataOutputBuffer = require('../').DataOutputBuffer;
+var Put = require('../lib/put');
+var HConstants = require('../lib/hconstants');
+var DataOutputBuffer = require('../lib/data_output_buffer');
 
 describe('test/put.test.js', function () {
 

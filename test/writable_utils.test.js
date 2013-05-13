@@ -13,8 +13,8 @@
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
-var WritableUtils = require('../').WritableUtils;
-var DataOutputBuffer = require('../').DataOutputBuffer;
+var WritableUtils = require('../lib/writable_utils');
+var DataOutputBuffer = require('../lib/data_output_buffer');
 
 describe('test/writable_utils.test.js', function () {
   

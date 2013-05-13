@@ -15,7 +15,7 @@ var Long = require('long');
 var utils = require('./support/utils');
 var should = require('should');
 var TimeRange = require('../lib/time_range');
-var DataOutputBuffer = require('../').DataOutputBuffer;
+var DataOutputBuffer = require('../lib/data_output_buffer');
 
 describe('test/time_range.test.js', function () {
   

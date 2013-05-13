@@ -4,7 +4,9 @@
   "description": "Asynchronous HBase client for nodejs, pure javascript implementation.",
   "main": "index.js",
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "test-cov": "make test-cov",
+    "blanket": { "pattern": "node-hbase-client/lib/" }
   },
   "dependencies": {
     "long": "1.1.2",
@@ -18,10 +20,10 @@
     "should": "*",
     "pedding": "*",
     "moment": "*",
-    "jscover": "*",
     "benchmark": "*",
     "mm": "*",
-    "interceptor": "0.1.1",
+    "interceptor": ">=0.1.1",
+    "blanket": "*",
     "mocha": "*"
   },
   "repository": {

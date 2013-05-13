@@ -15,9 +15,8 @@ require('buffer').INSPECT_MAX_BYTES = 1000;
 var should = require('should');
 var fs = require('fs');
 var path = require('path');
-var lib = require('../../');
-var DataInputStream = lib.DataInputStream;
-var DataInputBuffer = lib.DataInputBuffer;
+var DataInputStream = require('../../lib/data_input_stream');
+var DataInputBuffer = require('../../lib/data_input_buffer');
 
 var fixtures = path.join(path.dirname(__dirname), 'fixtures');
 exports.fixtures = fixtures;

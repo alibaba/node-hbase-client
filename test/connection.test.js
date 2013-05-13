@@ -14,11 +14,11 @@ var Long = require('long');
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
-var Connection = require('../').Connection;
-var HRegionInfo = require('../').HRegionInfo;
-var HConstants = require('../').HConstants;
-var DataInputBuffer = require('../').DataInputBuffer;
-var Bytes = require('../').Bytes;
+var Connection = require('../lib/connection');
+var HRegionInfo = require('../lib/hregion_info');
+var HConstants = require('../lib/hconstants');
+var DataInputBuffer = require('../lib/data_input_buffer');
+var Bytes = require('../lib/util/bytes');
 var config = require('./config');
 var interceptor = require('interceptor');
 
@@ -27,7 +27,7 @@ describe('test/connection.test.js', function () {
   var connection = null;
   before(function (done) {
     connection = new Connection({
-      host: 'dw48.kgb.sqa.cm4',
+      host: 'dw45.kgb.sqa.cm4',
       port: '36020',
       logger: config.logger,
     });

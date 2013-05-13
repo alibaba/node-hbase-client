@@ -10,32 +10,11 @@
  * Module dependencies.
  */
 
-var libdir = process.env.NODE_HBASE_CLENT_COV ? './lib-cov' : './lib';
-
-// utils
-exports.Bytes = require(libdir + '/util/bytes');
-exports.WritableUtils = require(libdir + '/writable_utils');
-exports.HConstants = require(libdir + '/hconstants');
-
-// base object
-exports.TimeRange = require(libdir + '/time_range');
-exports.Get = require(libdir + '/get');
-exports.Put = require(libdir + '/put');
-exports.Scan = require(libdir + '/scan');
-exports.Result = require(libdir + '/result');
-exports.HRegionInfo = require(libdir + '/hregion_info');
-exports.HRegionLocation = require(libdir + '/hregion_location');
-
-// io
-exports.HbaseObjectWritable = require(libdir + '/io/hbase_object_writable');
-exports.DataOutputBuffer = require(libdir + '/data_output_buffer');
-exports.DataInputStream = require(libdir + '/data_input_stream');
-exports.DataInputBuffer = require(libdir + '/data_input_buffer');
-
-// ipc
-exports.Invocation = require(libdir + '/ipc/invocation');
-
-exports.Connection = require(libdir + '/connection');
-exports.Client = require(libdir + '/client');
+exports.TimeRange = require('./lib/time_range');
+exports.Get = require('./lib/get');
+exports.Put = require('./lib/put');
+exports.Scan = require('./lib/scan');
+exports.Result = require('./lib/result');
+exports.Client = require('./lib/client');
 
 exports.create = exports.Client.create;

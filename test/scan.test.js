@@ -15,10 +15,10 @@ var path = require('path');
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
-var HRegionInfo = require('../').HRegionInfo;
-var Scan = require('../').Scan;
-var HConstants = require('../').HConstants;
-var DataOutputBuffer = require('../').DataOutputBuffer;
+var HRegionInfo = require('../lib/hregion_info');
+var Scan = require('../lib/scan');
+var HConstants = require('../lib/hconstants');
+var DataOutputBuffer = require('../lib/data_output_buffer');
 
 describe('test/scan.test.js', function () {
 

@@ -13,7 +13,7 @@
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
-var Result = require('../').Result;
+var Result = require('../lib/result');
 
 describe('test/result.test.js', function () {
   

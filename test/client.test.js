@@ -15,17 +15,17 @@ var Long = require('long');
 var pedding = require('pedding');
 var utils = require('./support/utils');
 var should = require('should');
-var Client = require('../').Client;
-var HConstants = require('../').HConstants;
-var Get = require('../').Get;
-var Put = require('../').Put;
+var Client = require('../lib/client');
+var HConstants = require('../lib/hconstants');
+var Get = require('../lib/get');
+var Put = require('../lib/put');
 var config = require('./config');
 var interceptor = require('interceptor');
-var HRegionInfo = require('../').HRegionInfo;
-var Scan = require('../').Scan;
-var DataInputBuffer = require('../').DataInputBuffer;
-var Bytes = require('../').Bytes;
-var HRegionLocation = require('../').HRegionLocation;
+var HRegionInfo = require('../lib/hregion_info');
+var Scan = require('../lib/scan');
+var DataInputBuffer = require('../lib/data_input_buffer');
+var Bytes = require('../lib/util/bytes');
+var HRegionLocation = require('../lib/hregion_location');
 
 
 describe('test/client.test.js', function () {
@@ -45,7 +45,7 @@ describe('test/client.test.js', function () {
       client.locateRegion(HConstants.ROOT_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-        regionLocation.hostname.should.include('dw48.kgb.sqa.cm4');
+        regionLocation.hostname.should.include('.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
         // console.log(regionLocation);
@@ -57,7 +57,7 @@ describe('test/client.test.js', function () {
       client.locateRegion(HConstants.META_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-        regionLocation.hostname.should.include('dw46.kgb.sqa.cm4');
+        regionLocation.hostname.should.include('.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
         // console.log(regionLocation);
