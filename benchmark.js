@@ -19,8 +19,6 @@ var client = HBase.create(config);
 var concurrency = parseInt(process.argv[2], 10) || 10;
 console.log('concurrency %d', concurrency);
 
-var now = Date.now();
-
 var j = 0;
 var i = 0;
 var putResult = {
@@ -42,6 +40,18 @@ var putStop = false;
 var getStop = false;
 var MAX_NUM = 1000000;
 
+function showResult(name, result) {
+  var use = Date.now() - result.start;
+  console.log('---------------- ' + name + ' --------------------');
+  console.log('Concurrency: %d', concurrency);
+  console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
+    use,
+    (result.total / use * 1000).toFixed(0), 
+    (result.use / result.total).toFixed(2));
+  console.log('Total %d, Success: %d, Fail: %d', result.total, result.success, result.fail);
+  console.log('-------------------------------------------');
+}
+
 function callPut(callback) {
   if (putStop) {
     return;
@@ -53,27 +63,19 @@ function callPut(callback) {
     'cf1:qualifier2': 'qualifier2 ' + row + ' ' + j,
   }, function (err) {
     putResult.total++;
-    if (putResult.total >= MAX_NUM) {
-      console.log('putStop');
-      putStop = true;
-    }
+    // if (putResult.total >= MAX_NUM) {
+    //   console.log('putStop');
+    //   putStop = true;
+    // }
     putResult.use += Date.now() - startTime;
     if (err) {
-      console.log(err);
+      console.log('%s: %s', err.name, err.message);
       putResult.fail++;
     } else {
       putResult.success++;
     }
     if (putStop || putResult.total % 10000 === 0) {
-      var use = Date.now() - putResult.start;
-      console.log('---------------- Put() --------------------');
-      console.log('Concurrency: %d', concurrency);
-      console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
-        use,
-        (putResult.total / use * 1000).toFixed(0), 
-        (putResult.use / putResult.total).toFixed(2));
-      console.log('Total %d, Success: %d, Fail: %d', putResult.total, putResult.success, putResult.fail);
-      console.log('-------------------------------------------');
+      showResult('Put()', putResult);
     }
     callback && callback();
   });
@@ -95,27 +97,19 @@ function callGet(callback) {
     //   console.log('key: `%s`, value: `%s`', kv.toString(), kv.getValue().toString());
     // }
     getResult.total++;
-    if (getResult.total >= MAX_NUM) {
-      console.log('getStop');
-      getStop = true;
-    }
+    // if (getResult.total >= MAX_NUM) {
+    //   console.log('getStop');
+    //   getStop = true;
+    // }
     getResult.use += Date.now() - startTime;
     if (err) {
-      console.log(err);
+      console.log('%s: %s', err.name, err.message);
       getResult.fail++;
     } else {
       getResult.success++;
     }
     if (getStop || getResult.total % 10000 === 0) {
-      var use = Date.now() - getResult.start;
-      console.log('---------------- Get() --------------------');
-      console.log('Concurrency: %d', concurrency);
-      console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
-        use,
-        (getResult.total / use * 1000).toFixed(0), 
-        (getResult.use / getResult.total).toFixed(2));
-      console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
-      console.log('-------------------------------------------');
+      showResult('Get()', getResult);
     }
     callback && callback();
   });
@@ -127,31 +121,21 @@ function callGetRow(callback) {
   }
   var row = utility.md5('test row' + i++);
   var startTime = Date.now();
-  client.getRow('tcif_acookie_user', row, ['cf1:history', 'cf1:qualifier2'], function (err, rows) {
-    // console.log(rows)
-    
+  client.getRow('tcif_acookie_user', row, ['cf1:history', 'cf1:qualifier2'], function (err, rows) {    
     getResult.total++;
-    if (getResult.total >= MAX_NUM) {
-      console.log('getStop');
-      getStop = true;
-    }
+    // if (getResult.total >= MAX_NUM) {
+    //   console.log('getStop');
+    //   getStop = true;
+    // }
     getResult.use += Date.now() - startTime;
     if (err) {
-      console.log(err);
+      console.log('%s: %s', err.name, err.message);
       getResult.fail++;
     } else {
       getResult.success++;
     }
     if (getStop || getResult.total % 10000 === 0) {
-      var use = Date.now() - getResult.start;
-      console.log('---------------- GetRow() --------------------');
-      console.log('Concurrency: %d', concurrency);
-      console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
-        use,
-        (getResult.total / use * 1000).toFixed(0), 
-        (getResult.use / getResult.total).toFixed(2));
-      console.log('Total %d, Success: %d, Fail: %d', getResult.total, getResult.success, getResult.fail);
-      console.log('-------------------------------------------');
+      showResult('GetRow()', getResult);
     }
     callback && callback();
   });
@@ -174,15 +158,12 @@ setTimeout(function () {
     // runner(callPut);
     
     getResult.start = Date.now();
-    // runner(callGet);
-    runner(callGetRow);
+    runner(callGet);
+    // runner(callGetRow);
   }
 }, 2000);
 
-
-// setTimeout(function () {
-//   setInterval(function () {
-//     callGet();
-//     callPut();
-//   }, 20);
-// }, 1000);
+setInterval(function () {
+  showResult('Get()', getResult);
+  // showResult('Put()', putResult);
+}, 60000);
