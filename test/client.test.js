@@ -356,6 +356,102 @@ describe('test/client.test.js', function () {
       
     });
 
+    describe('mock org.apache.hadoop.hbase.NotServingRegionException', function () {
+
+      beforeEach(function (done) {
+        var table = 'tcif_acookie_actions';
+        var rows = [
+          'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+          '4edaMDAwMDAwMDAwMDAwMDAxNg==',
+          '7c32MDAwMDAwMDAwMDAwMDAxNw==',
+          '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
+          'f390MDAwMDAwMDAwMDAwMDAxOQ==',
+        ];
+        done = pedding(rows.length, done);
+
+        rows.forEach(function (row) {
+          var get = new Get(row);
+          get.addColumn('f', 'history');
+          get.addColumn('f', 'qualifier2');
+          client.get(table, get, function (err, result) {
+            should.not.exists(err);
+            var kvs = result.raw();
+            kvs.length.should.above(0);
+            for (var i = 0; i < kvs.length; i++) {
+              var kv = kvs[i];
+              kv.getRow().toString().should.equal(row);
+              kv.getValue().toString().should.include(row);
+              // console.log(kv.toString(), kv.getValue().toString());
+            }
+            done();
+          });
+        });
+      });
+
+      afterEach(mm.restore);
+      
+      it('should return NotServingRegionException', function (doneAll) {
+        var table = 'tcif_acookie_actions';
+        var rows = [
+          'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+          'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+          'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+          'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+          'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+        ];
+        var done = pedding(rows.length, function () {
+          // get again should be success
+          var get = new Get(rows[0]);
+          get.addColumn('f', 'history');
+          get.addColumn('f', 'qualifier2');
+          client.get(table, get, function (err, result) {
+            should.not.exists(err);
+            var kvs = result.raw();
+            kvs.length.should.above(0);
+            for (var i = 0; i < kvs.length; i++) {
+              var kv = kvs[i];
+              kv.getRow().toString().should.equal(rows[0]);
+              kv.getValue().toString().should.include(rows[0]);
+              // console.log(kv.toString(), kv.getValue().toString());
+            }
+            doneAll();
+          });
+        });
+
+        var get = new Get(rows[0]);
+        get.addColumn('f', 'history');
+        get.addColumn('f', 'qualifier2');
+        client.get(table, get, function (err) {
+          should.not.exists(err);
+
+          var counter = require('../lib/connection').Call_Counter;
+            for (var k in client.servers) {
+              var server = client.servers[k];
+              // if (k !== 'dw48.kgb.sqa.cm4:36020') {
+              //   continue;
+              // }
+              mm(server, 'in', utils.createNotServingRegionExceptionBuffer(counter));
+            }
+
+            rows.forEach(function (row) {
+              var get = new Get(row);
+              get.addColumn('f', 'history');
+              get.addColumn('f', 'qualifier2');
+              client.get(table, get, function (err, result) {
+                should.exists(err);
+                err.name.should.equal('org.apache.hadoop.hbase.NotServingRegionException');
+                err.message.should.include('at org.apache.hadoop.hbase.regionserver.HRegionServer.getRegion(HRegionServer.java:3518)');
+                should.not.exists(result);
+                mm.restore();
+                done();                
+              });
+            });
+            
+          });
+        });
+
+    });
+
   });
 
   describe('getScanner(table, scan)', function () {

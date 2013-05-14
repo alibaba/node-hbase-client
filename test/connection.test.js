@@ -21,18 +21,58 @@ var DataInputBuffer = require('../lib/data_input_buffer');
 var Bytes = require('../lib/util/bytes');
 var config = require('./config');
 var interceptor = require('interceptor');
+var ZooKeeperWatcher = require('zookeeper-watcher');
+
+
+var MAGIC = 255;
+var MAGIC_SIZE = Bytes.SIZEOF_BYTE;
+var ID_LENGTH_OFFSET = MAGIC_SIZE;
+var ID_LENGTH_SIZE = Bytes.SIZEOF_INT;
+function removeMetaData(data) {
+  if (data === null || data.length === 0) {
+    return data;
+  }
+  // check the magic data; to be backward compatible
+  var magic = data[0];
+  if (magic !== MAGIC) {
+    return data;
+  }
+
+  var idLength = Bytes.toInt(data, ID_LENGTH_OFFSET);
+  var dataLength = data.length - MAGIC_SIZE - ID_LENGTH_SIZE - idLength;
+  var dataOffset = MAGIC_SIZE + ID_LENGTH_SIZE + idLength;
+
+  return data.slice(dataOffset, dataOffset + dataLength);
+}
 
 describe('test/connection.test.js', function () {
 
   var connection = null;
   before(function (done) {
-    connection = new Connection({
-      host: 'dw45.kgb.sqa.cm4',
-      port: '36020',
+    var zk = new ZooKeeperWatcher({
+      hosts: config.zookeeperHosts,
+      root: config.zookeeperRoot,
       logger: config.logger,
     });
-    connection.on('connect', function () {
-      done();
+    zk.once('connected', function (err) {
+      
+      var rootPath = '/root-region-server';
+      zk.watch(rootPath, function (err, value, zstat) {
+        var items = removeMetaData(value).toString().split(',');
+        if (connection) {
+          return;
+        }
+
+        connection = new Connection({
+          host: items[0],
+          port: items[1],
+          logger: config.logger,
+        });
+
+        connection.on('connect', function () {
+          done();
+        });
+      });
     });
   });
   

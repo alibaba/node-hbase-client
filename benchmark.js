@@ -69,7 +69,9 @@ function callPut(callback) {
     // }
     putResult.use += Date.now() - startTime;
     if (err) {
-      console.log('%s: %s', err.name, err.message);
+      if (putResult.fail % 20 === 0) {
+        console.error('[%s] %s: %s', new Date(), err.name, err.message);
+      }
       putResult.fail++;
     } else {
       putResult.success++;

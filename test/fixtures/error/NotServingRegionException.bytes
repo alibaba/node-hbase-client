@@ -1,0 +1,8 @@
+org.apache.hadoop.hbase.NotServingRegionException: Region is not online: tcif_acookie_user,e2ad9XS3CcZPpHcCAe7mrz1owHJk,1363768326401.1caa6547edc73dd6da043684dad422c3.
+    at org.apache.hadoop.hbase.regionserver.HRegionServer.getRegion(HRegionServer.java:3518)
+    at org.apache.hadoop.hbase.regionserver.HRegionServer.get(HRegionServer.java:2247)
+    at sun.reflect.GeneratedMethodAccessor25.invoke(Unknown Source)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+    at java.lang.reflect.Method.invoke(Method.java:597)
+    at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Server.call(WritableRpcEngine.java:361)
+    at org.apache.hadoop.hbase.ipc.HBaseServer$Handler.run(HBaseServer.java:1642)

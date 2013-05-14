@@ -17,6 +17,7 @@ var fs = require('fs');
 var path = require('path');
 var DataInputStream = require('../../lib/data_input_stream');
 var DataInputBuffer = require('../../lib/data_input_buffer');
+var DataOutputBuffer = require('../../lib/data_output_buffer');
 
 var fixtures = path.join(path.dirname(__dirname), 'fixtures');
 exports.fixtures = fixtures;
@@ -64,6 +65,24 @@ exports.createDataInputBuffer = function (filename) {
 exports.createTestStream = function (dir, filename) {
   var filepath = path.join(fixtures, dir, filename + '.java.bytes');
   return new DataInputStream(fs.createReadStream(filepath));
+};
+
+exports.createNotServingRegionExceptionBuffer = function (id) {
+  // id(4 bytes): readInt, flag(1 byte): readByte, size(4 bytes): readInt
+  // state(4 bytes): readInt
+  // name: readString, message: readString
+  var buf = new DataOutputBuffer();
+  buf.writeInt(id);
+  buf.writeByte(0x3);
+  var size = 4 + 4 + 4 + 9;
+  var name = new Buffer('org.apache.hadoop.hbase.NotServingRegionException');
+  var message = fs.readFileSync(path.join(fixtures, 'error', 'NotServingRegionException.bytes'));
+  size += name.length + message.length;
+  buf.writeInt(size);
+  buf.writeInt(1); // state
+  buf.writeString(name);
+  buf.writeString(message);
+  return new DataInputBuffer(buf.getData());
 };
 
 exports.mockSocket = function () {
