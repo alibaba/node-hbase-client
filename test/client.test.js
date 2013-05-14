@@ -47,7 +47,7 @@ describe('test/client.test.js', function () {
       client.locateRegion(HConstants.ROOT_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-        console.log(regionLocation);
+        // console.log(regionLocation);
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
@@ -60,7 +60,7 @@ describe('test/client.test.js', function () {
       client.locateRegion(HConstants.META_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-        console.log(regionLocation);
+        // console.log(regionLocation);
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
