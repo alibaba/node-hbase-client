@@ -105,8 +105,8 @@ client.delete(table, del, function (err, result) {
 - [x] support `put`
 - [x] benchmark
 - [x] more stable
+- [x] support `delete`
 - [ ] multi actions
-- [ ] support `delete`
 
 ## Authors
 
@@ -114,13 +114,14 @@ client.delete(table, del, function (err, result) {
 $ git summary 
 
  project  : node-hbase-client
- repo age : 7 weeks
- active   : 14 days
- commits  : 43
- files    : 266
+ repo age : 9 weeks
+ active   : 20 days
+ commits  : 70
+ files    : 267
  authors  : 
-    42  fengmk2                 97.7%
-     1  不四                  2.3%
+    64  fengmk2                 91.4%
+     5  tangyao                 7.1%
+     1  不四                  1.4%
 ```
 
 ## Benchmark
