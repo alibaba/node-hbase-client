@@ -1,4 +1,11 @@
 
+0.1.1 / 2013-05-14 
+==================
+
+  * `NotServingRegionException` when querying, need to close the connection. fixed #17
+  * long running for get benchmark
+  * use blanket instead of jscover
+
 0.1.0 / 2013-05-09 
 ==================
 
