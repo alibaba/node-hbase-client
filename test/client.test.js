@@ -26,7 +26,9 @@ var Scan = require('../lib/scan');
 var DataInputBuffer = require('../lib/data_input_buffer');
 var Bytes = require('../lib/util/bytes');
 var HRegionLocation = require('../lib/hregion_location');
-
+var Result = require('../lib/result');
+var EventProxy = require('eventproxy');
+var Delete = require('../lib/delete');
 
 describe('test/client.test.js', function () {
 
@@ -38,13 +40,14 @@ describe('test/client.test.js', function () {
   after(function (done) {
     setTimeout(done, 1000);
   });
-  
+
   describe('locateRegion()', function () {
     
     it('should locate root region', function (done) {
       client.locateRegion(HConstants.ROOT_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
+        // console.log(regionLocation);
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
@@ -57,6 +60,7 @@ describe('test/client.test.js', function () {
       client.locateRegion(HConstants.META_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
+        // console.log(regionLocation);
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
         regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
@@ -638,5 +642,107 @@ describe('test/client.test.js', function () {
 
   });
 
+  describe('delete(table, delete)', function () {
+    var rowkey = '58c8MDAwMDAwMDAwMDAwMDAwMQ==';
+    var table = 'tcif_acookie_actions';
+    afterEach(function () {
+      client.deleteRow(table, rowkey, function (err, result) {
+        should.not.exists(err);
+      }); // delete
+    });
+
+    it('simple delete by row', function (done) {
+      var data = {'f:name-t': 't-test01', 'f:value-t': 't-test02'};
+      client.putRow(table, rowkey, data, function (err) {
+        should.not.exists(err);
+        client.getRow(table, rowkey, ['f:name-t', 'f:value-t'], function (err, result) {
+          should.not.exists(err);
+          should.exists(result);
+          result.should.have.keys('f:name-t', 'f:value-t');
+          client.deleteRow(table, rowkey, function (err, result) {
+            should.not.exists(err);
+            client.getRow(table, rowkey, ['f:name-t', 'f:value-t'], function (err, result) {
+              should.not.exists(err);
+              should.not.exists(result);
+              done();
+            }); // get
+          }); // delete
+        }); // get
+      }); // put
+    }); // it
+
+    it('delete columns', function (done) {
+      var data = {'f:name-t': 't-test01', 'f:value-t': 't-test02'};
+      var columns = ['f:name-t', 'f:value-t'];
+      client.putRow(table, rowkey, data, function (err, result) {
+        should.not.exists(err);
+        client.getRow(table, rowkey, columns,function (err, result) {
+          should.not.exists(err);
+          should.exists(result);
+          result.should.have.keys('f:name-t', 'f:value-t');
+          var del = new Delete(rowkey);
+          del.deleteColumns('f', 'name-t');
+          client.delete(table, del, function (err, result) {
+            should.not.exists(err);
+            client.getRow(table, rowkey, columns, function (err, result) {
+              should.not.exists(err);
+              should.exists(result);
+              result.should.have.keys('f:value-t');
+              done();
+            }); // get
+          }); // delete
+        }); // get
+      }); // put
+    }); // it
+
+    it('delete column latest version', function (done) {
+      var data = {'f:name-t': 't-test01', 'f:value-t': 't-test02'};
+      var columns = ['f:name-t', 'f:value-t'];
+      client.putRow(table, rowkey, data, function (err, result) {
+        should.not.exists(err);
+        client.putRow(table, rowkey, data, function (err, result) {
+          should.not.exists(err);
+          var get = new Get(rowkey);
+          get.setMaxVersions(2);
+          for (var i = 0; i < columns.length; i++) {
+            var col = columns[i].split(':');
+            get.addColumn(col[0], col[1]);
+          }
+          client.get(table, get, function (err, result) {
+            should.not.exists(err);
+            should.exists(result);
+            var rs = result.getColumn('f', 'name-t');
+            rs.length.should.eql(2);
+            rs.forEach(function (kv) {
+              kv.getValue().toString().should.eql('t-test01');
+            });
+            //result.should.have.keys('f:name-t', 'f:value-t');
+            var del = new Delete(rowkey);
+            del.deleteColumn('f', 'name-t');
+            client.delete(table, del, function (err, result) {
+              should.not.exists(err);
+              var get = new Get(rowkey);
+              get.setMaxVersions(2);
+              for (var i = 0; i < columns.length; i++) {
+                var col = columns[i].split(':');
+                get.addColumn(col[0], col[1]);
+              }
+              client.get(table, get, function (err, result) {
+                should.not.exists(err);
+                should.exists(result);
+                var rs = result.getColumn('f', 'name-t');
+                rs.length.should.eql(1);
+                rs.forEach(function (kv) {
+                  kv.getValue().toString().should.eql('t-test01');
+                });
+                done();
+              }); // get
+            }); // delete
+          }); // get
+        }); // put version2
+      }); // put version1
+    });
+
+  });
 
 });
