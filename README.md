@@ -72,6 +72,34 @@ client.putRow(table, row, {'f1:name': 'foo name', 'f1:age': '18'}, function (err
 });
 ```
 
+### `delete from table`
+
+```
+client.deleteRow(tableName, rowkey, function (err) {
+  //TODO:...
+});
+
+var del = new Delete(rowkey);
+del.deleteColumns('f', 'name-t');
+client.delete(table, del, function (err, result) {
+  //TODO:...
+});
+
+var del = new Delete(rowkey);
+del.deleteColumn('f', 'name-t');
+client.delete(table, del, function (err, result) {
+  //TODO:...
+});
+
+var del = new Delete(rowkey);
+del.deleteFamily('f');
+client.delete(table, del, function (err, result) {
+  //TODO:...
+});
+
+```
+
+
 ## TODO
 
 - [x] support `put`
