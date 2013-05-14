@@ -26,7 +26,7 @@ var Scan = require('../lib/scan');
 var DataInputBuffer = require('../lib/data_input_buffer');
 var Bytes = require('../lib/util/bytes');
 var HRegionLocation = require('../lib/hregion_location');
-var Result = require('../lib/result'); // 不加载此文件测试用例跑不过去 Result.class 没有addClass
+var Result = require('../lib/result');
 var EventProxy = require('eventproxy');
 var Delete = require('../lib/delete');
 
