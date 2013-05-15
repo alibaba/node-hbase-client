@@ -775,7 +775,7 @@ describe('test/client.test.js', function () {
           should.not.exists(err);
           should.exists(result);
           result.length.should.eql(4);
-          console.log(result);
+          // console.log(result);
           result.forEach(function (obj) {
             should.exists(obj);
             obj.should.have.keys('f:history');
