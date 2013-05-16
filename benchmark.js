@@ -17,7 +17,8 @@ var utility = require('utility');
 var client = HBase.create(config);
 
 var concurrency = parseInt(process.argv[2], 10) || 10;
-console.log('concurrency %d', concurrency);
+var method = process.argv[3] || 'get';
+console.log('method: %s, concurrency %d', method, concurrency);
 
 var j = 0;
 var i = 0;
@@ -196,20 +197,30 @@ callGet();
 
 setTimeout(function () {
   for (var i = 0; i < concurrency; i++) {
-    // putResult.start = Date.now();
-    // runner(callPut);
-    
-    // getResult.start = Date.now();
-    // runner(callGet);
-    // runner(callGetRow);
-    
-    mgetResult.start = Date.now();
-    runner(callMGet);
+    if (method === 'put') {
+      putResult.start = Date.now();
+      runner(callPut);
+    } else if (method === 'getRow') {
+      getResult.start = Date.now();
+      runner(callGetRow);
+    } else if (method === 'mget') {
+      mgetResult.start = Date.now();
+      runner(callMGet);
+    } else {
+      getResult.start = Date.now();
+      runner(callGet);
+    }
   }
 }, 2000);
 
 setInterval(function () {
-  showResult('MGet(), count: ' + MGetCount, mgetResult);
-  // showResult('Get()', getResult);
-  // showResult('Put()', putResult);
+  if (method === 'put') {
+    showResult('Put()', getResult);
+  } else if (method === 'getRow') {
+    showResult('GetRow()', getResult);
+  } else if (method === 'mget') {
+    showResult('MGet(), count: ' + MGetCount, mgetResult);
+  } else {
+    showResult('Get()', getResult);
+  }  
 }, 60000);
