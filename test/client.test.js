@@ -40,7 +40,7 @@ describe('test/client.test.js', function () {
   after(function (done) {
     setTimeout(done, 1000);
   });
-/*
+
   describe('locateRegion()', function () {
     
     it('should locate root region', function (done) {
@@ -788,7 +788,7 @@ describe('test/client.test.js', function () {
       });
     });
   });
-  */
+  
   describe('mput', function () {
     var tableName = 'tcif_acookie_actions';
     var columns = ['f:history'];
