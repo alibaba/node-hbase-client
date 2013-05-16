@@ -35,6 +35,13 @@ var getResult = {
   use: 0,
   start: 0,
 };
+var mgetResult = {
+  success: 0,
+  fail: 0,
+  total: 0,
+  use: 0,
+  start: 0,
+};
 
 var putStop = false;
 var getStop = false;
@@ -143,6 +150,39 @@ function callGetRow(callback) {
   });
 }
 
+var MGetCount = 500;
+
+function callMGet(callback) {
+  if (getStop) {
+    return;
+  }
+  var rows = [];
+  for (var i = 0; i < MGetCount; i++) {
+    var row = utility.md5('test row' + i++);
+    rows.push(row);
+  }
+  var startTime = Date.now();
+  client.mget('tcif_acookie_user', rows, ['cf1:history', 'cf1:qualifier2'], function (err, items) {    
+    // mgetResult.total += count;
+    mgetResult.total++;
+    // if (getResult.total >= MAX_NUM) {
+    //   console.log('getStop');
+    //   getStop = true;
+    // }
+    mgetResult.use += Date.now() - startTime;
+    if (err) {
+      console.log('%s: %s', err.name, err.message);
+      mgetResult.fail++;
+    } else {
+      mgetResult.success++;
+    }
+    if (getStop || mgetResult.total % 1000 === 0) {
+      showResult('MGet(), count: ' + MGetCount, mgetResult);
+    }
+    callback && callback();
+  });
+}
+
 var NO = 0;
 function runner(fun) {
   console.log('runner#%d start...', NO++);
@@ -159,13 +199,17 @@ setTimeout(function () {
     // putResult.start = Date.now();
     // runner(callPut);
     
-    getResult.start = Date.now();
-    runner(callGet);
+    // getResult.start = Date.now();
+    // runner(callGet);
     // runner(callGetRow);
+    
+    mgetResult.start = Date.now();
+    runner(callMGet);
   }
 }, 2000);
 
 setInterval(function () {
-  showResult('Get()', getResult);
+  showResult('MGet(), count: ' + MGetCount, mgetResult);
+  // showResult('Get()', getResult);
   // showResult('Put()', putResult);
 }, 60000);
