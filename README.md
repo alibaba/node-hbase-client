@@ -99,6 +99,28 @@ client.delete(table, del, function (err, result) {
 
 ```
 
+=======
+### `multi process`
+
+```
+var rows = ['row1', 'row2'];
+var columns = ['f:col1', 'f:col2'];
+client.mget(tableName, rows, columns, function (err, results){
+  //TODO:...
+});
+
+var rows = [{row: 'rowkey1', 'f:col1': 'col_value'}, {row: 'rowkey2', 'f:col1': 'col_value'}];
+client.mput(tableName, rows, function (err, results) {
+  //TODO:...
+});
+
+var rows = ['row1', 'row2'];
+client.mdelete(tableName, rows, function (err, results) {
+  //TODO:...
+});
+
+```
+
 ## TODO
 
 - [x] support `put`
