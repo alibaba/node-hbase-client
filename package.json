@@ -1,12 +1,19 @@
 {
   "name": "hbase-client",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Asynchronous HBase client for nodejs, pure javascript implementation.",
   "main": "index.js",
   "scripts": {
-    "test": "make test",
-    "test-cov": "make test-cov",
-    "blanket": { "pattern": "node-hbase-client/lib/" }
+    "test": "make test-all",
+    "blanket": { 
+      "pattern": "//^((?!(node_modules|test)).)*$/",
+      "data-cover-flags": {
+        "debug": false
+      }
+    },
+    "travis-cov": {
+      "threshold": 95
+    }
   },
   "dependencies": {
     "long": "1.1.2",
@@ -24,6 +31,7 @@
     "mm": "*",
     "interceptor": ">=0.1.1",
     "blanket": "*",
+    "travis-cov": "*",
     "mocha": "*"
   },
   "repository": {

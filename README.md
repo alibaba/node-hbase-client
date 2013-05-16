@@ -99,7 +99,6 @@ client.delete(table, del, function (err, result) {
 
 ```
 
-
 ## TODO
 
 - [x] support `put`
@@ -107,6 +106,9 @@ client.delete(table, del, function (err, result) {
 - [x] more stable
 - [x] support `delete`
 - [ ] multi actions
+ - [x] multi get
+ - [ ] multi put
+ - [ ] multi delete
 
 ## Authors
 
@@ -115,13 +117,13 @@ $ git summary
 
  project  : node-hbase-client
  repo age : 9 weeks
- active   : 20 days
- commits  : 70
- files    : 267
+ active   : 23 days
+ commits  : 79
+ files    : 271
  authors  : 
-    64  fengmk2                 91.4%
-     5  tangyao                 7.1%
-     1  不四                  1.4%
+    66  fengmk2                 83.5%
+    12  tangyao                 15.2%
+     1  不四                  1.3%
 ```
 
 ## Benchmark

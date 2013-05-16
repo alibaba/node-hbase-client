@@ -14,7 +14,11 @@ test: install
 		$(TESTS)
 
 test-cov: install
-	@NODE_HBASE_CLENT_COV=1 $(MAKE) test MOCHA_OPTS="--require blanket" REPORTER=dot
+	@rm -f coverage.html
 	@NODE_HBASE_CLENT_COV=1 $(MAKE) test MOCHA_OPTS="--require blanket" REPORTER=html-cov > coverage.html 
+	@NODE_HBASE_CLENT_COV=1 $(MAKE) test MOCHA_OPTS="--require blanket" REPORTER=travis-cov
+	@ls -lh coverage.html
 
-.PHONY: install test test-cov
+test-all: test test-cov
+
+.PHONY: install test test-cov test-all
