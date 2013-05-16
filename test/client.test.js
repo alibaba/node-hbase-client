@@ -40,7 +40,7 @@ describe('test/client.test.js', function () {
   after(function (done) {
     setTimeout(done, 1000);
   });
-
+/*
   describe('locateRegion()', function () {
     
     it('should locate root region', function (done) {
@@ -787,5 +787,88 @@ describe('test/client.test.js', function () {
         client.putRow(tableName, row, {'f:history': '123' + i}, ep.done('put'));
       });
     });
+  });
+  */
+  describe('mput', function () {
+    var tableName = 'tcif_acookie_actions';
+    var columns = ['f:history'];
+    it('put 1 rows into table', function (done) {
+      client.mput(
+        tableName,
+        [
+          {row: 'a98eMDAwMDAwMDAwMDAwMDAwMg==mp','f:history': 'mput-single'}
+        ],
+      function (err, result) {
+        should.not.exists(err);
+        client.mget(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==mp'], ['f:history'], function (err, result) {
+          should.not.exists(err);
+          should.exists(result);
+          result.length.should.eql(1);
+          result[0].should.have.property('f:history', 'mput-single');
+          done();
+        });
+      });
+    });
+
+    it('put 2 rows into table', function (done) {
+      client.mput(
+        tableName,
+        [
+          {row: 'a98eMDAwMDAwMDAwMDAwMDAwMg==mp1','f:history': 'mput-single1'},
+          {row: 'a98eMDAwMDAwMDAwMDAwMDAwMg==mp2','f:history': 'mput-single2'}
+        ],
+      function (err, result) {
+        should.not.exists(err);
+        client.mget(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==mp1', 'a98eMDAwMDAwMDAwMDAwMDAwMg==mp2'], ['f:history'], function (err, result) {
+          should.not.exists(err);
+          should.exists(result);
+          result.length.should.eql(2);
+          result[0].should.have.property('f:history', 'mput-single1');
+          result[1].should.have.property('f:history', 'mput-single2');
+          done();
+        });
+      });
+    });
+
+  });
+
+  describe('mdel', function () {
+    var tableName = 'tcif_acookie_actions';
+    var columns = ['f:history'];
+    it('delete 1 rows from table', function (done) {
+      client.mput(
+        tableName,
+        [
+          {row: 'a98eMDAwMDAwMDAwMDAwMDAwMg==md','f:history': 'mdel-single'}
+        ],
+      function (err, result) {
+        should.not.exists(err);
+        client.mdel(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==md'], function (err, result) {
+          should.not.exists(err);
+          should.exists(result);
+          result.length.should.eql(1);
+          done();
+        });
+      });
+    });
+
+    it('delete 2 rows into table', function (done) {
+      client.mput(
+        tableName,
+        [
+          {row: 'a98eMDAwMDAwMDAwMDAwMDAwMg==md1','f:history': 'mdel-single1'},
+          {row: 'a98eMDAwMDAwMDAwMDAwMDAwMg==md2','f:history': 'mdel-single2'}
+        ],
+      function (err, result) {
+        should.not.exists(err);
+        client.mdel(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==md1', 'a98eMDAwMDAwMDAwMDAwMDAwMg==md2'], function (err, result) {
+          should.not.exists(err);
+          should.exists(result);
+          result.length.should.eql(2);
+          done();
+        });
+      });
+    });
+
   });
 });
