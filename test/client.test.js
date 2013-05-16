@@ -800,6 +800,8 @@ describe('test/client.test.js', function () {
         ],
       function (err, result) {
         should.not.exists(err);
+        result.length.should.eql(1);
+        result[0].constructor.name.should.eql('Result');
         client.mget(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==mp'], ['f:history'], function (err, result) {
           should.not.exists(err);
           should.exists(result);
@@ -819,6 +821,9 @@ describe('test/client.test.js', function () {
         ],
       function (err, result) {
         should.not.exists(err);
+        result.length.should.eql(2);
+        result[0].constructor.name.should.eql('Result');
+        result[1].constructor.name.should.eql('Result');
         client.mget(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==mp1', 'a98eMDAwMDAwMDAwMDAwMDAwMg==mp2'], ['f:history'], function (err, result) {
           should.not.exists(err);
           should.exists(result);
