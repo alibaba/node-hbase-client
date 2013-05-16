@@ -832,7 +832,7 @@ describe('test/client.test.js', function () {
 
   });
 
-  describe('mdel', function () {
+  describe('mdelete', function () {
     var tableName = 'tcif_acookie_actions';
     var columns = ['f:history'];
     it('delete 1 rows from table', function (done) {
@@ -843,7 +843,7 @@ describe('test/client.test.js', function () {
         ],
       function (err, result) {
         should.not.exists(err);
-        client.mdel(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==md'], function (err, result) {
+        client.mdelete(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==md'], function (err, result) {
           should.not.exists(err);
           should.exists(result);
           result.length.should.eql(1);
@@ -861,7 +861,7 @@ describe('test/client.test.js', function () {
         ],
       function (err, result) {
         should.not.exists(err);
-        client.mdel(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==md1', 'a98eMDAwMDAwMDAwMDAwMDAwMg==md2'], function (err, result) {
+        client.mdelete(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==md1', 'a98eMDAwMDAwMDAwMDAwMDAwMg==md2'], function (err, result) {
           should.not.exists(err);
           should.exists(result);
           result.length.should.eql(2);
