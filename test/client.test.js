@@ -745,4 +745,47 @@ describe('test/client.test.js', function () {
 
   });
 
+  describe('mget', function () {
+    var tableName = 'tcif_acookie_actions';
+    var columns = ['f:history'];
+    it('get 1 rows from table', function (done) {
+      var rows = ['a98eMDAwMDAwMDAwMDAwMDAwMg==single'];
+      client.putRow(tableName, rows[0], {'f:history': '123'}, function (err, result) {
+        should.not.exists(err);
+        client.mget(tableName, rows, columns, function (err, result) {
+          should.not.exists(err);
+          should.exists(result);
+          result.length.should.eql(1);
+          result[0].should.have.property('f:history', '123');
+          done();
+        });
+      });
+    });
+
+    it('get rows from table', function (done) {
+      var rows = [
+        '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+        '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+        '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+        'a98eMDAwMDAwMDAwMDAwMDAwMg==d'
+      ];
+      var ep = new EventProxy();
+      ep.after('put', 4, function () {
+        client.mget(tableName, rows, columns, function (err, result) {
+          should.not.exists(err);
+          should.exists(result);
+          result.length.should.eql(4);
+          // console.log(result);
+          result.forEach(function (obj) {
+            should.exists(obj);
+            obj.should.have.keys('f:history');
+          });
+          done();
+        });
+      });
+      rows.forEach(function (row, i) {
+        client.putRow(tableName, row, {'f:history': '123' + i}, ep.done('put'));
+      });
+    });
+  });
 });
