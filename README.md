@@ -127,10 +127,11 @@ client.mdelete(tableName, rows, function (err, results) {
 - [x] benchmark
 - [x] more stable
 - [x] support `delete`
-- [ ] multi actions
+- [x] multi actions
  - [x] multi get
- - [ ] multi put
- - [ ] multi delete
+ - [x] multi put
+ - [x] multi delete
+- [ ] fail retry
 
 ## Authors
 
@@ -139,13 +140,13 @@ $ git summary
 
  project  : node-hbase-client
  repo age : 9 weeks
- active   : 23 days
- commits  : 79
+ active   : 24 days
+ commits  : 82
  files    : 271
  authors  : 
-    66  fengmk2                 83.5%
-    12  tangyao                 15.2%
-     1  不四                  1.3%
+    68  fengmk2                 82.9%
+    13  tangyao                 15.9%
+     1  不四                  1.2%
 ```
 
 ## Benchmark

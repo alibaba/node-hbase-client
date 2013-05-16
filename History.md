@@ -1,4 +1,10 @@
 
+0.1.4 / 2013-05-16 
+==================
+
+  * add mput & mdel fixed #8
+  * RegionServerStoppedException need to close connection. fixed #21; mget benchmark.
+
 0.1.3 / 2013-05-16 
 ==================
 
