@@ -19,7 +19,7 @@ var HRegionInfo = require('../lib/hregion_info');
 var HConstants = require('../lib/hconstants');
 var DataInputBuffer = require('../lib/data_input_buffer');
 var Bytes = require('../lib/util/bytes');
-var config = require('./config');
+var config = require('./config_test');
 var interceptor = require('interceptor');
 var ZooKeeperWatcher = require('zookeeper-watcher');
 
