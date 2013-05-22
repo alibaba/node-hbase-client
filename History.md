@@ -1,4 +1,14 @@
 
+0.1.5 / 2013-05-22 
+==================
+
+  * add getRow select all columns support
+  * threshold set to 85
+  * add test config
+  * fixed #23 when logger not exists, use console default.
+  * copyright
+  * benchmark support args
+
 0.1.4 / 2013-05-16 
 ==================
 
