@@ -255,7 +255,37 @@ describe('test/client.test.js', function () {
           done();
         });
       });
-      
+    });
+
+    it('should get a row with all columns (select *)', function (done) {
+      var table = 'tcif_acookie_actions';
+      var rows = [
+        'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+        '4edaMDAwMDAwMDAwMDAwMDAxNg==',
+        '7c32MDAwMDAwMDAwMDAwMDAxNw==',
+        '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
+        'f390MDAwMDAwMDAwMDAwMDAxOQ==',
+      ];
+      done = pedding(rows.length * 2, done);
+
+      rows.forEach(function (row) {
+        client.getRow(table, row, null, function (err, r) {
+          should.not.exists(err);
+          r.should.have.keys('f:history', 'f:qualifier2');
+          for (var k in r) {
+            r[k].toString().should.include(row);
+          }
+          done();
+        });
+        client.getRow(table, row, function (err, r) {
+          should.not.exists(err);
+          r.should.have.keys('f:history', 'f:qualifier2');
+          for (var k in r) {
+            r[k].toString().should.include(row);
+          }
+          done();
+        });
+      });
     });
 
     it('should get empty when row not exists', function (done) {
