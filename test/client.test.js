@@ -778,7 +778,7 @@ describe('test/client.test.js', function () {
   describe('mget', function () {
     var tableName = 'tcif_acookie_actions';
     var columns = ['f:history'];
-    it('get 1 rows from table', function (done) {
+    it('get 1 row from table', function (done) {
       var rows = ['a98eMDAwMDAwMDAwMDAwMDAwMg==single'];
       client.putRow(tableName, rows[0], {'f:history': '123'}, function (err, result) {
         should.not.exists(err);
@@ -786,7 +786,8 @@ describe('test/client.test.js', function () {
           should.not.exists(err);
           should.exists(result);
           result.length.should.eql(1);
-          result[0].should.have.property('f:history', '123');
+          result[0].should.have.keys('f:history');
+          result[0]['f:history'].toString('utf-8').should.eql('123');
           done();
         });
       });
@@ -822,7 +823,7 @@ describe('test/client.test.js', function () {
   describe('mput', function () {
     var tableName = 'tcif_acookie_actions';
     var columns = ['f:history'];
-    it('put 1 rows into table', function (done) {
+    it('put 1 row into table', function (done) {
       client.mput(
         tableName,
         [
@@ -836,7 +837,8 @@ describe('test/client.test.js', function () {
           should.not.exists(err);
           should.exists(result);
           result.length.should.eql(1);
-          result[0].should.have.property('f:history', 'mput-single');
+          result[0].should.have.property('f:history');
+          result[0]['f:history'].toString('utf-8').should.eql('mput-single');
           done();
         });
       });
@@ -858,8 +860,10 @@ describe('test/client.test.js', function () {
           should.not.exists(err);
           should.exists(result);
           result.length.should.eql(2);
-          result[0].should.have.property('f:history', 'mput-single1');
-          result[1].should.have.property('f:history', 'mput-single2');
+          result[0].should.have.keys('f:history');
+          result[1].should.have.keys('f:history');
+          result[0]['f:history'].toString('utf-8').should.eql('mput-single1');
+          result[1]['f:history'].toString('utf-8').should.eql('mput-single2');
           done();
         });
       });
