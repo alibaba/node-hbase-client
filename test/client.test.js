@@ -277,6 +277,22 @@ describe('test/client.test.js', function () {
           }
           done();
         });
+        client.getRow(table, row, '*', function (err, r) {
+          should.not.exists(err);
+          r.should.have.keys('f:history', 'f:qualifier2');
+          for (var k in r) {
+            r[k].toString().should.include(row);
+          }
+          done();
+        });
+        client.getRow(table, row, [], function (err, r) {
+          should.not.exists(err);
+          r.should.have.keys('f:history', 'f:qualifier2');
+          for (var k in r) {
+            r[k].toString().should.include(row);
+          }
+          done();
+        });
         client.getRow(table, row, function (err, r) {
           should.not.exists(err);
           r.should.have.keys('f:history', 'f:qualifier2');

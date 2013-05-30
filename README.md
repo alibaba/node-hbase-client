@@ -56,6 +56,10 @@ client.getRow(table, row, ['f:name', 'f:age'], function (err, r) {
 client.getRow(table, row, function (err, r) {
   r.should.have.keys('f:name', 'f:age', 'f:gender');
 });
+
+client.getRow(table, row, '*', function (err, r) {
+  r.should.have.keys('f:name', 'f:age', 'f:gender');
+});
 ```
 
 ### `put(table, put, callback)`: Put a row to table
