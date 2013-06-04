@@ -8,6 +8,7 @@ install:
 
 test: install
 	@NODE_ENV=test ./node_modules/mocha/bin/mocha \
+		--bail \
 		--reporter $(REPORTER) \
 		--timeout $(TIMEOUT) \
 		$(MOCHA_OPTS) \

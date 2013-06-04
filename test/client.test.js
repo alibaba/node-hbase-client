@@ -106,7 +106,9 @@ describe('test/client.test.js', function () {
         process.nextTick(function () {
           if (r.toString().indexOf('tcif_acookie_actions') >= 0 && count === 0) {
             count++;
-            return callback(new Error('RegionOfflineException'));
+            var err = new Error('RegionOfflineException haha');
+            err.name = 'RegionOfflineException';
+            return callback(err);
           }
           self.____getClosestRowBefore(regions, r, info, callback);
         });
@@ -155,7 +157,9 @@ describe('test/client.test.js', function () {
         var self = this;
         process.nextTick(function () {
           if (r.toString().indexOf('tcif_acookie_actions') >= 0 && count === 0) {
-            return callback(new Error('RegionOfflineException'));
+            var err = new Error('RegionOfflineException haha');
+            err.name = 'RegionOfflineException';
+            return callback(err);
           }
           self.____getClosestRowBefore(regions, r, info, callback);
         });
@@ -178,7 +182,8 @@ describe('test/client.test.js', function () {
         client.locateRegion(table, row, false, function (err, regionLocation3) {
           mm.restore();
           should.exists(err);
-          err.message.should.equal('RegionOfflineException');
+          err.name.should.equal('RegionOfflineException');
+          err.message.should.equal('RegionOfflineException haha');
           should.not.exists(regionLocation3);
           done();
         });
