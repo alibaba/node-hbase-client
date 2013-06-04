@@ -1,4 +1,11 @@
 
+0.1.9 / 2013-06-04 
+==================
+
+  * add more error info for debug
+  * change windows \r\n to \n
+  * NoSuchColumnFamilyException should not remove cached region locations. fixed #27
+
 0.1.8 / 2013-05-31 
 ==================
 
