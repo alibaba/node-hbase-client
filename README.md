@@ -148,14 +148,14 @@ client.mdelete(tableName, rows, function (err, results) {
 $ git summary 
 
  project  : node-hbase-client
- repo age : 9 weeks
- active   : 24 days
- commits  : 82
- files    : 271
+ repo age : 3 months
+ active   : 33 days
+ commits  : 100
+ files    : 272
  authors  : 
-    68  fengmk2                 82.9%
-    13  tangyao                 15.9%
-     1  不四                  1.2%
+    83  fengmk2                 83.0%
+    16  tangyao                 16.0%
+     1  不四                  1.0%
 ```
 
 ## Benchmark
