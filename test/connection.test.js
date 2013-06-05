@@ -231,13 +231,13 @@ describe('test/connection.test.js', function () {
       conn.getProtocolVersion(null, null, 1001, function (err, version) {
         should.exists(err);
         err.name.should.equal('ConnectionClosedException');
-        err.message.should.include('closed.');
+        err.message.should.include('closed with no error.');
 
         // send data after close
         conn.getProtocolVersion(null, null, 1002, function (err, version) {
           should.exists(err);
           err.name.should.equal('ConnectionClosedException');
-          err.message.should.include('closed.');
+          err.message.should.include('closed with no error.');
           done();
         });
       });
@@ -250,13 +250,13 @@ describe('test/connection.test.js', function () {
       conn.getProtocolVersion(null, null, 1001, function (err, version) {
         should.exists(err);
         err.name.should.equal('ConnectionClosedException');
-        err.message.should.include('closed.');
+        err.message.should.include('closed with no error.');
 
         // send data after close
         conn.getProtocolVersion(null, null, 1002, function (err, version) {
           should.exists(err);
           err.name.should.equal('ConnectionClosedException');
-          err.message.should.include('closed.');
+          err.message.should.include('closed with no error.');
           done();
         });
       });

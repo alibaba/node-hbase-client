@@ -41,6 +41,8 @@ describe('test/client.test.js', function () {
     setTimeout(done, 1000);
   });
 
+  afterEach(mm.restore);
+
   describe('locateRegion()', function () {
     
     it('should locate root region', function (done) {
@@ -235,6 +237,53 @@ describe('test/client.test.js', function () {
         }, 1000);
       });
     });
+  });
+
+  describe('getRegionConnection()', function () {
+    
+    var region;
+
+    before(function (done) {
+      var table = new Buffer('tcif_acookie_user');
+      var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
+      client.locateRegion(table, row, function (err, regionLocation) {
+        should.not.exists(err);
+        regionLocation.hostname.should.include('.kgb.sqa.cm4');
+        regionLocation.port.should.equal(36020);
+        regionLocation.should.have.property('regionInfo');
+        region = regionLocation;
+        for (var k in client.servers) {
+          var server = client.servers[k];
+          server.close();
+        }
+        done();
+      });
+    });
+
+    it('should connect timeout', function (done) {
+      mm(client, 'rpcTimeout', 1);
+      client.getRegionConnection(region.hostname, region.port, function (err, server) {
+        var rsName = region.hostname + ':' + region.port;
+        should.exists(err);
+        err.name.should.equal('ConnectionConnectTimeoutException');
+        err.message.should.include(rsName + ' connect timeout, 1 ms');
+        should.not.exists(server);
+        client.serversLength.should.equal(0);
+        client.servers.should.not.have.key(rsName);
+
+        mm.restore();
+
+        // connect again will be success
+        client.getRegionConnection(region.hostname, region.port, function (err, server) {
+          should.not.exists(err);
+          should.exists(server);
+          client.serversLength.should.equal(1);
+          client.servers.should.have.key(rsName);
+          done();
+        });
+      });
+    });
+
   });
 
   describe('getRow(table, row, columns)', function () {
