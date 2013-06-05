@@ -1,4 +1,9 @@
 
+0.1.10 / 2013-06-05 
+==================
+
+  * support Connection timeout on connecting state.
+
 0.1.9 / 2013-06-04 
 ==================
 
