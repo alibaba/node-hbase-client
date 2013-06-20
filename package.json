@@ -21,7 +21,8 @@
     "zookeeper-watcher": ">=0.1.1",
     "utility": ">=0.0.8",
     "readable-stream": ">=1.0.2",
-    "eventproxy": "0.2.2"
+    "eventproxy": "0.2.2",
+    "bagpipe": "0.3.1"
   },
   "devDependencies": {
     "should": "*",
