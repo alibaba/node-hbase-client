@@ -1,4 +1,11 @@
 
+0.1.11 / 2013-06-20 
+==================
+
+  * mget: use bagpipe for order
+  * add support hbase version
+  * rm sending log
+
 0.1.10 / 2013-06-05 
 ==================
 
