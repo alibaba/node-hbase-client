@@ -22,4 +22,9 @@ test-cov: install
 
 test-all: test test-cov
 
-.PHONY: install test test-cov test-all
+test-coveralls:
+	@$(MAKE) test
+	@echo TRAVIS_JOB_ID $(TRAVIS_JOB_ID)
+	@$(MAKE) test MOCHA_OPTS='--require blanket' REPORTER=mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js
+
+.PHONY: install test test-cov test-all teset-coveralls

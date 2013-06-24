@@ -33,11 +33,13 @@
     "interceptor": ">=0.1.1",
     "blanket": "*",
     "travis-cov": "*",
+    "coveralls": "*",
+    "mocha-lcov-reporter": "*",
     "mocha": "*"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/TBEDP/node-hbase-client.git"
+    "url": "git://github.com/alibaba/node-hbase-client.git"
   },
   "keywords": [
     "node-hbase-client", "hbase", "hbase-client"

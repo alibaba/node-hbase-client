@@ -1,6 +1,6 @@
-# hbase-client [![Build Status](https://secure.travis-ci.org/TBEDP/node-hbase-client.png?branch=master)](http://travis-ci.org/TBEDP/node-hbase-client)
+# hbase-client [![Build Status](https://secure.travis-ci.org/alibaba/node-hbase-client.png?branch=master)](http://travis-ci.org/alibaba/node-hbase-client) [![Coverage Status](https://coveralls.io/repos/alibaba/node-hbase-client/badge.png)](https://coveralls.io/r/alibaba/node-hbase-client)
 
-![logo](https://raw.github.com/TBEDP/node-hbase-client/master/logo.png)
+![logo](https://raw.github.com/alibaba/node-hbase-client/master/logo.png)
 
 Asynchronous HBase client for nodejs, pure javascript implementation.
 
@@ -8,7 +8,6 @@ Asynchronous HBase client for nodejs, pure javascript implementation.
 
 * Current State: **Only test on Hbase 0.94.0**
 * [hbase-client](https://github.com/apache/hbase/tree/trunk/hbase-client)
-* jscoverage: [83%](http://fengmk2.github.com/coverage/node-hbase-client.html)
 
 ## Support HBase Server Versions
 
