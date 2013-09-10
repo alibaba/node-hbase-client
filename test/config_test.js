@@ -12,9 +12,9 @@
 
 var config = {
   zookeeperHosts: [
-    '10.232.98.74:2181', 
-    '10.232.98.75:2181', '10.232.98.76:2181', 
-    '10.232.98.77:2181', '10.232.98.78:2181'
+    '10.232.98.74',
+    '10.232.98.75', '10.232.98.76',
+    '10.232.98.77', '10.232.98.78'
   ],
   zookeeperRoot: '/hbase-rd-test-0.94',
   // logger: console,
@@ -23,6 +23,7 @@ var config = {
     info: function () {},
     error: function () {},
   },
+  rpcTimeout: 10000,
 };
 
 module.exports = config;

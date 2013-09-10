@@ -13,8 +13,10 @@
 var mm = require('mm');
 var Long = require('long');
 var pedding = require('pedding');
-var utils = require('./support/utils');
+var fs = require('fs');
+var EventProxy = require('eventproxy');
 var should = require('should');
+var utils = require('./support/utils');
 var Client = require('../lib/client');
 var HConstants = require('../lib/hconstants');
 var Get = require('../lib/get');
@@ -27,7 +29,6 @@ var DataInputBuffer = require('../lib/data_input_buffer');
 var Bytes = require('../lib/util/bytes');
 var HRegionLocation = require('../lib/hregion_location');
 var Result = require('../lib/result');
-var EventProxy = require('eventproxy');
 var Delete = require('../lib/delete');
 
 describe('test/client.test.js', function () {
@@ -402,7 +403,7 @@ describe('test/client.test.js', function () {
         '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
         'f390MDAwMDAwMDAwMDAwMDAxOQ==',
       ];
-      done = pedding(rows.length, done);
+      done = pedding(rows.length * 2, done);
 
       rows.forEach(function (row) {
         var get = new Get(row);
@@ -410,7 +411,6 @@ describe('test/client.test.js', function () {
         get.addColumn('f', 'qualifier2');
         // get.maxVersions = 1;
         client.get(table, get, function (err, result) {
-
           should.not.exists(err);
           var kvs = result.raw();
           kvs.length.should.above(0);
@@ -418,12 +418,32 @@ describe('test/client.test.js', function () {
             var kv = kvs[i];
             kv.getRow().toString().should.equal(row);
             kv.getValue().toString().should.include(row);
-            // console.log(kv.toString(), kv.getValue().toString());
           }
           done();
         });
       });
+
+      rows.forEach(function (row) {
+        client.getRow(table, row, ['f:history', 'f:qualifier2'], function (err, data) {
+          should.not.exists(err);
+          data.should.have.keys('f:history', 'f:qualifier2');
+          data['f:history'].toString().should.include(row);
+          data['f:qualifier2'].toString().should.include(row);
+          done();
+        });
+      });
       
+    });
+
+    it.skip('should get table `cal_user_activity_prefer:5d86cf491024d99c6321e2b17fdf8a6b` all columns data not timeout', 
+    function (done) {
+      client.getRow('cal_user_activity_prefer', function (err, data) {
+        should.not.exists(err);
+        data.should.have.keys('f:history', 'f:qualifier2');
+        data['f:history'].toString().should.include(row);
+        data['f:qualifier2'].toString().should.include(row);
+        done();
+      });
     });
 
     it('should get empty when row not exists', function (done) {
@@ -868,24 +888,52 @@ describe('test/client.test.js', function () {
         '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
         '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
         '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+        'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
+        '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+        '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+        '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+        'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
+        '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+        '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+        '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+        'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
+        '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+        '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+        '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+        'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
+        '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+        '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+        '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
         'a98eMDAwMDAwMDAwMDAwMDAwMg==d'
       ];
       var ep = new EventProxy();
       ep.after('put', 4, function () {
-        client.mget(tableName, rows, columns, function (err, result) {
-          should.not.exists(err);
-          should.exists(result);
-          result.length.should.eql(4);
-          // console.log(result);
-          result.forEach(function (obj) {
-            should.exists(obj);
-            obj.should.have.keys('f:history');
+        var count = 10;
+        done = pedding(count, done);
+        var mget = function () {
+          client.mget(tableName, rows, ['f:history', 'f:bigcontent'], function (err, result) {
+            should.not.exists(err);
+            should.exists(result);
+            result.should.length(rows.length);
+            // console.log(result);
+            result.forEach(function (obj) {
+              should.exists(obj);
+              obj.should.have.keys('f:history', 'f:bigcontent');
+            });
+            done();
           });
-          done();
-        });
+        };
+
+        for (var i = 0; i < count; i++) {
+          mget();
+        }
       });
-      rows.forEach(function (row, i) {
-        client.putRow(tableName, row, {'f:history': '123' + i}, ep.done('put'));
+      var content = fs.readFileSync(__filename);
+      rows.slice(0, 4).forEach(function (row, i) {
+        client.putRow(tableName, row, {
+          'f:history': '123' + i,
+          'f:bigcontent': content
+        }, ep.done('put'));
       });
     });
   });
