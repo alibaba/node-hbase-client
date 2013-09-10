@@ -23,7 +23,7 @@ var config = {
     info: function () {},
     error: function () {},
   },
-  rpcTimeout: 10000,
+  rpcTimeout: 40000,
 };
 
 module.exports = config;

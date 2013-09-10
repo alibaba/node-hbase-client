@@ -18,37 +18,39 @@ var client = HBase.create(config);
 
 var rows = [
   '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
-  // '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
-  // '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
-  // 'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
-  // '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
-  // '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
-  // '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
-  // 'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
-  // '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
-  // '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
-  // '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
-  // 'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
-  // '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
-  // '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
-  // '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
-  // 'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
-  // '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
-  // '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
-  // '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
-  // 'a98eMDAwMDAwMDAwMDAwMDAwMg==d'
+  '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+  '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+  'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
+  '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+  '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+  '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+  'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
+  '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+  '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+  '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+  'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
+  '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+  '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+  '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+  'a98eMDAwMDAwMDAwMDAwMDAwMg==d',
+  '02d7MDAwMDAwMDAwMDAwMDAwMw==a',
+  '24e3MDAwMDAwMDAwMDAwMDAwNA==b',
+  '58c8MDAwMDAwMDAwMDAwMDAwMQ==c',
+  'a98eMDAwMDAwMDAwMDAwMDAwMg==d'
 ];
 
 var mgetCount = 0;
 var doneCount = 0;
 function runMGet(i) {
+  var start = Date.now();
   client.mget('tcif_acookie_actions', rows, ['f:history', 'f:bigcontent'], function (err, datas) {
+    doneCount++;
+    datas = datas || [];
+    console.log('[%s] mget #%d want %d, got %d, %d sent, %d done, %d ms', 
+      Date(), i, rows.length, datas.length, mgetCount, doneCount, Date.now() - start);
     if (err) {
       throw err;
     }
-    doneCount++;
-    console.log('[%s] mget #%d want %d, got %d, %d sent, %d done', 
-      Date(), mgetCount, i, rows.length, datas.length, mgetCount, doneCount);
   });
 }
 
@@ -63,7 +65,7 @@ function runGet(i) {
 
 function test(fn) {
   var count = 10;
-  if (mgetCount > 350) {
+  if (mgetCount > 100) {
     return;
   }
   for (var i = 0; i < count; i++) {
@@ -75,7 +77,7 @@ function test(fn) {
 test(runMGet);
 setInterval(function () {
   test(runMGet);
-}, 300);
+}, 7000);
 
 // test(runGet);
 // setInterval(function () {

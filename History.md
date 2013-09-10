@@ -1,4 +1,10 @@
 
+0.2.0 / 2013-09-11 
+==================
+
+  * fix readFields data empty problems. And also remove mget bigpipe limit #39
+  * support coveralls
+
 0.1.11 / 2013-06-20 
 ==================
 
