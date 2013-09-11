@@ -18,7 +18,7 @@
   "dependencies": {
     "long": "1.1.2",
     "debug": ">=0.7.2",
-    "zookeeper-watcher": ">=0.1.1",
+    "zookeeper-watcher": ">=0.2.0",
     "utility": ">=0.0.8",
     "readable-stream": "1.1.7",
     "eventproxy": "0.2.2"

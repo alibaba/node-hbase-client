@@ -321,7 +321,7 @@ describe('test/client.test.js', function () {
         '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
         'f390MDAwMDAwMDAwMDAwMDAxOQ==',
       ];
-      done = pedding(rows.length * 2, done);
+      done = pedding(rows.length * 4, done);
 
       rows.forEach(function (row) {
         client.getRow(table, row, null, function (err, r) {

@@ -164,11 +164,11 @@ describe('test/connection.test.js', function () {
       });
       done = pedding(2, done);
 
-      conn.on('connect', function () {
+      conn.once('connect', function () {
         done();
       });
       //must wait server side accept, If do not wait, something unexpected would happened
-      proxy.on('_connect', function () {
+      proxy.once('_connect', function () {
         // proxy.inStream._connections.should.equal(1);
         done();
       });
