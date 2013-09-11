@@ -1,4 +1,9 @@
 
+0.2.1 / 2013-09-11 
+==================
+
+  * TypeError: Cannot set property decodeStrings of undefined isaacs/readable-stream#66
+
 0.2.0 / 2013-09-11 
 ==================
 
