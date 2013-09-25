@@ -21,7 +21,7 @@
     "zookeeper-watcher": ">=0.2.0",
     "utility": ">=0.0.8",
     "readable-stream": "1.1.7",
-    "eventproxy": "0.2.2"
+    "eventproxy": "0.2.5"
   },
   "devDependencies": {
     "should": "*",
@@ -36,6 +36,7 @@
     "mocha-lcov-reporter": "*",
     "mocha": "*"
   },
+  "homepage": "http://github.com/alibaba/node-hbase-client",
   "repository": {
     "type": "git",
     "url": "git://github.com/alibaba/node-hbase-client.git"
