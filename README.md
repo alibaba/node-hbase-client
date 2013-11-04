@@ -88,7 +88,7 @@ client.putRow(table, row, {'f1:name': 'foo name', 'f1:age': '18'}, function (err
 
 ### `delete from table`
 
-```
+```js
 client.deleteRow(tableName, rowkey, function (err) {
   //TODO:...
 });
@@ -116,7 +116,7 @@ client.delete(table, del, function (err, result) {
 =======
 ### `multi process`
 
-```
+```js
 var rows = ['row1', 'row2'];
 var columns = ['f:col1', 'f:col2'];
 client.mget(tableName, rows, columns, function (err, results){
