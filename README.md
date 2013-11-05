@@ -2,7 +2,7 @@
 
 ![logo](https://raw.github.com/alibaba/node-hbase-client/master/logo.png)
 
-Asynchronous HBase client for nodejs, pure javascript implementation.
+Asynchronous HBase client for Node.js, **pure JavaScript** implementation.
 
 ~~**This project is just developing, Please don't use it on production env.**~~
 
@@ -53,17 +53,17 @@ client.get('user', param, function (err, result) {
 ### `getRow(table, rowkey, columns, callback)`
 
 ```js
-client.getRow(table, row, ['f:name', 'f:age'], function (err, r) {
-  r.should.have.keys('f:name', 'f:age');
+client.getRow(table, row, ['f:name', 'f:age'], function (err, row) {
+  row.should.have.keys('f:name', 'f:age');
 });
 
 // return all columns, like `select *`
-client.getRow(table, row, function (err, r) {
-  r.should.have.keys('f:name', 'f:age', 'f:gender');
+client.getRow(table, row, function (err, row) {
+  row.should.have.keys('f:name', 'f:age', 'f:gender');
 });
 
-client.getRow(table, row, '*', function (err, r) {
-  r.should.have.keys('f:name', 'f:age', 'f:gender');
+client.getRow(table, row, '*', function (err, row) {
+  row.should.have.keys('f:name', 'f:age', 'f:gender');
 });
 ```
 
@@ -86,50 +86,58 @@ client.putRow(table, row, {'f1:name': 'foo name', 'f1:age': '18'}, function (err
 });
 ```
 
-### `delete from table`
+### `delete(tableName, del, callback)`
 
-```
-client.deleteRow(tableName, rowkey, function (err) {
-  //TODO:...
-});
-
+```js
 var del = new Delete(rowkey);
 del.deleteColumns('f', 'name-t');
 client.delete(table, del, function (err, result) {
   //TODO:...
 });
+```
 
-var del = new Delete(rowkey);
-del.deleteColumn('f', 'name-t');
-client.delete(table, del, function (err, result) {
-  //TODO:...
-});
-
+```js
 var del = new Delete(rowkey);
 del.deleteFamily('f');
 client.delete(table, del, function (err, result) {
   //TODO:...
 });
-
 ```
 
-=======
-### `multi process`
+### `deleteRow(tableName, rowkey, callback)`
 
+```js
+var tableName = 'user_search';
+var rowkey = 'rowkeyyyyyy';
+client.deleteRow(tableName, rowkey, function (err) {
+  //TODO:...
+});
 ```
+
+### `mget(tableName, rows, columns, callback)`
+
+```js
 var rows = ['row1', 'row2'];
 var columns = ['f:col1', 'f:col2'];
 client.mget(tableName, rows, columns, function (err, results){
   //TODO:...
 });
+```
 
+### `mput(tableName, rows, callback)`
+
+```js
 var rows = [{row: 'rowkey1', 'f:col1': 'col_value'}, {row: 'rowkey2', 'f:col1': 'col_value'}];
 client.mput(tableName, rows, function (err, results) {
   //TODO:...
 });
+```
 
-var rows = ['row1', 'row2'];
-client.mdelete(tableName, rows, function (err, results) {
+### `mdelete(tableName, rowkeys, callback)`
+
+```js
+var rowKeys = ['rowkey1', 'rowkey2'];
+client.mdelete(tableName, rowKeys, function (err, results) {
   //TODO:...
 });
 
@@ -150,14 +158,14 @@ client.mdelete(tableName, rows, function (err, results) {
 ## Authors
 
 ```bash
-$ git summary 
+$ git summary
 
  project  : node-hbase-client
  repo age : 3 months
  active   : 33 days
  commits  : 100
  files    : 272
- authors  : 
+ authors  :
     83  fengmk2                 83.0%
     16  tangyao                 16.0%
      1  不四                  1.0%
@@ -194,7 +202,7 @@ $ node benchmark.js $Concurrency
 
 Method | Concurrency | QPS     | RT(ms)
  ---   |  ---        | ------- | ------
-Get    | 1           | 1714    | 0.57 
+Get    | 1           | 1714    | 0.57
 Get    | 2           | 3097 ↑  | 0.63
 Get    | 5           | 3391 ↑  | 1.46
 Get    | 10          | 3649 ↑  | 2.73
