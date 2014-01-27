@@ -1,15 +1,14 @@
 {
   "name": "hbase-client",
   "version": "0.3.0",
-  "description": "Asynchronous HBase client for nodejs, pure javascript implementation.",
+  "description": "Asynchronous HBase client for Node.js, pure javascript implementation.",
   "main": "index.js",
   "scripts": {
-    "test": "make test-all",
-    "blanket": { 
-      "pattern": "//^((?!(node_modules|test)).)*$/",
-      "data-cover-flags": {
-        "debug": false
-      }
+    "test": "make test-all"
+  },
+  "config": {
+    "blanket": {
+      "pattern": "//^((?!(node_modules|test)).)*$/"
     },
     "travis-cov": {
       "threshold": 85
@@ -24,6 +23,8 @@
     "eventproxy": "0.2.5"
   },
   "devDependencies": {
+    "contributors": "*",
+    "cov": "*",
     "should": "*",
     "pedding": "*",
     "moment": "*",
@@ -31,7 +32,6 @@
     "mm": "*",
     "interceptor": ">=0.1.1",
     "blanket": "*",
-    "travis-cov": "*",
     "coveralls": "*",
     "mocha-lcov-reporter": "*",
     "mocha": "*"
@@ -44,6 +44,6 @@
   "keywords": [
     "node-hbase-client", "hbase", "hbase-client"
   ],
-  "author": "fengmk2 <fengmk2@gmail.com>",
+  "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)",
   "license": "MIT"
 }

@@ -1,4 +1,8 @@
-# hbase-client [![Build Status](https://secure.travis-ci.org/alibaba/node-hbase-client.png?branch=master)](http://travis-ci.org/alibaba/node-hbase-client) [![Coverage Status](https://coveralls.io/repos/alibaba/node-hbase-client/badge.png)](https://coveralls.io/r/alibaba/node-hbase-client)
+# hbase-client
+
+[![Build Status](https://secure.travis-ci.org/alibaba/node-hbase-client.png?branch=master)](http://travis-ci.org/alibaba/node-hbase-client) [![Coverage Status](https://coveralls.io/repos/alibaba/node-hbase-client/badge.png)](https://coveralls.io/r/alibaba/node-hbase-client)
+
+[![NPM](https://nodei.co/npm/hbase-client.png?downloads=true&stars=true)](https://nodei.co/npm/hbase-client)
 
 ![logo](https://raw.github.com/alibaba/node-hbase-client/master/logo.png)
 
@@ -161,14 +165,15 @@ client.mdelete(tableName, rowKeys, function (err, results) {
 $ git summary
 
  project  : node-hbase-client
- repo age : 3 months
- active   : 33 days
- commits  : 100
- files    : 272
+ repo age : 11 months
+ active   : 46 days
+ commits  : 124
+ files    : 274
  authors  :
-    83  fengmk2                 83.0%
-    16  tangyao                 16.0%
-     1  不四                  1.0%
+   103  fengmk2                 83.1%
+    19  tangyao                 15.3%
+     1  Alsotang                0.8%
+     1  不四                  0.8%
 ```
 
 ## Benchmark
