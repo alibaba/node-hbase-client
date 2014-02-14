@@ -15,26 +15,27 @@
     }
   },
   "dependencies": {
+    "debug": "0.7.4",
+    "eventproxy": "0.2.6",
     "long": "1.1.2",
-    "debug": ">=0.7.2",
-    "zookeeper-watcher": ">=0.2.0",
-    "utility": ">=0.0.8",
-    "readable-stream": "1.1.7",
-    "eventproxy": "0.2.5"
+    "readable-stream": "1.1.10",
+    "utility": "0.1.10",
+    "zookeeper-watcher": ">=0.2.0"
   },
   "devDependencies": {
+    "autod": "*",
+    "benchmark": "*",
+    "blanket": "*",
     "contributors": "*",
     "cov": "*",
-    "should": "*",
-    "pedding": "*",
-    "moment": "*",
-    "benchmark": "*",
-    "mm": "*",
-    "interceptor": ">=0.1.1",
-    "blanket": "*",
     "coveralls": "*",
+    "interceptor": "0.1.4",
+    "mm": "0.1.8",
+    "mocha": "*",
     "mocha-lcov-reporter": "*",
-    "mocha": "*"
+    "moment": "*",
+    "pedding": "0.0.3",
+    "should": "3.1.2"
   },
   "homepage": "http://github.com/alibaba/node-hbase-client",
   "repository": {
