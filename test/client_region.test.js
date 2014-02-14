@@ -95,4 +95,25 @@ describe('client_region.test.js', function () {
       });
     });
   });
+
+  it('should error when retry over 3 times', function (done) {
+    var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
+    get.addColumn('cf', 'w02');
+    client.get('bulkwriter_test', get, function (err, result) {
+      should.not.exist(err);
+      should.exist(result);
+      var location = client.getCachedLocation('bulkwriter_test', get.getRow());
+      var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
+      get2.addColumn('cf', 'w02');
+      mm(client, 'locateRegion', function (tableName, row, useCache, callback) {
+        callback(null, location);
+      });
+      client.get('bulkwriter_test', get2, function (err, result) {
+        should.exist(err);
+        err.name.should.equal('org.apache.hadoop.hbase.regionserver.WrongRegionException');
+        should.not.exist(result);
+        done();
+      });
+    });
+  });
 });
