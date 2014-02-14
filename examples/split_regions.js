@@ -59,7 +59,13 @@ function get() {
     index = 0;
   }
   client.getRow('bulkwriter_test', row, ['cf:w02'], function (err, result) {
-    should.not.exist(err);
+    if (err) {
+      if (err.name === 'org.apache.hadoop.hbase.NotServingRegionException') {
+        console.log(index - 1, err.name);
+        return;
+      }
+      throw err;
+    }
     should.exist(result);
     result.should.have.property('cf:w02');
     console.log('%s: %s', index - 1, row);
