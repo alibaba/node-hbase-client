@@ -16,6 +16,7 @@
 var should = require('should');
 var hbase = require('../');
 var config = require('../test/config');
+config.logger = console;
 
 var client = hbase.Client.create(config);
 
