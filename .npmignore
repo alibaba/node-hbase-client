@@ -8,3 +8,4 @@ zk.js
 serialization.md
 readable.js
 examples/
+test/config.js
