@@ -1,4 +1,12 @@
 
+0.3.1 / 2014-02-14 
+==================
+
+  * ignore org.apache.hadoop.hbase.NotServingRegionException on split demo
+  * action max retry 3 times
+  * Action retry with useCache = false when regionserver.WrongRegionException fixed #47
+  * add AUTHORS
+
 0.3.0 / 2013-09-25 
 ==================
 

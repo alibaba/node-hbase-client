@@ -1,6 +1,6 @@
 {
   "name": "hbase-client",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Asynchronous HBase client for Node.js, pure javascript implementation.",
   "main": "index.js",
   "scripts": {
