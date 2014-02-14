@@ -1,4 +1,9 @@
 
+0.3.2 / 2014-02-14 
+==================
+
+  * org.apache.hadoop.hbase.NotServingRegionException also retry
+
 0.3.1 / 2014-02-14 
 ==================
 
