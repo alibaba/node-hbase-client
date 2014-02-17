@@ -45,7 +45,7 @@ describe('test/client.test.js', function () {
   afterEach(mm.restore);
 
   describe('locateRegion()', function () {
-    
+
     it('should locate root region', function (done) {
       client.locateRegion(HConstants.ROOT_TABLE_NAME, null, true, function (err, regionLocation) {
         should.not.exists(err);
@@ -116,7 +116,7 @@ describe('test/client.test.js', function () {
           self.____getClosestRowBefore(regions, r, info, callback);
         });
       };
-      
+
       client.locateRegion(table, row, true, function (err, regionLocation) {
         should.not.exists(err);
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
@@ -129,7 +129,7 @@ describe('test/client.test.js', function () {
           should.exists(regionLocation2);
           regionLocation2.should.equal(regionLocation);
           regionLocation2.__test__name.should.equal(regionLocation.__test__name);
-          
+
           // mock server offline
           for (var k in client.servers) {
             var server = client.servers[k];
@@ -149,7 +149,7 @@ describe('test/client.test.js', function () {
         });
 
       });
-      
+
     });
 
     it('should return null when offline error happen more than retries', function (done) {
@@ -167,7 +167,7 @@ describe('test/client.test.js', function () {
           self.____getClosestRowBefore(regions, r, info, callback);
         });
       };
-      
+
       client.locateRegion(table, row, true, function (err, regionLocation) {
         should.not.exists(err);
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
@@ -192,7 +192,7 @@ describe('test/client.test.js', function () {
         });
 
       });
-      
+
     });
 
   });
@@ -209,10 +209,10 @@ describe('test/client.test.js', function () {
     });
 
     it('should clean all server relation regions cache', function (done) {
-      client.getRow('tcif_acookie_user', '1', ['cf1:history', 'cf1:qualifier2'], 
+      client.getRow('tcif_acookie_user', '1', ['cf1:history', 'cf1:qualifier2'],
       function (err, r) {
         should.not.exists(err);
-        
+
         var closeRS = [];
         for (var k in client.servers) {
           var server = client.servers[k];
@@ -225,7 +225,7 @@ describe('test/client.test.js', function () {
             should.not.exists(client.cachedServers[closeRS[i]]);
           }
           // console.log(client.cachedServers, closeRS)
-          client.getRow('tcif_acookie_user', '1', ['cf1:history', 'cf1:qualifier2'], 
+          client.getRow('tcif_acookie_user', '1', ['cf1:history', 'cf1:qualifier2'],
           function (err, r) {
             should.not.exists(err);
             // console.log(client.cachedServers, closeRS)
@@ -241,7 +241,7 @@ describe('test/client.test.js', function () {
   });
 
   describe('getRegionConnection()', function () {
-    
+
     var region;
 
     before(function (done) {
@@ -288,7 +288,7 @@ describe('test/client.test.js', function () {
   });
 
   describe('getRow(table, row, columns)', function () {
-    
+
     it('should get a row with columns', function (done) {
       var table = 'tcif_acookie_actions';
       var rows = [
@@ -377,7 +377,7 @@ describe('test/client.test.js', function () {
           done();
         });
       });
-      
+
     });
 
     it('should get NoSuchColumnFamilyException when Column family not exists', function (done) {
@@ -393,7 +393,7 @@ describe('test/client.test.js', function () {
   });
 
   describe('get(table, get)', function () {
-    
+
     it('should get a row with f: from a table', function (done) {
       var table = 'tcif_acookie_actions';
       var rows = [
@@ -432,10 +432,10 @@ describe('test/client.test.js', function () {
           done();
         });
       });
-      
+
     });
 
-    it.skip('should get table `cal_user_activity_prefer:5d86cf491024d99c6321e2b17fdf8a6b` all columns data not timeout', 
+    it.skip('should get table `cal_user_activity_prefer:5d86cf491024d99c6321e2b17fdf8a6b` all columns data not timeout',
     function (done) {
       client.getRow('cal_user_activity_prefer', function (err, data) {
         should.not.exists(err);
@@ -477,10 +477,10 @@ describe('test/client.test.js', function () {
           done();
         });
       });
-      
+
     });
 
-    describe('mock org.apache.hadoop.hbase.NotServingRegionException', function () {
+    describe.skip('mock org.apache.hadoop.hbase.NotServingRegionException', function () {
 
       beforeEach(function (done) {
         var table = 'tcif_acookie_actions';
@@ -513,7 +513,7 @@ describe('test/client.test.js', function () {
       });
 
       afterEach(mm.restore);
-      
+
       it('should return NotServingRegionException', function (doneAll) {
         var table = 'tcif_acookie_actions';
         var rows = [
@@ -551,11 +551,9 @@ describe('test/client.test.js', function () {
           var counter = require('../lib/connection').Call_Counter;
             for (var k in client.servers) {
               var server = client.servers[k];
-              // if (k !== 'dw48.kgb.sqa.cm4:36020') {
-              //   continue;
-              // }
               mm(server, 'in', utils.createNotServingRegionExceptionBuffer(counter));
             }
+            mm(client, 'maxActionRetries', 0);
 
             rows.forEach(function (row) {
               var get = new Get(row);
@@ -567,10 +565,10 @@ describe('test/client.test.js', function () {
                 err.message.should.include('at org.apache.hadoop.hbase.regionserver.HRegionServer.getRegion(HRegionServer.java:3518)');
                 should.not.exists(result);
                 mm.restore();
-                done();                
+                done();
               });
             });
-            
+
           });
         });
 
@@ -579,7 +577,7 @@ describe('test/client.test.js', function () {
   });
 
   describe('getScanner(table, scan)', function () {
-    
+
     var region = function (regionInfoRow) {
       var value = regionInfoRow.getValue(HConstants.CATALOG_FAMILY, HConstants.REGIONINFO_QUALIFIER);
       var io = new DataInputBuffer(value);
@@ -600,7 +598,7 @@ describe('test/client.test.js', function () {
 
     it('should scan a table region info in .meta. with next()', function (done) {
       var tableName = Bytes.toBytes('tcif_acookie_user');
-      var startRow = HRegionInfo.createRegionName(tableName, 
+      var startRow = HRegionInfo.createRegionName(tableName,
         HConstants.EMPTY_START_ROW, HConstants.ZEROES, false);
       var scan = new Scan(startRow);
       scan.addFamily(HConstants.CATALOG_FAMILY);
@@ -627,7 +625,7 @@ describe('test/client.test.js', function () {
             // console.log(location.regionInfo.startKey.toString(),
             //   location.regionInfo.endKey.toString());
             // should get closet
-            client.locateRegion(location.regionInfo.tableName, location.regionInfo.startKey, true, 
+            client.locateRegion(location.regionInfo.tableName, location.regionInfo.startKey, true,
             function (err, loc) {
               should.not.exists(err);
               // console.log(loc.toString());
@@ -644,7 +642,7 @@ describe('test/client.test.js', function () {
               // endKey + 1 => next region
               var endKey = new Buffer(location.regionInfo.endKey.toString() + 1);
               // console.log(endKey, endKey.toString())
-              client.locateRegion(location.regionInfo.tableName, endKey, true, 
+              client.locateRegion(location.regionInfo.tableName, endKey, true,
               function (err, loc) {
                 should.not.exists(err);
                 // console.log(loc.toString());
@@ -656,19 +654,19 @@ describe('test/client.test.js', function () {
                   Bytes.compareTo(loc.regionInfo.endKey, location.regionInfo.endKey).should.above(0);
                 }
                 next();
-              });        
-            });            
+              });
+            });
           });
         };
 
         next();
-        
+
       });
     });
 
     it('should scan a table region info in .meta. with next(numberOfRows)', function (done) {
       var tableName = Bytes.toBytes('tcif_acookie_user');
-      var startRow = HRegionInfo.createRegionName(tableName, 
+      var startRow = HRegionInfo.createRegionName(tableName,
         HConstants.EMPTY_START_ROW, HConstants.ZEROES, false);
       var scan = new Scan(startRow);
       scan.addFamily(HConstants.CATALOG_FAMILY);
@@ -693,24 +691,24 @@ describe('test/client.test.js', function () {
               }
               // console.log(location.toString())
             });
-            
+
             if (closed) {
               return scanner.close(done);
             }
-            
+
             next(numberOfRows);
           });
         };
 
         next(10);
-        
+
       });
     });
 
   });
-  
+
   describe('put(table, put)', function () {
-    
+
     it('should put a row with f: to a table', function (done) {
       var table = 'tcif_acookie_actions';
       var rows = [
@@ -757,7 +755,7 @@ describe('test/client.test.js', function () {
           done();
         });
       });
-      
+
     });
 
   });
@@ -937,7 +935,7 @@ describe('test/client.test.js', function () {
       });
     });
   });
-  
+
   describe('mput', function () {
     var tableName = 'tcif_acookie_actions';
     var columns = ['f:history'];

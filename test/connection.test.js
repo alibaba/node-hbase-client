@@ -55,7 +55,7 @@ describe('test/connection.test.js', function () {
       logger: config.logger,
     });
     zk.once('connected', function (err) {
-      
+
       var rootPath = '/root-region-server';
       zk.watch(rootPath, function (err, value, zstat) {
         var items = removeMetaData(value).toString().split(',');
@@ -75,11 +75,11 @@ describe('test/connection.test.js', function () {
       });
     });
   });
-  
+
   describe('getProtocolVersion()', function () {
-    
+
     it('should return protocol version', function (done) {
-      // var wantGetProtocolVersionSendData = new Buffer([0, 0, 0, 96, 0, 0, 0, 0, 1, 0, 18, 103, 101, 116, 80, 114, 111, 116, 111, 99, 111, 108, 86, 101, 114, 115, 105, 111, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 10, 44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 6, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);      
+      // var wantGetProtocolVersionSendData = new Buffer([0, 0, 0, 96, 0, 0, 0, 0, 1, 0, 18, 103, 101, 116, 80, 114, 111, 116, 111, 99, 111, 108, 86, 101, 114, 115, 105, 111, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 10, 44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 6, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
       // var wantHeader = new Buffer([44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].slice(0, 45));
       connection.getProtocolVersion(null, null, function (err, version) {
         should.not.exists(err);
@@ -170,6 +170,27 @@ describe('test/connection.test.js', function () {
       //must wait server side accept, If do not wait, something unexpected would happened
       proxy.once('_connect', function () {
         // proxy.inStream._connections.should.equal(1);
+        done();
+      });
+    });
+
+    it('should return ECONNREFUSED and emit connectError', function (done) {
+      done = pedding(2, done);
+      var c = new Connection({
+        host: '10.232.98.58',
+        port: 66404
+      });
+      c.getProtocolVersion(null, null, function (err, version) {
+        err.name.should.equal('ConnectionRefusedException');
+        err.message.should.include('connect ECONNREFUSED');
+        should.exists(err);
+        should.not.exist(version);
+        done();
+      });
+
+      c.on('connectError', function (err) {
+        err.name.should.equal('ConnectionRefusedException');
+        err.message.should.include('connect ECONNREFUSED');
         done();
       });
     });
@@ -275,7 +296,7 @@ describe('test/connection.test.js', function () {
 // RPC_VERSION = 1
 // clazz String.class code: 10
 // clazz Long.Type code: 6
-// 
+//
 // dataLength: 100
 
 // [-34, -83, -66, -17, 0, 0, 0, 0, 1, 0, 18, 103, 101, 116, 80, 114, 111, 116, 111, 99, 111, 108, 86, 101, 114, 115, 105, 111, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 10, 44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 6, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -283,5 +304,5 @@ describe('test/connection.test.js', function () {
 
 // HEADER 45 len
 // [44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-// 
+//
 

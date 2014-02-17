@@ -82,7 +82,12 @@ exports.createNotServingRegionExceptionBuffer = function (id) {
   buf.writeInt(1); // state
   buf.writeString(name);
   buf.writeString(message);
-  return new DataInputBuffer(buf.getData());
+  buf = buf.getData();
+  var data = new Buffer(buf.length * 10);
+  for (var i = 0; i < 10; i++) {
+    buf.copy(data, i * buf.length);
+  }
+  return new DataInputBuffer(data);
 };
 
 exports.mockSocket = function () {
