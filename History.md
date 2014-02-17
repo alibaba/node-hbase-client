@@ -1,4 +1,10 @@
 
+0.3.3 / 2014-02-17 
+==================
+
+  * connection refused error instead of connection timeout error. fixed #50
+  * make sure root meta update after hbase clusters restart. fixed #49
+
 0.3.2 / 2014-02-14 
 ==================
 
