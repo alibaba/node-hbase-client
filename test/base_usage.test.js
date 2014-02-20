@@ -15,6 +15,7 @@
 
 var should = require('should');
 var mm = require('mm');
+var config = require('./config_test');
 var Client = require('../').Client;
 
 describe('base_usage.test.js', function () {
@@ -29,7 +30,48 @@ describe('base_usage.test.js', function () {
 
   afterEach(mm.restore);
 
-  describe('getRow()', function () {
+  describe('mget()', function () {
+    var rows = [
+      {row: '1', 'cf1:foo': 'bar1'},
+      {row: '2', 'cf1:foo': 'bar2'},
+      {row: '3', 'cf1:foo': 'bar3'},
+      {row: '4', 'cf1:foo': 'bar4'},
+      {row: '5', 'cf1:foo': 'bar5'},
+      {row: '6', 'cf1:foo': 'bar6'},
+      {row: '7', 'cf1:foo': 'bar7'},
+      {row: '8', 'cf1:foo': 'bar8'},
+      {row: '9', 'cf1:foo': 'bar9'},
+      {row: '10', 'cf1:foo': 'bar10'},
+      {row: '11', 'cf1:foo': 'bar11'},
+      {row: '12', 'cf1:foo': 'bar12'},
+      {row: '13', 'cf1:foo': 'bar13'},
+      {row: '14', 'cf1:foo': 'bar14'},
+      {row: '15', 'cf1:foo': 'bar15'},
+      {row: '16', 'cf1:foo': 'bar16'},
+    ];
 
+    before(function (done) {
+      client.putRow('tcif_acookie_user', rows[0].row, {'cf1:foo': 'test'}, function (err) {
+        should.not.exist(err);
+        client.mput('tcif_acookie_user', rows, done);
+      });
+    });
+
+    it('should mget return orderd results', function (done) {
+      var keys = rows.map(function (r) {
+        return r.row;
+      });
+
+      client.mget('tcif_acookie_user', keys, ['cf1:foo'], function (err, results) {
+        should.not.exist(err);
+        results.should.be.an.Array;
+        results.should.length(rows.length);
+        results.forEach(function (r, i) {
+          r.should.have.keys('cf1:foo');
+          r['cf1:foo'].toString().should.equal('bar' + (i + 1));
+        });
+        done();
+      });
+    });
   });
 });
