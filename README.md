@@ -8,16 +8,16 @@
 
 Asynchronous HBase client for Node.js, **pure JavaScript** implementation.
 
-~~**This project is just developing, Please don't use it on production env.**~~
-
-* Current State: **Only test on Hbase 0.94.0**
-* [hbase-client](https://github.com/apache/hbase/tree/trunk/hbase-client)
+* Current State: Full tests on HBase `0.94.0` and `0.94.16`
+* [Java hbase-client](https://github.com/apache/hbase/tree/trunk/hbase-client)
 
 ## Support HBase Server Versions
 
-* [x] 0.94.0
-* [ ] 0.94.8
-* [ ] 0.95.0
+* [√] 0.94.x
+    * [√] 0.94.0
+    * [√] 0.94.16
+* [ ] 0.95.x
+* [ ] 0.96.x
 
 ## Install
 
@@ -149,15 +149,15 @@ client.mdelete(tableName, rowKeys, function (err, results) {
 
 ## TODO
 
-- [x] support `put`
-- [x] benchmark
-- [x] more stable
-- [x] support `delete`
-- [x] multi actions
- - [x] multi get
- - [x] multi put
- - [x] multi delete
-- [x] fail retry
+- [√] support `put`
+- [√] benchmark
+- [√] more stable
+- [√] support `delete`
+- [√] multi actions
+    - [√] multi get
+    - [√] multi put
+    - [√] multi delete
+- [√] fail retry
 
 ## Benchmarks
 
