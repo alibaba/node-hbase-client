@@ -52,7 +52,8 @@ describe('test/client.test.js', function () {
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
         // console.log(regionLocation);
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
-        regionLocation.port.should.equal(36020);
+        regionLocation.port.should.match(/^\d+$/);
+        // regionLocation.port.should.equal(36020);
         regionLocation.should.have.property('regionInfo');
         // console.log(regionLocation);
         done();
@@ -65,7 +66,7 @@ describe('test/client.test.js', function () {
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
         // console.log(regionLocation);
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
-        regionLocation.port.should.equal(36020);
+        regionLocation.port.should.match(/^\d+$/);
         regionLocation.should.have.property('regionInfo');
         // console.log(regionLocation);
         done();
@@ -80,7 +81,7 @@ describe('test/client.test.js', function () {
         should.not.exists(err);
         // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
         regionLocation.hostname.should.include('.kgb.sqa.cm4');
-        regionLocation.port.should.equal(36020);
+        regionLocation.port.should.match(/^\d+$/);
         regionLocation.should.have.property('regionInfo');
         // console.log(regionLocation);
         done();
@@ -101,13 +102,13 @@ describe('test/client.test.js', function () {
     });
 
     it('should relocate table regions when offline error happen', function (done) {
-      var table = new Buffer('tcif_acookie_actions');
+      var table = new Buffer('tcif_acookie_user');
       var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
       var count = 0;
       var mockGetClosestRowBefore = function (regions, r, info, callback) {
         var self = this;
         process.nextTick(function () {
-          if (r.toString().indexOf('tcif_acookie_actions') >= 0 && count === 0) {
+          if (r.toString().indexOf('tcif_acookie_user') >= 0 && count === 0) {
             count++;
             var err = new Error('RegionOfflineException haha');
             err.name = 'RegionOfflineException';
@@ -288,24 +289,31 @@ describe('test/client.test.js', function () {
   });
 
   describe('getRow(table, row, columns)', function () {
+    var table = 'tcif_acookie_user';
+    var rows = [
+      'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+      '4edaMDAwMDAwMDAwMDAwMDAxNg==',
+      '7c32MDAwMDAwMDAwMDAwMDAxNw==',
+      '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
+      'f390MDAwMDAwMDAwMDAwMDAxOQ==',
+    ];
+
+    before(function (done) {
+      done = pedding(rows.length, done);
+      rows.forEach(function (r) {
+        client.putRow(table, r, {'cf1:history': r + ' cf1:history', 'cf1:qualifier2': r + ' cf1:qualifier2'}, done);
+      });
+    });
 
     it('should get a row with columns', function (done) {
-      var table = 'tcif_acookie_actions';
-      var rows = [
-        'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
-        '4edaMDAwMDAwMDAwMDAwMDAxNg==',
-        '7c32MDAwMDAwMDAwMDAwMDAxNw==',
-        '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
-        'f390MDAwMDAwMDAwMDAwMDAxOQ==',
-      ];
       done = pedding(rows.length, done);
-
       rows.forEach(function (row) {
-        client.getRow(table, row, ['f:history', 'f:qualifier2'], function (err, r) {
-          should.not.exists(err);
-          r.should.have.keys('f:history', 'f:qualifier2');
+        client.getRow(table, row, ['cf1:history', 'cf1:qualifier2'], function (err, r) {
+          should.not.exist(err);
+          should.exist(r);
+          r.should.have.keys('cf1:history', 'cf1:qualifier2');
           for (var k in r) {
-            r[k].toString().should.include(row);
+            r[k].toString().should.equal(row + ' ' + k);
           }
           done();
         });
@@ -313,46 +321,42 @@ describe('test/client.test.js', function () {
     });
 
     it('should get a row with all columns (select *)', function (done) {
-      var table = 'tcif_acookie_actions';
-      var rows = [
-        'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
-        '4edaMDAwMDAwMDAwMDAwMDAxNg==',
-        '7c32MDAwMDAwMDAwMDAwMDAxNw==',
-        '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
-        'f390MDAwMDAwMDAwMDAwMDAxOQ==',
-      ];
       done = pedding(rows.length * 4, done);
 
       rows.forEach(function (row) {
         client.getRow(table, row, null, function (err, r) {
           should.not.exists(err);
-          r.should.have.keys('f:history', 'f:qualifier2');
+          should.exist(r);
+          r.should.have.keys('cf1:history', 'cf1:qualifier2');
           for (var k in r) {
-            r[k].toString().should.include(row);
+            r[k].toString().should.equal(row + ' ' + k);
           }
           done();
         });
         client.getRow(table, row, '*', function (err, r) {
           should.not.exists(err);
-          r.should.have.keys('f:history', 'f:qualifier2');
+          should.exist(r);
+          r.should.have.keys('cf1:history', 'cf1:qualifier2');
           for (var k in r) {
-            r[k].toString().should.include(row);
+            r[k].toString().should.equal(row + ' ' + k);
           }
           done();
         });
         client.getRow(table, row, [], function (err, r) {
           should.not.exists(err);
-          r.should.have.keys('f:history', 'f:qualifier2');
+          should.exist(r);
+          r.should.have.keys('cf1:history', 'cf1:qualifier2');
           for (var k in r) {
-            r[k].toString().should.include(row);
+            r[k].toString().should.equal(row + ' ' + k);
           }
           done();
         });
         client.getRow(table, row, function (err, r) {
           should.not.exists(err);
-          r.should.have.keys('f:history', 'f:qualifier2');
+          should.exist(r);
+          r.should.have.keys('cf1:history', 'cf1:qualifier2');
           for (var k in r) {
-            r[k].toString().should.include(row);
+            r[k].toString().should.equal(row + ' ' + k);
           }
           done();
         });
@@ -360,55 +364,59 @@ describe('test/client.test.js', function () {
     });
 
     it('should get empty when row not exists', function (done) {
-      var table = 'tcif_acookie_actions';
-      var rows = [
+      var rs = [
         '1234e0abMDAwMDAwMDAwMDAwMDAxNQ==not',
         '45674edaMDAwMDAwMDAwMDAwMDAxNg==not',
         '67897c32MDAwMDAwMDAwMDAwMDAxNw==not',
         '92340ed7MDAwMDAwMDAwMDAwMDAxOA==not',
         '2543f390MDAwMDAwMDAwMDAwMDAxOQ==not',
       ];
-      done = pedding(rows.length, done);
+      done = pedding(rs.length, done);
 
-      rows.forEach(function (row) {
-        client.getRow(table, row, ['f:history', 'f:qualifier2'], function (err, r) {
+      rs.forEach(function (row) {
+        client.getRow(table, row, ['cf1:history', 'cf1:qualifier2'], function (err, r) {
           should.not.exists(err);
           should.not.exists(r);
           done();
         });
       });
-
     });
 
     it('should get NoSuchColumnFamilyException when Column family not exists', function (done) {
-      client.getRow('tcif_acookie_actions', '123123', ['foo:notexists'], function (err, r) {
+      client.getRow(table, '123123', ['foo:notexists'], function (err, r) {
         should.exists(err);
         err.name.should.equal('org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException');
-        err.message.should.include('org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException: Column family foo does not exist in region tcif_acookie_actions');
+        err.message.should.include('org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException: Column family foo does not exist in region tcif_acookie_user');
         should.not.exists(r);
         done();
       });
     });
-
   });
 
   describe('get(table, get)', function () {
+    var table = 'tcif_acookie_user';
+    var rows = [
+      'get-e0abMDAwMDAwMDAwMDAwMDAxNQ==',
+      'get-4edaMDAwMDAwMDAwMDAwMDAxNg==',
+      'get-7c32MDAwMDAwMDAwMDAwMDAxNw==',
+      'get-0ed7MDAwMDAwMDAwMDAwMDAxOA==',
+      'get-f390MDAwMDAwMDAwMDAwMDAxOQ==',
+    ];
 
-    it('should get a row with f: from a table', function (done) {
-      var table = 'tcif_acookie_actions';
-      var rows = [
-        'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
-        '4edaMDAwMDAwMDAwMDAwMDAxNg==',
-        '7c32MDAwMDAwMDAwMDAwMDAxNw==',
-        '0ed7MDAwMDAwMDAwMDAwMDAxOA==',
-        'f390MDAwMDAwMDAwMDAwMDAxOQ==',
-      ];
+    before(function (done) {
+      done = pedding(rows.length, done);
+      rows.forEach(function (r) {
+        client.putRow(table, r, {'cf1:history': r + ' cf1:history', 'cf1:qualifier2': r + ' cf1:qualifier2'}, done);
+      });
+    });
+
+    it('should get a row with cf1: from a table', function (done) {
       done = pedding(rows.length * 2, done);
 
       rows.forEach(function (row) {
         var get = new Get(row);
-        get.addColumn('f', 'history');
-        get.addColumn('f', 'qualifier2');
+        get.addColumn('cf1', 'history');
+        get.addColumn('cf1', 'qualifier2');
         // get.maxVersions = 1;
         client.get(table, get, function (err, result) {
           should.not.exists(err);
@@ -424,43 +432,30 @@ describe('test/client.test.js', function () {
       });
 
       rows.forEach(function (row) {
-        client.getRow(table, row, ['f:history', 'f:qualifier2'], function (err, data) {
+        client.getRow(table, row, ['cf1:history', 'cf1:qualifier2'], function (err, data) {
           should.not.exists(err);
-          data.should.have.keys('f:history', 'f:qualifier2');
-          data['f:history'].toString().should.include(row);
-          data['f:qualifier2'].toString().should.include(row);
+          data.should.have.keys('cf1:history', 'cf1:qualifier2');
+          data['cf1:history'].toString().should.include(row);
+          data['cf1:qualifier2'].toString().should.include(row);
           done();
         });
-      });
-
-    });
-
-    it.skip('should get table `cal_user_activity_prefer:5d86cf491024d99c6321e2b17fdf8a6b` all columns data not timeout',
-    function (done) {
-      client.getRow('cal_user_activity_prefer', function (err, data) {
-        should.not.exists(err);
-        data.should.have.keys('f:history', 'f:qualifier2');
-        data['f:history'].toString().should.include(row);
-        data['f:qualifier2'].toString().should.include(row);
-        done();
       });
     });
 
     it('should get empty when row not exists', function (done) {
-      var table = 'tcif_acookie_actions';
-      var rows = [
-        '1234e0abMDAwMDAwMDAwMDAwMDAxNQ==not',
-        '45674edaMDAwMDAwMDAwMDAwMDAxNg==not',
-        '67897c32MDAwMDAwMDAwMDAwMDAxNw==not',
-        '92340ed7MDAwMDAwMDAwMDAwMDAxOA==not',
-        '2543f390MDAwMDAwMDAwMDAwMDAxOQ==not',
+      var rs = [
+        'get-1234e0abMDAwMDAwMDAwMDAwMDAxNQ==not',
+        'get-45674edaMDAwMDAwMDAwMDAwMDAxNg==not',
+        'get-67897c32MDAwMDAwMDAwMDAwMDAxNw==not',
+        'get-92340ed7MDAwMDAwMDAwMDAwMDAxOA==not',
+        'get-2543f390MDAwMDAwMDAwMDAwMDAxOQ==not',
       ];
-      done = pedding(rows.length, done);
+      done = pedding(rs.length, done);
 
-      rows.forEach(function (row) {
+      rs.forEach(function (row) {
         var get = new Get(row);
-        get.addColumn('f', 'history');
-        get.addColumn('f', 'qualifier2');
+        get.addColumn('cf1', 'history');
+        get.addColumn('cf1', 'qualifier2');
         // get.maxVersions = 1;
         client.get(table, get, function (err, result) {
           should.not.exists(err);
@@ -477,7 +472,6 @@ describe('test/client.test.js', function () {
           done();
         });
       });
-
     });
 
     describe.skip('mock org.apache.hadoop.hbase.NotServingRegionException', function () {
