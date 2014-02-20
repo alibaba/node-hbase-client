@@ -61,14 +61,20 @@ describe('base_usage.test.js', function () {
       var keys = rows.map(function (r) {
         return r.row;
       });
+      keys.unshift('0');
+      keys.push('17');
 
       client.mget('tcif_acookie_user', keys, ['cf1:foo'], function (err, results) {
         should.not.exist(err);
         results.should.be.an.Array;
-        results.should.length(rows.length);
+        results.should.length(rows.length + 2);
         results.forEach(function (r, i) {
+          if (i === 0 || i === 17) {
+            should.not.exist(r);
+            return;
+          }
           r.should.have.keys('cf1:foo');
-          r['cf1:foo'].toString().should.equal('bar' + (i + 1));
+          r['cf1:foo'].toString().should.equal('bar' + i);
         });
         done();
       });
