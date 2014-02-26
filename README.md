@@ -237,15 +237,15 @@ Thanks for @[haosdent](https://github.com/haosdent) support the test hbase clust
 $ git summary
 
  project  : node-hbase-client
- repo age : 11 months
- active   : 48 days
- commits  : 129
- files    : 277
+ repo age : 12 months
+ active   : 51 days
+ commits  : 146
+ files    : 286
  authors  :
-   108  fengmk2                 83.7%
-    19  tangyao                 14.7%
-     1  Alsotang                0.8%
-     1  不四                  0.8%
+   125  fengmk2                 85.6%
+    19  tangyao                 13.0%
+     1  Alsotang                0.7%
+     1  不四                  0.7%
 ```
 
 ## License

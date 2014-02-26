@@ -1,4 +1,11 @@
 
+0.4.0 / 2014-02-26 
+==================
+
+  * add missing filter name
+  * Support simple filter, like only scan row key.
+  * add null item
+
 0.3.5 / 2014-02-20 
 ==================
 
