@@ -172,7 +172,7 @@ filterList.addFilter(new filters.KeyOnlyFilter());
 var scan = new Scan('scanner-row0');
 scan.setFilter(filterList);
 
-client.getScanner('tcif_acookie_user', scan, function (err, scanner) {\
+client.getScanner('user', scan, function (err, scanner) {\
   var index = 0;
   var next = function (numberOfRows) {
     scanner.next(numberOfRows, function (err, rows) {
