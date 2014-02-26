@@ -769,6 +769,58 @@ describe('test/client.test.js', function () {
         });
       });
 
+      it('should scan rows with filter: only return row key, value is length',
+      function (done) {
+        var tableName = Bytes.toBytes('tcif_acookie_user');
+        var scan = new Scan('scanner-row0', 'scanner-row5');
+        var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
+        filterList.addFilter(new filters.FirstKeyOnlyFilter());
+        filterList.addFilter(new filters.KeyOnlyFilter(true));
+        scan.setFilter(filterList);
+
+        client.getScanner('tcif_acookie_user', scan, function (err, scanner) {
+          should.not.exists(err);
+          should.exists(scanner);
+          scanner.should.have.property('id').with.be.instanceof(Long);
+          scanner.should.have.property('server');
+
+          var index = 0;
+
+          var next = function (numberOfRows) {
+            scanner.next(numberOfRows, function (err, rows) {
+              // console.log(rows)
+              should.not.exists(err);
+              if (rows.length === 0) {
+                index.should.equal(5);
+                return scanner.close(done);
+              }
+
+              rows.should.length(1);
+
+              var closed = false;
+              rows.forEach(function (row) {
+                var kvs = row.raw();
+                var r = {};
+                for (var i = 0; i < kvs.length; i++) {
+                  var kv = kvs[i];
+                  kv.getRow().toString().should.equal('scanner-row' + index++);
+                  console.log('%j, %j, %j', kv.getRow().toString(), kv.toString(), kv.getValue().toString());
+                  kv.toString().should.include('/vlen=4/');
+                }
+              });
+
+
+              if (closed) {
+                return scanner.close(done);
+              }
+
+              next(numberOfRows);
+            });
+          };
+          next(1);
+        });
+      });
+
     });
 
     describe('put(table, put)', function () {
