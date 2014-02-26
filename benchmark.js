@@ -10,8 +10,8 @@
  * Module dependencies.
  */
 
-var HBase = require('./');
-var config = require('./test/config');
+var HBase = require('../');
+var config = require('../test/config');
 var utility = require('utility');
 
 var client = HBase.create(config);
@@ -52,9 +52,9 @@ function showResult(name, result) {
   var use = Date.now() - result.start;
   console.log('---------------- ' + name + ' --------------------');
   console.log('Concurrency: %d', concurrency);
-  console.log('Total: %s ms\nQPS: %d\nRT %d ms', 
+  console.log('Total: %s ms\nQPS: %d\nRT %d ms',
     use,
-    (result.total / use * 1000).toFixed(0), 
+    (result.total / use * 1000).toFixed(0),
     (result.use / result.total).toFixed(2));
   console.log('Total %d, Success: %d, Fail: %d', result.total, result.success, result.fail);
   console.log('-------------------------------------------');
@@ -131,7 +131,7 @@ function callGetRow(callback) {
   }
   var row = utility.md5('test row' + i++);
   var startTime = Date.now();
-  client.getRow('tcif_acookie_user', row, ['cf1:history', 'cf1:qualifier2'], function (err, rows) {    
+  client.getRow('tcif_acookie_user', row, ['cf1:history', 'cf1:qualifier2'], function (err, rows) {
     getResult.total++;
     // if (getResult.total >= MAX_NUM) {
     //   console.log('getStop');
@@ -163,7 +163,7 @@ function callMGet(callback) {
     rows.push(row);
   }
   var startTime = Date.now();
-  client.mget('tcif_acookie_user', rows, ['cf1:history', 'cf1:qualifier2'], function (err, items) {    
+  client.mget('tcif_acookie_user', rows, ['cf1:history', 'cf1:qualifier2'], function (err, items) {
     // mgetResult.total += count;
     mgetResult.total++;
     // if (getResult.total >= MAX_NUM) {
@@ -222,5 +222,5 @@ setInterval(function () {
     showResult('MGet(), count: ' + MGetCount, mgetResult);
   } else {
     showResult('Get()', getResult);
-  }  
+  }
 }, 60000);

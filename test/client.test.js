@@ -30,6 +30,7 @@ var Bytes = require('../lib/util/bytes');
 var HRegionLocation = require('../lib/hregion_location');
 var Result = require('../lib/result');
 var Delete = require('../lib/delete');
+var filters = require('../').filters;
 
 describe('test/client.test.js', function () {
 
@@ -571,6 +572,21 @@ describe('test/client.test.js', function () {
     });
 
     describe('getScanner(table, scan)', function () {
+      before(function (done) {
+        var table = 'tcif_acookie_user';
+        var rows = [
+          'scanner-row0',
+          'scanner-row1',
+          'scanner-row2',
+          'scanner-row3',
+          'scanner-row4',
+          'scanner-row5',
+        ];
+        done = pedding(rows.length, done);
+        rows.forEach(function (r) {
+          client.putRow(table, r, {'cf1:history': r + ' cf1:history', 'cf1:qualifier2': r + ' cf1:qualifier2'}, done);
+        });
+      });
 
       var region = function (regionInfoRow) {
         var value = regionInfoRow.getValue(HConstants.CATALOG_FAMILY, HConstants.REGIONINFO_QUALIFIER);
@@ -698,6 +714,110 @@ describe('test/client.test.js', function () {
 
           next(10);
 
+        });
+      });
+
+      it('should scan rows one by one with filter: only return row key, no values',
+      function (done) {
+        var tableName = Bytes.toBytes('tcif_acookie_user');
+        var scan = new Scan('scanner-row0', 'scanner-row5');
+        var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
+        filterList.addFilter(new filters.FirstKeyOnlyFilter());
+        filterList.addFilter(new filters.KeyOnlyFilter());
+        scan.setFilter(filterList);
+
+        client.getScanner('tcif_acookie_user', scan, function (err, scanner) {
+          should.not.exists(err);
+          should.exists(scanner);
+          scanner.should.have.property('id').with.be.instanceof(Long);
+          scanner.should.have.property('server');
+
+          var index = 0;
+
+          var next = function (numberOfRows) {
+            scanner.next(numberOfRows, function (err, rows) {
+              // console.log(rows)
+              should.not.exists(err);
+              if (rows.length === 0) {
+                index.should.equal(5);
+                return scanner.close(done);
+              }
+
+              rows.should.length(1);
+
+              var closed = false;
+              rows.forEach(function (row) {
+                var kvs = row.raw();
+                var r = {};
+                for (var i = 0; i < kvs.length; i++) {
+                  var kv = kvs[i];
+                  kv.getRow().toString().should.equal('scanner-row' + index++);
+                  kv.toString().should.include('/vlen=0/');
+                  console.log(kv.getRow().toString(), kv.toString())
+                }
+              });
+
+
+              if (closed) {
+                return scanner.close(done);
+              }
+
+              next(numberOfRows);
+            });
+          };
+          next(1);
+        });
+      });
+
+      it('should scan rows with filter: only return row key, value is length',
+      function (done) {
+        var tableName = Bytes.toBytes('tcif_acookie_user');
+        var scan = new Scan('scanner-row0', 'scanner-row5');
+        var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
+        filterList.addFilter(new filters.FirstKeyOnlyFilter());
+        filterList.addFilter(new filters.KeyOnlyFilter(true));
+        scan.setFilter(filterList);
+
+        client.getScanner('tcif_acookie_user', scan, function (err, scanner) {
+          should.not.exists(err);
+          should.exists(scanner);
+          scanner.should.have.property('id').with.be.instanceof(Long);
+          scanner.should.have.property('server');
+
+          var index = 0;
+
+          var next = function (numberOfRows) {
+            scanner.next(numberOfRows, function (err, rows) {
+              // console.log(rows)
+              should.not.exists(err);
+              if (rows.length === 0) {
+                index.should.equal(5);
+                return scanner.close(done);
+              }
+
+              rows.should.length(1);
+
+              var closed = false;
+              rows.forEach(function (row) {
+                var kvs = row.raw();
+                var r = {};
+                for (var i = 0; i < kvs.length; i++) {
+                  var kv = kvs[i];
+                  kv.getRow().toString().should.equal('scanner-row' + index++);
+                  console.log('%j, %j, %j', kv.getRow().toString(), kv.toString(), kv.getValue().toString());
+                  kv.toString().should.include('/vlen=4/');
+                }
+              });
+
+
+              if (closed) {
+                return scanner.close(done);
+              }
+
+              next(numberOfRows);
+            });
+          };
+          next(1);
         });
       });
 

@@ -22,6 +22,7 @@ var HRegionInfo = require('../lib/hregion_info');
 var Scan = require('../lib/scan');
 var HConstants = require('../lib/hconstants');
 var DataOutputBuffer = require('../lib/data_output_buffer');
+var filters = require('../').filters;
 
 describe('test/scan.test.js', function () {
   describe('write()', function () {
@@ -44,6 +45,21 @@ describe('test/scan.test.js', function () {
         bytes.length.should.above(0);
         testJavaBytes('write', tableName, bytes);
       }
+    });
+
+    it('should write with filter', function () {
+      var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
+      filterList.addFilter(new filters.FirstKeyOnlyFilter());
+      filterList.addFilter(new filters.KeyOnlyFilter());
+      var scan = new Scan('scanner-row0');
+      scan.setFilter(filterList);
+
+      var out = new DataOutputBuffer();
+      scan.write(out);
+      var bytes = out.getData();
+      bytes.length.should.above(0);
+      bytes[0] = 3; // java scan version is 3
+      testJavaBytes('write', 'with_filter', bytes);
     });
   });
 });
