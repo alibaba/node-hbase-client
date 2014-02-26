@@ -147,6 +147,68 @@ client.mdelete(tableName, rowKeys, function (err, results) {
 
 ```
 
+## Scan
+
+### Scan table and return row key only
+
+Java code:
+
+```java
+FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+filterList.addFilter(new FirstKeyOnlyFilter());
+filterList.addFilter(new KeyOnlyFilter());
+Scan scan = new Scan(Bytes.toBytes("scanner-row0"));
+scan.setFilter(filterList);
+```
+
+Nodejs code:
+
+```js
+var filters = require('hbase').filters;
+
+var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
+filterList.addFilter(new filters.FirstKeyOnlyFilter());
+filterList.addFilter(new filters.KeyOnlyFilter());
+var scan = new Scan('scanner-row0');
+scan.setFilter(filterList);
+
+client.getScanner('tcif_acookie_user', scan, function (err, scanner) {\
+  var index = 0;
+  var next = function (numberOfRows) {
+    scanner.next(numberOfRows, function (err, rows) {
+      // console.log(rows)
+      should.not.exists(err);
+      if (rows.length === 0) {
+        index.should.equal(5);
+        return scanner.close(done);
+      }
+
+      rows.should.length(1);
+
+      var closed = false;
+      rows.forEach(function (row) {
+        var kvs = row.raw();
+        var r = {};
+        for (var i = 0; i < kvs.length; i++) {
+          var kv = kvs[i];
+          kv.getRow().toString().should.equal('scanner-row' + index++);
+          kv.toString().should.include('/vlen=0/');
+          console.log(kv.getRow().toString(), kv.toString())
+        }
+      });
+
+      if (closed) {
+        return scanner.close(done);
+      }
+
+      next(numberOfRows);
+    });
+  };
+
+  next(1);
+});
+```
+
 ## TODO
 
 - [√] support `put`
@@ -158,6 +220,10 @@ client.mdelete(tableName, rowKeys, function (err, results) {
     - [√] multi put
     - [√] multi delete
 - [√] fail retry
+- [ ] filters
+    - [√] FilterList
+    - [√] FirstKeyOnlyFilter
+    - [√] KeyOnlyFilter
 
 ## Benchmarks
 

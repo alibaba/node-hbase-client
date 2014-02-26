@@ -16,7 +16,7 @@
 var should = require('should');
 var mm = require('mm');
 var hbase = require('../');
-var config = require('./config');
+var config = require('./config_test');
 
 describe('client_region.test.js', function () {
   var client = null;
@@ -32,8 +32,8 @@ describe('client_region.test.js', function () {
 
   it('should get rowkey from wrong region', function (done) {
     var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
-    get.addColumn('cf', 'w02');
-    client.get('bulkwriter_test', get, function (err, result) {
+    get.addColumn('cf1', 'history');
+    client.get('tcif_acookie_user', get, function (err, result) {
       should.not.exist(err);
       var kvs = result.raw();
       // if (kvs.length > 0) {
@@ -42,7 +42,7 @@ describe('client_region.test.js', function () {
       //     console.log('kv: %s: %s', kv.getFamily().toString() + ':' + kv.getQualifier().toString(), kv.getValue().toString());
       //   }
       // }
-      var location = client.getCachedLocation('bulkwriter_test', get.getRow());
+      var location = client.getCachedLocation('tcif_acookie_user', get.getRow());
       console.log(location.toString());
       client.getRegionConnection(location.getHostname(), location.getPort(), function (err, server) {
         if (err) {
@@ -50,7 +50,7 @@ describe('client_region.test.js', function () {
         }
 
         var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
-        get2.addColumn('cf', 'w02');
+        get2.addColumn('cf1', 'history');
         server.get(location.getRegionInfo().getRegionName(), get2, function (err, result) {
           should.exist(err);
           err.name.should.equal('org.apache.hadoop.hbase.regionserver.WrongRegionException');
@@ -63,8 +63,8 @@ describe('client_region.test.js', function () {
 
   it('should get wrong region and retry from new region', function (done) {
     var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
-    get.addColumn('cf', 'w02');
-    client.get('bulkwriter_test', get, function (err, result) {
+    get.addColumn('cf1', 'history');
+    client.get('tcif_acookie_user', get, function (err, result) {
       should.not.exist(err);
       var kvs = result.raw();
       // if (kvs.length > 0) {
@@ -73,15 +73,15 @@ describe('client_region.test.js', function () {
       //     console.log('kv: %s: %s', kv.getFamily().toString() + ':' + kv.getQualifier().toString(), kv.getValue().toString());
       //   }
       // }
-      var location = client.getCachedLocation('bulkwriter_test', get.getRow());
+      var location = client.getCachedLocation('tcif_acookie_user', get.getRow());
       var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
-      get2.addColumn('cf', 'w02');
+      get2.addColumn('cf1', 'history');
       console.log(location.toString());
       mm(client, 'locateRegion', function (tableName, row, useCache, callback) {
         callback(null, location);
         mm.restore();
       });
-      client.get('bulkwriter_test', get2, function (err, result) {
+      client.get('tcif_acookie_user', get2, function (err, result) {
         should.not.exist(err);
         should.exist(result);
         var kvs = result.raw();
@@ -98,17 +98,17 @@ describe('client_region.test.js', function () {
 
   it('should error when retry over 3 times', function (done) {
     var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
-    get.addColumn('cf', 'w02');
-    client.get('bulkwriter_test', get, function (err, result) {
+    get.addColumn('cf1', 'w02');
+    client.get('tcif_acookie_user', get, function (err, result) {
       should.not.exist(err);
       should.exist(result);
-      var location = client.getCachedLocation('bulkwriter_test', get.getRow());
+      var location = client.getCachedLocation('tcif_acookie_user', get.getRow());
       var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
-      get2.addColumn('cf', 'w02');
+      get2.addColumn('cf1', 'w02');
       mm(client, 'locateRegion', function (tableName, row, useCache, callback) {
         callback(null, location);
       });
-      client.get('bulkwriter_test', get2, function (err, result) {
+      client.get('tcif_acookie_user', get2, function (err, result) {
         should.exist(err);
         err.name.should.equal('org.apache.hadoop.hbase.regionserver.WrongRegionException');
         should.not.exist(result);
@@ -119,21 +119,21 @@ describe('client_region.test.js', function () {
 
   it('should refused error', function (done) {
     var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
-    get.addColumn('cf', 'w02');
-    client.get('bulkwriter_test', get, function (err, result) {
+    get.addColumn('cf1', 'w02');
+    client.get('tcif_acookie_user', get, function (err, result) {
       should.not.exist(err);
       should.exist(result);
-      var location = client.getCachedLocation('bulkwriter_test', get.getRow());
+      var location = client.getCachedLocation('tcif_acookie_user', get.getRow());
       mm(location, 'getPort', function () {
         return 64401;
       });
 
       var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
-      get2.addColumn('cf', 'w02');
+      get2.addColumn('cf1', 'w02');
       mm(client, 'locateRegion', function (tableName, row, useCache, callback) {
         callback(null, location);
       });
-      client.get('bulkwriter_test', get2, function (err, result) {
+      client.get('tcif_acookie_user', get2, function (err, result) {
         should.exist(err);
         err.name.should.equal('ConnectionRefusedException');
         should.not.exist(result);

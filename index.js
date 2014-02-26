@@ -16,5 +16,6 @@ exports.Put = require('./lib/put');
 exports.Scan = require('./lib/scan');
 exports.Result = require('./lib/result');
 exports.Client = require('./lib/client');
+exports.filters = require('./lib/filters');
 
 exports.create = exports.Client.create;
