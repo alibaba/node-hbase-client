@@ -77,7 +77,6 @@ describe('test/connection.test.js', function () {
   });
 
   describe('getProtocolVersion()', function () {
-
     it('should return protocol version', function (done) {
       // var wantGetProtocolVersionSendData = new Buffer([0, 0, 0, 96, 0, 0, 0, 0, 1, 0, 18, 103, 101, 116, 80, 114, 111, 116, 111, 99, 111, 108, 86, 101, 114, 115, 105, 111, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 10, 44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 6, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
       // var wantHeader = new Buffer([44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].slice(0, 45));
@@ -178,8 +177,9 @@ describe('test/connection.test.js', function () {
       done = pedding(2, done);
       var c = new Connection({
         host: '10.232.98.58',
-        port: 66404
+        port: 65535
       });
+
       c.getProtocolVersion(null, null, function (err, version) {
         err.name.should.equal('ConnectionRefusedException');
         err.message.should.include('connect ECONNREFUSED');
