@@ -1,4 +1,10 @@
 
+0.4.1 / 2014-02-27 
+==================
+
+  * use dns.lookup to resolve domain. fixed #54
+  * key only filter test case value is length buffer int
+
 0.4.0 / 2014-02-26 
 ==================
 
