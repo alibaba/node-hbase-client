@@ -804,8 +804,11 @@ describe('test/client.test.js', function () {
                 for (var i = 0; i < kvs.length; i++) {
                   var kv = kvs[i];
                   kv.getRow().toString().should.equal('scanner-row' + index++);
-                  console.log('%j, %j, %j', kv.getRow().toString(), kv.toString(), kv.getValue().toString());
+                  var len = kv.getValue().readUInt32BE(0);
+                  console.log('%j, %j, %j, %d',
+                    kv.getRow().toString(), kv.toString(), kv.getValue().toString(), len);
                   kv.toString().should.include('/vlen=4/');
+                  len.should.equal(24);
                 }
               });
 
