@@ -23,6 +23,7 @@
     "zookeeper-watcher": ">=0.2.0"
   },
   "devDependencies": {
+    "jshint": "*",
     "autod": "*",
     "benchmark": "*",
     "blanket": "*",

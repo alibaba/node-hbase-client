@@ -6,6 +6,9 @@ MOCHA_OPTS =
 install:
 	@npm install --registry=http://r.cnpmjs.org
 
+jshint: install
+	@./node_modules/.bin/jshint .
+
 test: install
 	@NODE_ENV=test ./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
