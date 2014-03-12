@@ -1,4 +1,9 @@
 
+0.4.2 / 2014-03-12 
+==================
+
+  * processBatch() will retry when region server return org.apache.hadoop.hbase.* Exception fixed #55
+
 0.4.1 / 2014-02-27 
 ==================
 
