@@ -30,6 +30,82 @@ describe('client_region.test.js', function () {
 
   afterEach(mm.restore);
 
+  describe('processBatch()', function () {
+    it('should mget from wrong region', function (done) {
+      var table = 'tcif_acookie_user';
+      var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
+      get.addColumn('cf1', 'history');
+
+      client.processBatch(table, [get], true, 0, function (err, results) {
+        should.not.exist(err);
+        results.should.length(1);
+        var location = client.getCachedLocation(table, get.getRow());
+        mm(client, 'locateRegion', function () {
+          var cb = arguments[arguments.length - 1];
+          cb(null, location);
+        });
+
+        client.mget(table, ['0338472dd25d0faeacbef9b957950961', 'fdbf2da2cc85e1c79f953a3d8f482edf'], ['cf1:history'],
+        function (err, results) {
+          should.exist(err);
+          err.name.should.equal('org.apache.hadoop.hbase.regionserver.WrongRegionException');
+          done();
+        });
+      });
+    });
+
+    it('should batch process from wrong region', function (done) {
+      var table = 'tcif_acookie_user';
+      var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
+      get.addColumn('cf1', 'history');
+      var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
+      get2.addColumn('cf1', 'history');
+
+      client.processBatch(table, [get], true, 0, function (err, results) {
+        should.not.exist(err);
+        results.should.length(1);
+        var location = client.getCachedLocation(table, get.getRow());
+        // console.log('location: ', location.toString());
+        mm(client, 'locateRegion', function () {
+          var cb = arguments[arguments.length - 1];
+          cb(null, location);
+        });
+
+        client.processBatch(table, [get2], true, 0, function (err, results) {
+          should.exist(err);
+          err.name.should.equal('org.apache.hadoop.hbase.regionserver.WrongRegionException');
+          done();
+        });
+      });
+    });
+
+    it('should mget fail first on wrong region and retry clean region caches', function (done) {
+      var table = 'tcif_acookie_user';
+      var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
+      get.addColumn('cf1', 'history');
+      var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
+      get2.addColumn('cf1', 'history');
+
+      client.processBatch(table, [get], true, 0, function (err, results) {
+        should.not.exist(err);
+        results.should.length(1);
+        var location = client.getCachedLocation(table, get.getRow());
+        // console.log('location: ', location.toString());
+        mm(client, 'locateRegion', function () {
+          var cb = arguments[arguments.length - 1];
+          mm.restore();
+          cb(null, location);
+        });
+
+        client.processBatch(table, [get2], true, 0, function (err, results) {
+          should.not.exist(err);
+          results.should.length(1);
+          done();
+        });
+      });
+    });
+  });
+
   it('should get rowkey from wrong region', function (done) {
     var get = new hbase.Get('0338472dd25d0faeacbef9b957950961');
     get.addColumn('cf1', 'history');
@@ -45,9 +121,7 @@ describe('client_region.test.js', function () {
       var location = client.getCachedLocation('tcif_acookie_user', get.getRow());
       console.log(location.toString());
       client.getRegionConnection(location.getHostname(), location.getPort(), function (err, server) {
-        if (err) {
-          return callback(err);
-        }
+        should.not.exist(err);
 
         var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
         get2.addColumn('cf1', 'history');

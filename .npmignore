@@ -10,3 +10,4 @@ readable.js
 examples/
 test/config.js
 docs/
+test/check_wrong_region.js

@@ -13,7 +13,7 @@ test: install
 		$(MOCHA_OPTS) \
 		$(TESTS)
 
-test-cov: install
+test-cov cov: install
 	@NODE_HBASE_CLENT_COV=1 $(MAKE) test MOCHA_OPTS="--require blanket" REPORTER=html-cov | ./node_modules/.bin/cov
 
 test-all: test test-cov
