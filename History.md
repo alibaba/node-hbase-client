@@ -1,4 +1,10 @@
 
+0.4.3 / 2014-03-12 
+==================
+
+  * fix _storeRegionInfo() return null TypeError
+  * RegionInfo getRegionNameAsString typeError bug fix
+
 0.4.2 / 2014-03-12 
 ==================
 
