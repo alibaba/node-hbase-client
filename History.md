@@ -1,4 +1,9 @@
 
+0.4.4 / 2014-03-13 
+==================
+
+  * add missing RegionOfflineException to errors
+
 0.4.3 / 2014-03-12 
 ==================
 
