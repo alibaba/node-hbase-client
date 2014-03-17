@@ -36,7 +36,7 @@ describe('test/get.test.js', function () {
         var maxVersions = item[3];
         var get = new Get(row);
         get.addColumn(family, qualifier);
-        get.setMaxVersions(maxVersions)
+        get.setMaxVersions(maxVersions);
         var out = new DataOutputBuffer();
         get.write(out);
         var bytes = out.getData();
