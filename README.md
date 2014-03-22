@@ -25,6 +25,45 @@ Asynchronous HBase client for Node.js, **pure JavaScript** implementation.
 $ npm install hbase-client
 ```
 
+## Get Started with `CRUD`
+
+* Create a hbase client through zookeeper:
+
+```js
+var HBase = require('hbase-client');
+
+var client = HBase.create({
+  zookeeperHosts: [
+    '127.0.0.1:2181' // only local zookeeper
+  ],
+  zookeeperRoot: '/hbase-0.94.16',
+});
+```
+
+* Put a data row to hbase:
+
+```js
+client.putRow('someTableName', 'rowkey1', {'f1:name': 'foo name', 'f1:age': '18'}, function (err) {
+  console.log(err);
+});
+```
+
+* Get the row we put:
+
+```js
+client.getRow('someTableName', 'rowkey1', ['f1:name', 'f1:age'], function (err, row) {
+  console.log(row);
+});
+```
+
+* Delete the row we put:
+
+```js
+client.deleteRow('someTableName', 'rowkey1', function (err) {
+  console.log(err);
+});
+```
+
 ## Usage
 
 ### `get(table, get, callback)`: Get a row from a table
