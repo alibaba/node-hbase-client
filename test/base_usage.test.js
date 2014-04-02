@@ -51,20 +51,20 @@ describe('base_usage.test.js', function () {
     ];
 
     before(function (done) {
-      client.putRow('tcif_acookie_user', rows[0].row, {'cf1:foo': 'test'}, function (err) {
+      client.putRow(config.tableUser, rows[0].row, {'cf1:foo': 'test'}, function (err) {
         should.not.exist(err);
-        client.mput('tcif_acookie_user', rows, done);
+        client.mput(config.tableUser, rows, done);
       });
     });
 
-    it('should mget return orderd results', function (done) {
+    it('should mget return ordered results', function (done) {
       var keys = rows.map(function (r) {
         return r.row;
       });
       keys.unshift('0');
       keys.push('17');
 
-      client.mget('tcif_acookie_user', keys, ['cf1:foo'], function (err, results) {
+      client.mget(config.tableUser, keys, ['cf1:foo'], function (err, results) {
         should.not.exist(err);
         results.should.be.an.Array;
         results.should.length(rows.length + 2);

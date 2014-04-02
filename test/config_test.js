@@ -29,6 +29,12 @@ var config = {
     error: function () {},
   },
   rpcTimeout: 40000,
+  hostnamePart: '.kgb.sqa.cm4',
+  invalidHost: '10.232.98.58',
+  invalidPort: 65535,
+  tableUser: 'tcif_acookie_user',
+  tableActions: 'tcif_acookie_actions',
+  regionServer: 'dw48.kgb.sqa.cm4:36020',
 };
 
 config.clusters = [
