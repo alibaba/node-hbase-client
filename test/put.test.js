@@ -36,7 +36,7 @@ describe('test/put.test.js', function () {
         var f = item[1];
         var q = item[2];
         var v = item[3];
-        var put = new Put(r)
+        var put = new Put(r);
         var kv = put.createPutKeyValue(f, q, HConstants.LATEST_TIMESTAMP, v);
         utils.checkBytes(kv.bytes, 
           fs.readFileSync(path.join(utils.fixtures, 
