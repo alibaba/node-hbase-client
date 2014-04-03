@@ -23,12 +23,13 @@ var Scan = require('../lib/scan');
 var HConstants = require('../lib/hconstants');
 var DataOutputBuffer = require('../lib/data_output_buffer');
 var filters = require('../').filters;
+var config = require('./config_test');
 
 describe('test/scan.test.js', function () {
   describe('write()', function () {
     var testJavaBytes = utils.createTestBytes('scan');
     var cases = [
-      "tcif_acookie_actions",
+      config.tableActions,
       ".meta.",
     ];
 

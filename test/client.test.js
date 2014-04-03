@@ -33,6 +33,7 @@ var Delete = require('../lib/delete');
 var filters = require('../').filters;
 
 describe('test/client.test.js', function () {
+  this.timeout(30000);
 
   config.clusters.forEach(function (zkConfig) {
   describe('cluster ' + zkConfig.zookeeperRoot, function () {
@@ -57,7 +58,7 @@ describe('test/client.test.js', function () {
           should.not.exists(err);
           // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
           // console.log(regionLocation);
-          regionLocation.hostname.should.include('.kgb.sqa.cm4');
+          regionLocation.hostname.should.include(config.hostnamePart);
           regionLocation.port.should.match(/^\d+$/);
           // regionLocation.port.should.equal(36020);
           regionLocation.should.have.property('regionInfo');
@@ -71,7 +72,7 @@ describe('test/client.test.js', function () {
           should.not.exists(err);
           // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
           // console.log(regionLocation);
-          regionLocation.hostname.should.include('.kgb.sqa.cm4');
+          regionLocation.hostname.should.include(config.hostnamePart);
           regionLocation.port.should.match(/^\d+$/);
           regionLocation.should.have.property('regionInfo');
           // console.log(regionLocation);
@@ -81,12 +82,12 @@ describe('test/client.test.js', function () {
 
       it('should locate a region with table and row', function (done) {
         // tcif_acookie_actions, f390MDAwMDAwMDAwMDAwMDAxOQ==
-        var table = new Buffer('tcif_acookie_user');
+        var table = new Buffer(config.tableUser);
         var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
         client.locateRegion(table, row, function (err, regionLocation) {
           should.not.exists(err);
           // {"hostname":"dw48.kgb.sqa.cm4","port":36020,"startcode":1366598005029}
-          regionLocation.hostname.should.include('.kgb.sqa.cm4');
+          regionLocation.hostname.should.include(config.hostnamePart);
           regionLocation.port.should.match(/^\d+$/);
           regionLocation.should.have.property('regionInfo');
           // console.log(regionLocation);
@@ -108,13 +109,13 @@ describe('test/client.test.js', function () {
       });
 
       it('should relocate table regions when offline error happen', function (done) {
-        var table = new Buffer('tcif_acookie_user');
+        var table = new Buffer(config.tableUser);
         var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
         var count = 0;
         var mockGetClosestRowBefore = function (regions, r, info, callback) {
           var self = this;
           process.nextTick(function () {
-            if (r.toString().indexOf('tcif_acookie_user') >= 0 && count === 0) {
+            if (r.toString().indexOf(config.tableUser) >= 0 && count === 0) {
               count++;
               var err = new Error('RegionOfflineException haha');
               err.name = 'RegionOfflineException';
@@ -126,7 +127,7 @@ describe('test/client.test.js', function () {
 
         client.locateRegion(table, row, true, function (err, regionLocation) {
           should.not.exists(err);
-          regionLocation.hostname.should.include('.kgb.sqa.cm4');
+          regionLocation.hostname.should.include(config.hostnamePart);
           regionLocation.should.have.property('regionInfo');
           regionLocation.__test__name = 'regionLocation1';
 
@@ -147,7 +148,7 @@ describe('test/client.test.js', function () {
               mm.restore();
               should.not.exists(err);
               regionLocation3.should.not.have.property('__test__name');
-              regionLocation3.hostname.should.include('.kgb.sqa.cm4');
+              regionLocation3.hostname.should.include(config.hostnamePart);
               regionLocation3.should.have.property('regionInfo');
               done();
             });
@@ -158,13 +159,13 @@ describe('test/client.test.js', function () {
       });
 
       it('should return null when offline error happen more than retries', function (done) {
-        var table = new Buffer('tcif_acookie_user');
+        var table = new Buffer(config.tableUser);
         var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
         var count = 0;
         var mockGetClosestRowBefore = function (regions, r, info, callback) {
           var self = this;
           process.nextTick(function () {
-            if (r.toString().indexOf('tcif_acookie_user') >= 0 && count === 0) {
+            if (r.toString().indexOf(config.tableUser) >= 0 && count === 0) {
               var err = new Error('RegionOfflineException haha');
               err.name = 'RegionOfflineException';
               return callback(err);
@@ -175,7 +176,7 @@ describe('test/client.test.js', function () {
 
         client.locateRegion(table, row, true, function (err, regionLocation) {
           should.not.exists(err);
-          regionLocation.hostname.should.include('.kgb.sqa.cm4');
+          regionLocation.hostname.should.include(config.hostnamePart);
           regionLocation.should.have.property('regionInfo');
           regionLocation.__test__name = 'regionLocation1';
 
@@ -212,7 +213,7 @@ describe('test/client.test.js', function () {
       });
 
       it('should clean all server relation regions cache', function (done) {
-        client.getRow('tcif_acookie_user', 'f390MDAwMDAwMDAwMDAwMDAxOQ==', ['cf1:history', 'cf1:qualifier2'],
+        client.getRow(config.tableUser, 'f390MDAwMDAwMDAwMDAwMDAxOQ==', ['cf1:history', 'cf1:qualifier2'],
         function (err, r) {
           should.not.exists(err);
           should.exist(r);
@@ -229,7 +230,7 @@ describe('test/client.test.js', function () {
               should.not.exists(client.cachedServers[closeRS[i]]);
             }
             // console.log(client.cachedServers, closeRS)
-            client.getRow('tcif_acookie_user', 'f390MDAwMDAwMDAwMDAwMDAxOQ==', ['cf1:history', 'cf1:qualifier2'],
+            client.getRow(config.tableUser, 'f390MDAwMDAwMDAwMDAwMDAxOQ==', ['cf1:history', 'cf1:qualifier2'],
             function (err, r) {
               should.not.exists(err);
               // should load remove regions again
@@ -248,11 +249,11 @@ describe('test/client.test.js', function () {
       var region;
 
       before(function (done) {
-        var table = new Buffer('tcif_acookie_user');
+        var table = new Buffer(config.tableUser);
         var row = new Buffer('f390MDAwMDAwMDAwMDAwMDAxOQ==');
         client.locateRegion(table, row, function (err, regionLocation) {
           should.not.exists(err);
-          regionLocation.hostname.should.include('.kgb.sqa.cm4');
+          regionLocation.hostname.should.include(config.hostnamePart);
           regionLocation.should.have.property('regionInfo');
           region = regionLocation;
           for (var k in client.servers) {
@@ -290,7 +291,7 @@ describe('test/client.test.js', function () {
     });
 
     describe('getRow(table, row, columns)', function () {
-      var table = 'tcif_acookie_user';
+      var table = config.tableUser;
       var rows = [
         'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
         '4edaMDAwMDAwMDAwMDAwMDAxNg==',
@@ -387,7 +388,7 @@ describe('test/client.test.js', function () {
         client.getRow(table, '123123', ['foo:notexists'], function (err, r) {
           should.exists(err);
           err.name.should.equal('org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException');
-          err.message.should.include('org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException: Column family foo does not exist in region tcif_acookie_user');
+          err.message.should.include('org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException: Column family foo does not exist in region ' + config.tableUser);
           should.not.exists(r);
           done();
         });
@@ -395,7 +396,7 @@ describe('test/client.test.js', function () {
     });
 
     describe('get(table, get)', function () {
-      var table = 'tcif_acookie_user';
+      var table = config.tableUser;
       var rows = [
         'get-e0abMDAwMDAwMDAwMDAwMDAxNQ==',
         'get-4edaMDAwMDAwMDAwMDAwMDAxNg==',
@@ -478,7 +479,7 @@ describe('test/client.test.js', function () {
       describe.skip('mock org.apache.hadoop.hbase.NotServingRegionException', function () {
 
         beforeEach(function (done) {
-          var table = 'tcif_acookie_actions';
+          var table = config.tableActions;
           var rows = [
             'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
             '4edaMDAwMDAwMDAwMDAwMDAxNg==',
@@ -510,7 +511,7 @@ describe('test/client.test.js', function () {
         afterEach(mm.restore);
 
         it('should return NotServingRegionException', function (doneAll) {
-          var table = 'tcif_acookie_actions';
+          var table = config.tableActions;
           var rows = [
             'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
             'e0abMDAwMDAwMDAwMDAwMDAxNQ==',
@@ -573,7 +574,7 @@ describe('test/client.test.js', function () {
 
     describe('getScanner(table, scan)', function () {
       before(function (done) {
-        var table = 'tcif_acookie_user';
+        var table = config.tableUser;
         var rows = [
           'scanner-row0',
           'scanner-row1',
@@ -607,7 +608,7 @@ describe('test/client.test.js', function () {
       };
 
       it('should scan a table region info in .meta. with next()', function (done) {
-        var tableName = Bytes.toBytes('tcif_acookie_user');
+        var tableName = Bytes.toBytes(config.tableUser);
         var startRow = HRegionInfo.createRegionName(tableName,
           HConstants.EMPTY_START_ROW, HConstants.ZEROES, false);
         var scan = new Scan(startRow);
@@ -677,7 +678,7 @@ describe('test/client.test.js', function () {
       });
 
       it('should scan a table region info in .meta. with next(numberOfRows)', function (done) {
-        var tableName = Bytes.toBytes('tcif_acookie_user');
+        var tableName = Bytes.toBytes(config.tableUser);
         var startRow = HRegionInfo.createRegionName(tableName,
           HConstants.EMPTY_START_ROW, HConstants.ZEROES, false);
         var scan = new Scan(startRow);
@@ -719,14 +720,14 @@ describe('test/client.test.js', function () {
 
       it('should scan rows one by one with filter: only return row key, no values',
       function (done) {
-        var tableName = Bytes.toBytes('tcif_acookie_user');
+        var tableName = Bytes.toBytes(config.tableUser);
         var scan = new Scan('scanner-row0', 'scanner-row5');
         var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
         filterList.addFilter(new filters.FirstKeyOnlyFilter());
         filterList.addFilter(new filters.KeyOnlyFilter());
         scan.setFilter(filterList);
 
-        client.getScanner('tcif_acookie_user', scan, function (err, scanner) {
+        client.getScanner(config.tableUser, scan, function (err, scanner) {
           should.not.exists(err);
           should.exists(scanner);
           scanner.should.have.property('id').with.be.instanceof(Long);
@@ -771,14 +772,14 @@ describe('test/client.test.js', function () {
 
       it('should scan rows with filter: only return row key, value is length',
       function (done) {
-        var tableName = Bytes.toBytes('tcif_acookie_user');
+        var tableName = Bytes.toBytes(config.tableUser);
         var scan = new Scan('scanner-row0', 'scanner-row5');
         var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
         filterList.addFilter(new filters.FirstKeyOnlyFilter());
         filterList.addFilter(new filters.KeyOnlyFilter(true));
         scan.setFilter(filterList);
 
-        client.getScanner('tcif_acookie_user', scan, function (err, scanner) {
+        client.getScanner(config.tableUser, scan, function (err, scanner) {
           should.not.exists(err);
           should.exists(scanner);
           scanner.should.have.property('id').with.be.instanceof(Long);
@@ -829,7 +830,7 @@ describe('test/client.test.js', function () {
     describe('put(table, put)', function () {
 
       it('should put a row with cf1: to a table', function (done) {
-        var table = 'tcif_acookie_user';
+        var table = config.tableUser;
         var rows = [
           'e0ab1-puttest',
           '4eda2-puttest',
@@ -881,7 +882,7 @@ describe('test/client.test.js', function () {
 
     describe('delete(table, delete)', function () {
       var rowkey = '58c8MDAwMDAwMDAwMDAwMDAwMQ==';
-      var table = 'tcif_acookie_user';
+      var table = config.tableUser;
       afterEach(function () {
         client.deleteRow(table, rowkey, function (err, result) {
           should.not.exists(err);
@@ -983,7 +984,7 @@ describe('test/client.test.js', function () {
     });
 
     describe('mget', function () {
-      var tableName = 'tcif_acookie_user';
+      var tableName = config.tableUser;
       var columns = ['cf1:history'];
       it('should get 1 row from table', function (done) {
         var rows = ['a98eMDAwMDAwMDAwMDAwMDAwMg==single'];
@@ -1056,7 +1057,7 @@ describe('test/client.test.js', function () {
     });
 
     describe('mput', function () {
-      var tableName = 'tcif_acookie_user';
+      var tableName = config.tableUser;
       var columns = ['cf1:history'];
       it('should put 1 row into table', function (done) {
         client.mput(
@@ -1108,7 +1109,7 @@ describe('test/client.test.js', function () {
     });
 
     describe('mdelete', function () {
-      var tableName = 'tcif_acookie_user';
+      var tableName = config.tableUser;
       var columns = ['cf1:history'];
       it('should delete 1 rows from table', function (done) {
         client.mput(
