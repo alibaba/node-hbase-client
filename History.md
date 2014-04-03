@@ -1,4 +1,10 @@
 
+0.5.0 / 2014-04-03
+==================
+
+ * no need to delete cache region locations manually
+ * Raw option for mget (@wision)
+
 0.4.5 / 2014-04-03
 ==================
 
