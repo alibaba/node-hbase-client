@@ -17,9 +17,17 @@ test: install
 		$(TESTS)
 
 test-cov cov: install
-	@NODE_HBASE_CLENT_COV=1 $(MAKE) test MOCHA_OPTS="--require blanket" REPORTER=html-cov | ./node_modules/.bin/cov
+	@NODE_ENV=test node --harmony \
+		node_modules/.bin/istanbul cover --preserve-comments \
+		./node_modules/.bin/_mocha \
+		-- -u exports \
+		--reporter $(REPORTER) \
+		--timeout $(TIMEOUT) \
+		$(MOCHA_OPTS) \
+		$(TESTS)
+	@./node_modules/.bin/cov coverage
 
-test-all: test test-cov
+test-all: jshint test test-cov
 
 test-coveralls:
 	@$(MAKE) test

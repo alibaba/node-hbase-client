@@ -13,14 +13,15 @@
  * Module dependencies.
  */
 
+var fs = require('fs');
+var path = require('path');
+
 var config = {
-  // 0.94.0
+  // 0.94.x
   zookeeperHosts: [
-    '10.232.98.74',
-    '10.232.98.75', '10.232.98.76',
-    '10.232.98.77', '10.232.98.78',
+    '127.0.0.1',
   ],
-  zookeeperRoot: '/hbase-rd-test-0.94',
+  zookeeperRoot: '/hbase',
 
   // logger: console,
   logger: {
@@ -29,12 +30,12 @@ var config = {
     error: function () {},
   },
   rpcTimeout: 40000,
-  hostnamePart: '.kgb.sqa.cm4',
-  invalidHost: '10.232.98.58',
+  hostnamePart: '127.0.0.1',
+  invalidHost: '127.0.0.1',
   invalidPort: 65535,
-  tableUser: 'tcif_acookie_user',
-  tableActions: 'tcif_acookie_actions',
-  regionServer: 'dw48.kgb.sqa.cm4:36020',
+  tableUser: 'test_table',
+  tableActions: 'test_table_actions',
+  regionServer: '127.0.0.1:36020',
 };
 
 config.clusters = [
@@ -42,14 +43,17 @@ config.clusters = [
     zookeeperHosts: config.zookeeperHosts,
     zookeeperRoot: config.zookeeperRoot,
   },
-  {
-    zookeeperHosts: [
-      '10.232.98.53:40060',
-      '10.232.98.54:40060',
-      '10.232.98.55:40060',
-    ],
-    zookeeperRoot: '/hbase-0.94.16',
-  }
+  // {
+  //   zookeeperHosts: [
+  //     '127.0.0.1:40060',
+  //   ],
+  //   zookeeperRoot: '/hbase-0.94.16',
+  // }
 ];
+
+var customConfig = path.join(__dirname, 'config.js');
+if (fs.existsSync(customConfig)) {
+  config = require(customConfig);
+}
 
 module.exports = config;
