@@ -754,7 +754,7 @@ describe('test/client.test.js', function () {
                   var kv = kvs[i];
                   kv.getRow().toString().should.equal('scanner-row' + index++);
                   kv.toString().should.include('/vlen=0/');
-                  console.log(kv.getRow().toString(), kv.toString())
+                  console.log(kv.getRow().toString(), kv.toString());
                 }
               });
 
