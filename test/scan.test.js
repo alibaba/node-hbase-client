@@ -29,8 +29,8 @@ describe('test/scan.test.js', function () {
   describe('write()', function () {
     var testJavaBytes = utils.createTestBytes('scan');
     var cases = [
-      config.tableActions,
-      ".meta.",
+      'table',
+      '.meta.',
     ];
 
     it('should convert Scan to bytes', function () {
@@ -64,4 +64,3 @@ describe('test/scan.test.js', function () {
     });
   });
 });
-

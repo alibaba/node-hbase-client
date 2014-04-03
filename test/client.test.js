@@ -642,11 +642,13 @@ describe('test/client.test.js', function () {
                 // maybe fails when region spliting
                 // OFFLINE => true, SPLIT => true
                 // console.log(loc.toString());
-                loc.toString().should.equal(location.toString());
-                loc.hostname.should.equal(location.hostname);
-                loc.port.should.equal(location.port);
-                loc.regionInfo.startKey.should.eql(location.regionInfo.startKey);
-                loc.regionInfo.endKey.should.eql(location.regionInfo.endKey);
+                if (!location.offLine) {
+                  loc.toString().should.equal(location.toString());
+                  loc.hostname.should.equal(location.hostname);
+                  loc.port.should.equal(location.port);
+                  loc.regionInfo.startKey.should.eql(location.regionInfo.startKey);
+                  loc.regionInfo.endKey.should.eql(location.regionInfo.endKey);
+                }
 
                 if (location.regionInfo.endKey.length === 0) {
                   return next();

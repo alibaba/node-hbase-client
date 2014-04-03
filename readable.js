@@ -1,3 +1,5 @@
+'use strict';
+
 var Readable = require('readable-stream').Readable;
 
 var fs = require('fs');

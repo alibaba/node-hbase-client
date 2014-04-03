@@ -15,6 +15,7 @@
 
 var should = require('should');
 var mm = require('mm');
+var pedding = require('pedding');
 var hbase = require('../');
 var config = require('./config_test');
 
@@ -29,6 +30,16 @@ describe('client_region.test.js', function () {
   });
 
   afterEach(mm.restore);
+
+  before(function (done) {
+    done = pedding(2, done);
+    client.putRow(config.tableUser,
+      '0338472dd25d0faeacbef9b957950961',
+      {'cf1:history': '0338472dd25d0faeacbef9b957950961 histry'}, done);
+    client.putRow(config.tableUser,
+      'fdbf2da2cc85e1c79f953a3d8f482edf',
+      {'cf1:history': 'fdbf2da2cc85e1c79f953a3d8f482edf histry'}, done);
+  });
 
   describe('processBatch()', function () {
     it('should mget from wrong region', function (done) {

@@ -79,8 +79,6 @@ describe('test/connection.test.js', function () {
 
   describe('getProtocolVersion()', function () {
     it('should return protocol version', function (done) {
-      // var wantGetProtocolVersionSendData = new Buffer([0, 0, 0, 96, 0, 0, 0, 0, 1, 0, 18, 103, 101, 116, 80, 114, 111, 116, 111, 99, 111, 108, 86, 101, 114, 115, 105, 111, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 10, 44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 6, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-      // var wantHeader = new Buffer([44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].slice(0, 45));
       connection.getProtocolVersion(null, null, function (err, version) {
         should.not.exists(err);
         version.should.be.an.instanceof(Long);
@@ -110,7 +108,8 @@ describe('test/connection.test.js', function () {
     it('should return region info from meta region', function (done) {
       // regionName, row, family
       var regionName = HRegionInfo.ROOT_REGIONINFO.regionName;
-      var row = new Buffer('.META.,' + config.tableActions + ',f390MDAwMDAwMDAwMDAwMDAxOQ==,99999999999999,99999999999999');
+      var row = new Buffer('.META.,' + config.tableActions
+        + ',f390MDAwMDAwMDAwMDAwMDAxOQ==,99999999999999,99999999999999');
       var family = new Buffer('info');
       connection.getClosestRowBefore(regionName, row, family, function (err, regionInfoRow) {
         should.not.exists(err);
@@ -214,7 +213,8 @@ describe('test/connection.test.js', function () {
       });
     });
 
-    it('should return RemoteCallTimeoutException when block before send data', function (done) {
+    it('should return RemoteCallTimeoutException when block before send data',
+    function (done) {
       proxy.block();
       conn.getProtocolVersion(null, null, 500, function (err, version) {
         should.exists(err);
@@ -248,7 +248,8 @@ describe('test/connection.test.js', function () {
       proxy.block();
     });
 
-    it('should return ConnectionClosedException when remote socket close after send data', function (done) {
+    it('should return ConnectionClosedException when remote socket close after send data',
+    function (done) {
       // send data before close
       conn.getProtocolVersion(null, null, 1001, function (err, version) {
         should.exists(err);
@@ -269,7 +270,8 @@ describe('test/connection.test.js', function () {
       proxy.close();
     });
 
-    it('should return ConnectionClosedException when client socket end() by itself.', function (done) {
+    it('should return ConnectionClosedException when client socket end() by itself.',
+    function (done) {
       // send data before close
       conn.getProtocolVersion(null, null, 1001, function (err, version) {
         should.exists(err);
@@ -308,4 +310,3 @@ describe('test/connection.test.js', function () {
 // HEADER 45 len
 // [44, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 104, 97, 100, 111, 111, 112, 46, 104, 98, 97, 115, 101, 46, 105, 112, 99, 46, 72, 82, 101, 103, 105, 111, 110, 73, 110, 116, 101, 114, 102, 97, 99, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 //
-
