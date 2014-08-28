@@ -1,8 +1,16 @@
 # hbase-client
 
-[![Build Status](https://secure.travis-ci.org/alibaba/node-hbase-client.png?branch=master)](http://travis-ci.org/alibaba/node-hbase-client) [![Coverage Status](https://coveralls.io/repos/alibaba/node-hbase-client/badge.png)](https://coveralls.io/r/alibaba/node-hbase-client)
+[![NPM version][npm-image]][npm-url]
+[![Gittip][gittip-image]][gittip-url]
+[![David deps][david-image]][david-url]
 
-[![NPM](https://nodei.co/npm/hbase-client.png?downloads=true&stars=true)](https://nodei.co/npm/hbase-client)
+[npm-image]: https://img.shields.io/npm/v/jsonp-body.svg?style=flat
+[npm-url]: https://npmjs.org/package/jsonp-body
+[gittip-image]: https://img.shields.io/gittip/fengmk2.svg?style=flat
+[gittip-url]: https://www.gittip.com/fengmk2/
+[david-image]: https://img.shields.io/david/alibaba/node-hbase-client.svg?style=flat
+[david-url]: https://david-dm.org/alibaba/node-hbase-client
+
 
 ![logo](https://raw.github.com/alibaba/node-hbase-client/master/logo.png)
 

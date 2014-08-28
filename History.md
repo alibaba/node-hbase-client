@@ -1,4 +1,10 @@
 
+1.0.0 / 2014-08-28
+==================
+
+ * Allow mput array of Put objects
+ * result add getRow()
+
 0.5.0 / 2014-04-03
 ==================
 

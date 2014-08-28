@@ -4,7 +4,7 @@ TIMEOUT = 15000
 MOCHA_OPTS =
 
 install:
-	@npm install --registry=http://r.cnpmjs.org
+	@npm install --registry=https://registry.npm.taobao.org
 
 jshint: install
 	@./node_modules/.bin/jshint .
@@ -38,6 +38,6 @@ contributors: install
 	@./node_modules/.bin/contributors -f plain -o AUTHORS
 
 autod: install
-	@./node_modules/.bin/autod -w -e examples -k zookeeper-watcher
+	@./node_modules/.bin/autod -w -e examples -k zookeeper-watcher --prefix "~"
 
 .PHONY: test
