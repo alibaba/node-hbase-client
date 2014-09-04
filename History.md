@@ -1,4 +1,9 @@
 
+1.1.0 / 2014-09-05
+==================
+
+ * Add ColumnPrefixFilter & ColumnRangeFilter (@wision)
+
 1.0.0 / 2014-08-28
 ==================
 
