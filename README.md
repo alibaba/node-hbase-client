@@ -1,16 +1,27 @@
 # hbase-client
 
 [![NPM version][npm-image]][npm-url]
+[![build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
 [![Gittip][gittip-image]][gittip-url]
 [![David deps][david-image]][david-url]
+[![node version][node-image]][node-url]
+[![npm download][download-image]][download-url]
 
-[npm-image]: https://img.shields.io/npm/v/jsonp-body.svg?style=flat
-[npm-url]: https://npmjs.org/package/jsonp-body
-[gittip-image]: https://img.shields.io/gittip/fengmk2.svg?style=flat
+[npm-image]: https://img.shields.io/npm/v/hbase-client.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/hbase-client
+[travis-image]: https://img.shields.io/travis/alibaba/node-hbase-client.svg?style=flat-square
+[travis-url]: https://travis-ci.org/alibaba/node-hbase-client
+[coveralls-image]: https://img.shields.io/coveralls/alibaba/node-hbase-client.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/alibaba/node-hbase-client?branch=master
+[gittip-image]: https://img.shields.io/gittip/fengmk2.svg?style=flat-square
 [gittip-url]: https://www.gittip.com/fengmk2/
-[david-image]: https://img.shields.io/david/alibaba/node-hbase-client.svg?style=flat
+[david-image]: https://img.shields.io/david/alibaba/node-hbase-client.svg?style=flat-square
 [david-url]: https://david-dm.org/alibaba/node-hbase-client
-
+[node-image]: https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square
+[node-url]: http://nodejs.org/download/
+[download-image]: https://img.shields.io/npm/dm/hbase-client.svg?style=flat-square
+[download-url]: https://npmjs.org/package/hbase-client
 
 ![logo](https://raw.github.com/alibaba/node-hbase-client/master/logo.png)
 
@@ -30,7 +41,7 @@ Asynchronous HBase client for Node.js, **pure JavaScript** implementation.
 ## Install
 
 ```bash
-$ npm install hbase-client
+$ npm install hbase-client --save
 ```
 
 ## Get Started with `CRUD`
