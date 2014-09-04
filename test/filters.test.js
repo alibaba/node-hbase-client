@@ -36,4 +36,32 @@ describe('test/filters.test.js', function () {
       });
     });
   });
+  describe('ColumnPrefixFilter()', function () {
+    describe('write()', function () {
+      it('should convert ColumnPrefixFilter to bytes', function () {
+        var filter = new filters.ColumnPrefixFilter('abc');
+        var out = new DataOutputBuffer();
+        filter.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'ColumnPrefixFilter', bytes);
+
+        filter.toString().should.equal('ColumnPrefixFilter(prefix: abc)');
+      });
+    });
+  });
+  describe('ColumnRangeFilter()', function () {
+    describe('write()', function () {
+      it('should convert ColumnRangeFilter to bytes', function () {
+        var filter = new filters.ColumnRangeFilter('a', true, 'b', true);
+        var out = new DataOutputBuffer();
+        filter.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'ColumnRangeFilter', bytes);
+
+        filter.toString().should.equal('ColumnRangeFilter(minColumn: a, minColumnInclusive: true, minColumn: b, minColumnInclusive: true)');
+      });
+    });
+  });
 });

@@ -201,7 +201,7 @@ client.mdelete(tableName, rowKeys, function (err, results) {
 Java code:
 
 ```java
-FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+FilterList filterList = new FilterList({operator: FilterList.Operator.MUST_PASS_ALL});
 filterList.addFilter(new FirstKeyOnlyFilter());
 filterList.addFilter(new KeyOnlyFilter());
 Scan scan = new Scan(Bytes.toBytes("scanner-row0"));
@@ -213,7 +213,7 @@ Nodejs code:
 ```js
 var filters = require('hbase').filters;
 
-var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
+var filterList = new filters.FilterList({operator: filters.FilterList.Operator.MUST_PASS_ALL});
 filterList.addFilter(new filters.FirstKeyOnlyFilter());
 filterList.addFilter(new filters.KeyOnlyFilter());
 var scan = new Scan('scanner-row0');
