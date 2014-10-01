@@ -1,0 +1,24 @@
+language: node_js
+
+env:
+  - HBASE_VERSION=0.94.23
+
+node_js:
+  - "0.10"
+
+before_script:
+  - "export HBASE_FILE=hbase-$HBASE_VERSION"
+  - "wget -nc http://www.eu.apache.org/dist/hbase/hbase-$HBASE_VERSION/$HBASE_FILE.tar.gz"
+  - "tar -xzf $HBASE_FILE.tar.gz"
+  - "mv test/hbase-site.xml $HBASE_FILE/conf/"
+  - "mv test/regionservers.sh $HBASE_FILE/bin/"
+  - "mv test/zookeepers.sh $HBASE_FILE/bin/"
+  - "$HBASE_FILE/bin/start-hbase.sh"
+  - "$HBASE_FILE/bin/hbase org.apache.hadoop.hbase.util.RegionSplitter hbase_client_test_table HexStringSplit -c 10 -f cf1"
+  - "$HBASE_FILE/bin/hbase org.apache.hadoop.hbase.util.RegionSplitter hbase_client_test_table_actions HexStringSplit -c 10 -f cf1"
+  - 'echo "disable ''hbase_client_test_table'';alter ''hbase_client_test_table'', {NAME=>''cf1'', VERSIONS => 2}; enable ''hbase_client_test_table''; disable ''hbase_client_test_table_actions''; alter ''hbase_client_test_table_actions'', {NAME=>''cf1'', VERSIONS => 5}; enable ''hbase_client_test_table_actions''" | JRUBY_OPTS= $HBASE_FILE/bin/hbase shell'
+  - 'mv test/config.js.travis test/config.js'
+
+cache:
+  - "hbase-0.94.23.tar.gz"
+
