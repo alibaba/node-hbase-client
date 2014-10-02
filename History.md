@@ -1,4 +1,10 @@
 
+1.2.0 / 2014-10-02
+==================
+
+ * Fix tests & use Travis (@wision)
+ * multi upsert function (@tzolkincz)
+
 1.1.1 / 2014-09-05
 ==================
 
