@@ -130,7 +130,7 @@ describe('client_region.test.js', function () {
       //   }
       // }
       var location = client.getCachedLocation(config.tableUser, get.getRow());
-      console.log(location.toString());
+      //console.log(location.toString());
       client.getRegionConnection(location.getHostname(), location.getPort(), function (err, server) {
         should.not.exist(err);
 
@@ -161,7 +161,7 @@ describe('client_region.test.js', function () {
       var location = client.getCachedLocation(config.tableUser, get.getRow());
       var get2 = new hbase.Get('fdbf2da2cc85e1c79f953a3d8f482edf');
       get2.addColumn('cf1', 'history');
-      console.log(location.toString());
+      //console.log(location.toString());
       mm(client, 'locateRegion', function (tableName, row, useCache, callback) {
         callback(null, location);
         mm.restore();

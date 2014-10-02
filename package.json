@@ -36,7 +36,8 @@
     "mocha-lcov-reporter": "*",
     "moment": "*",
     "pedding": "~1.0.0",
-    "should": "3"
+    "should": "3",
+    "istanbul": "~0.3.2"
   },
   "homepage": "http://github.com/alibaba/node-hbase-client",
   "repository": {

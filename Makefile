@@ -4,19 +4,19 @@ TIMEOUT = 15000
 MOCHA_OPTS =
 
 install:
-	@npm install --registry=https://registry.npm.taobao.org
+	@npm install
 
-jshint: install
+jshint:
 	@./node_modules/.bin/jshint .
 
-test: install
+test:
 	@NODE_ENV=test ./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
 		--timeout $(TIMEOUT) \
 		$(MOCHA_OPTS) \
 		$(TESTS)
 
-test-cov cov: install
+test-cov cov:
 	@NODE_ENV=test node --harmony \
 		node_modules/.bin/istanbul cover --preserve-comments \
 		./node_modules/.bin/_mocha \
@@ -27,17 +27,17 @@ test-cov cov: install
 		$(TESTS)
 	@./node_modules/.bin/cov coverage
 
-test-all: jshint test test-cov
+test-all: jshint test
 
 test-coveralls:
 	@$(MAKE) test
 	@echo TRAVIS_JOB_ID $(TRAVIS_JOB_ID)
 	@$(MAKE) test MOCHA_OPTS='--require blanket' REPORTER=mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js
 
-contributors: install
+contributors:
 	@./node_modules/.bin/contributors -f plain -o AUTHORS
 
-autod: install
+autod:
 	@./node_modules/.bin/autod -w -e examples -k zookeeper-watcher --prefix "~"
 
 .PHONY: test
