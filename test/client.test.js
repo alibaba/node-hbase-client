@@ -1159,6 +1159,33 @@ describe('test/client.test.js', function () {
 
     });
 
+    describe('mupsert', function () {
+      var tableName = config.tableUser;
+      it('should insert 1 cell and delete 1 cell from table', function (done) {
+
+        client.mupsert(
+          tableName,
+          [
+            {row: 'a98eMDAwMDAwMDAwMDAwMDAwMg==md','cf1:history': 'upsert-single', 'cf1:qualifier2': null}
+          ],
+        function (err) {
+          should.not.exists(err);
+
+          client.mget(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==md'], ['cf1:history', 'cf1:qualifier2'], function (err, result) {
+			should.not.exists(err);
+            should.exists(result);
+            result.length.should.eql(1);
+
+            result[0].should.have.keys('cf1:history');
+            result[0]['cf1:history'].toString().should.eql('upsert-single');
+            should.not.exists(result[0]['cf1:qualifier2']);
+            done();
+          });
+        });
+      });
+
+    });
+
   });
   }); // clusters end
 });

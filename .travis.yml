@@ -19,6 +19,8 @@ before_script:
   - 'echo "disable ''hbase_client_test_table'';alter ''hbase_client_test_table'', {NAME=>''cf1'', VERSIONS => 2}; enable ''hbase_client_test_table''; disable ''hbase_client_test_table_actions''; alter ''hbase_client_test_table_actions'', {NAME=>''cf1'', VERSIONS => 5}; enable ''hbase_client_test_table_actions''" | JRUBY_OPTS= $HBASE_FILE/bin/hbase shell'
   - 'mv test/config.js.travis test/config.js'
 
+script: "make test-travis"
+after_script: "npm install coveralls@2 && cat ./coverage/lcov.info | coveralls"
+
 cache:
   - "hbase-0.94.23.tar.gz"
-
