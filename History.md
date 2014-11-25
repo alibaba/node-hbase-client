@@ -1,4 +1,9 @@
 
+1.2.1 / 2014-11-25
+==================
+
+ * Call clearCachedLocationForServer while handling connection error (@wision)
+
 1.2.0 / 2014-10-02
 ==================
 
