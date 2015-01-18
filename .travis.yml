@@ -1,14 +1,11 @@
 language: node_js
 
-env:
-  - HBASE_VERSION=0.94.26
-
 node_js:
   - "0.10"
 
 before_script:
-  - "export HBASE_FILE=hbase-$HBASE_VERSION"
-  - "wget -nc http://www.eu.apache.org/dist/hbase/hbase-$HBASE_VERSION/$HBASE_FILE.tar.gz"
+  - "export HBASE_FILE=`curl http://www.eu.apache.org/dist/hbase/ | grep -o 'hbase-0.94.[0-9]*' | head -1`"
+  - "wget -nc http://www.eu.apache.org/dist/hbase/$HBASE_FILE/$HBASE_FILE.tar.gz"
   - "tar -xzf $HBASE_FILE.tar.gz"
   - "mv test/hbase-site.xml $HBASE_FILE/conf/"
   - "mv test/regionservers.sh $HBASE_FILE/bin/"
@@ -21,6 +18,3 @@ before_script:
 
 script: "make test-travis"
 after_script: "npm install coveralls@2 && cat ./coverage/lcov.info | coveralls"
-
-cache:
-  - "hbase-0.94.26.tar.gz"
