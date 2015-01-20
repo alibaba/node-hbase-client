@@ -1,4 +1,10 @@
 
+1.2.2 / 2015-01-20
+==================
+
+ * Parse latest version of hbase 0.94.x from the web
+ * Use push to add item to array (@wision)
+
 1.2.1 / 2014-11-25
 ==================
 
