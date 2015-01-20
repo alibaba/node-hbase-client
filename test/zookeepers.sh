@@ -47,7 +47,7 @@ if [ "$HBASE_MANAGES_ZK" = "" ]; then
   HBASE_MANAGES_ZK=true
 fi
 
-cmd="./hbase-0.94.23/bin/hbase-daemon.sh --config hbase-0.94.23/conf start zookeeper"
+cmd="./$HBASE_FILE/bin/hbase-daemon.sh --config $HBASE_FILE/conf start zookeeper"
 $cmd 2>&1
 
 #if [ "$HBASE_MANAGES_ZK" = "true" ]; then

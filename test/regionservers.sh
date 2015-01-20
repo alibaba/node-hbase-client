@@ -59,7 +59,7 @@ if [ "$HOSTLIST" = "" ]; then
   fi
 fi
 
-cmd="./hbase-0.94.23/bin/hbase-daemon.sh --config hbase-0.94.23/conf start regionserver"
+cmd="./$HBASE_FILE/bin/hbase-daemon.sh --config $HBASE_FILE/conf start regionserver"
 $cmd 2>&1
 
 #for regionserver in `cat "$HOSTLIST"`; do
