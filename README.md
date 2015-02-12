@@ -35,8 +35,11 @@ Asynchronous HBase client for Node.js, **pure JavaScript** implementation.
 * [√] 0.94.x
     * [√] 0.94.0
     * [√] 0.94.16
-* [ ] 0.95.x
 * [ ] 0.96.x
+* [ ] 0.98.x
+
+If you're use HBase >= 0.96.x,
+please use [node-hbase](https://github.com/falsecz/node-hbase) which CoffeeScript HBase Implementation with protobuf.
 
 ## Install
 
