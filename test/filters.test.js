@@ -64,4 +64,88 @@ describe('test/filters.test.js', function () {
       });
     });
   });
+  describe('BinaryComparator()', function () {
+    describe('write()', function () {
+      it ('should convert BinaryComparator to bytes', function () {
+        var comparator = new filters.BinaryComparator('abc');
+        var out = new DataOutputBuffer();
+        comparator.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'BinaryComparator', bytes);
+
+        comparator.toString().should.equal('BinaryComparator(value: abc)');
+      });
+    });
+  });
+  describe('BinaryPrefixComparator()', function () {
+    describe('write()', function () {
+      it ('should convert BinaryPrefixComparator to bytes', function () {
+        var comparator = new filters.BinaryPrefixComparator('abc');
+        var out = new DataOutputBuffer();
+        comparator.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'BinaryPrefixComparator', bytes);
+
+        comparator.toString().should.equal('BinaryPrefixComparator(value: abc)');
+      });
+    });
+  });
+  describe('NullComparator()', function () {
+    describe('write()', function () {
+      it ('should convert NullComparator to bytes', function () {
+        var comparator = new filters.NullComparator();
+        var out = new DataOutputBuffer();
+        comparator.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'NullComparator', bytes);
+
+        comparator.toString().should.equal('NullComparator');
+      });
+    });
+  });
+  describe('BitComparator()', function () {
+    describe('write()', function () {
+      it ('should convert BitComparator to bytes', function () {
+        var comparator = new filters.BitComparator('0', 'AND');
+        var out = new DataOutputBuffer();
+        comparator.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'BitComparator', bytes);
+
+        comparator.toString().should.equal('BitComparator(value: 0, bitOperator: AND)');
+      });
+    });
+  });
+  describe('RegexStringComparator()', function () {
+    describe('write()', function () {
+      it ('should convert RegexStringComparator to bytes', function () {
+        var comparator = new filters.RegexStringComparator('ab*');
+        var out = new DataOutputBuffer();
+        comparator.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'RegexStringComparator', bytes);
+
+        comparator.toString().should.equal('RegexStringComparator(pattern: ab*, charset: UTF-8)');
+      });
+    });
+  });
+  describe('SubstringComparator()', function () {
+    describe('write()', function () {
+      it ('should convert SubstringComparator to bytes', function () {
+        var comparator = new filters.SubstringComparator('ABC');
+        var out = new DataOutputBuffer();
+        comparator.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'SubstringComparator', bytes);
+
+        comparator.toString().should.equal('SubstringComparator(substr: abc)');
+      });
+    });
+  });
 });
