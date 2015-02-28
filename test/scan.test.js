@@ -23,7 +23,7 @@ var Scan = require('../lib/scan');
 var HConstants = require('../lib/hconstants');
 var DataOutputBuffer = require('../lib/data_output_buffer');
 var filters = require('../').filters;
-var config = require('./config_test');
+var config = require('./config');
 
 describe('test/scan.test.js', function () {
   describe('write()', function () {
