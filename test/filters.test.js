@@ -148,4 +148,18 @@ describe('test/filters.test.js', function () {
       });
     });
   });
+  describe('SingleColumnValueFilter()', function () {
+    describe('write()', function () {
+      it('should convert SingleColumnValueFilter to bytes', function () {
+        var filter = new filters.SingleColumnValueFilter('family', 'qualifier', 'EQUAL', 'value');
+        var out = new DataOutputBuffer();
+        filter.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'SingleColumnValueFilter', bytes);
+
+        filter.toString().should.equal('SingleColumnValueFilter(family: family, qualifier: qualifier, compareOp: EQUAL, comparator: BinaryComparator(value: value))');
+      });
+    });
+  });
 });
