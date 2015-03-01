@@ -834,70 +834,70 @@ describe('test/client.test.js', function () {
         });
       });
 
-    });
+      it('should scan rows with filter: single column value filter',
+      function (done) {
+        var tableName = Bytes.toBytes(config.tableUser);
+        var family = 'cf1';
+        var qualifier = 'qualifier2';
+        var scan = new Scan('scanner-row0', 'scanner-row5');
+        var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
+        filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'LESS_OR_EQUAL', 'scanner-row0 cf1:qualifier2'));
+        filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'GREATER_OR_EQUAL', new filters.BinaryPrefixComparator('scanner-')));
+        filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.BitComparator('0', 'XOR')));
+        filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.NullComparator()));
+        filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'EQUAL', new filters.RegexStringComparator('scanner-*')));
+        filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'EQUAL', new filters.SubstringComparator('cf1:qualifier2')));
+        scan.setFilter(filterList);
 
-    it('should scan rows with filter: single column value filter',
-    function (done) {
-      var tableName = Bytes.toBytes(config.tableUser);
-      var family = 'cf1';
-      var qualifier = 'qualifier2';
-      var scan = new Scan('scanner-row0', 'scanner-row5');
-      var filterList = new filters.FilterList(filters.FilterList.Operator.MUST_PASS_ALL);
-      filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'LESS_OR_EQUAL', 'scanner-row0 cf1:qualifier2'));
-      filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'GREATER_OR_EQUAL', new filters.BinaryPrefixComparator('scanner-')));
-      filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.BitComparator('0', 'XOR')));
-      filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.NullComparator()));
-      filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'EQUAL', new filters.RegexStringComparator('scanner-*')));
-      filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'EQUAL', new filters.SubstringComparator('cf1:qualifier2')));
-      scan.setFilter(filterList);
+        client.getScanner(config.tableUser, scan, function (err, scanner) {
+          should.not.exists(err);
+          should.exists(scanner);
+          scanner.should.have.property('id').with.be.instanceof(Long);
+          scanner.should.have.property('server');
 
-      client.getScanner(config.tableUser, scan, function (err, scanner) {
-        should.not.exists(err);
-        should.exists(scanner);
-        scanner.should.have.property('id').with.be.instanceof(Long);
-        scanner.should.have.property('server');
+          var index = 0;
 
-        var index = 0;
-
-        var next = function (numberOfRows) {
-          scanner.next(numberOfRows, function (err, rows) {
-            should.not.exists(err);
-            if (rows.length === 0) {
-              index.should.equal(1);
-              return scanner.close(done);
-            }
-
-            rows.should.length(1);
-
-            var closed = false;
-            rows.forEach(function (row) {
-              var kvs = row.raw();
-              var r = {};
-              var isMatched = false;
-              for (var i = 0; i < kvs.length; i++) {
-                var kv = kvs[i];
-                kv.getRow().toString().should.equal('scanner-row0');
-                var value = kv.getValue().toString();
-                if (value.indexOf('scanner-') == 0 && value.indexOf('cf1:qualifier2') != -1) {
-                  isMatched = true
-                }
-                var len = kv.getValue().readUInt32BE(0);
-                // console.log('%j, %j, %j, %d',
-                //   kv.getRow().toString(), kv.toString(), kv.getValue().toString(), len);
+          var next = function (numberOfRows) {
+            scanner.next(numberOfRows, function (err, rows) {
+              should.not.exists(err);
+              if (rows.length === 0) {
+                index.should.equal(1);
+                return scanner.close(done);
               }
-              isMatched.should.equal(true);
+
+              rows.should.length(1);
+
+              var closed = false;
+              rows.forEach(function (row) {
+                var kvs = row.raw();
+                var r = {};
+                var isMatched = false;
+                for (var i = 0; i < kvs.length; i++) {
+                  var kv = kvs[i];
+                  kv.getRow().toString().should.equal('scanner-row0');
+                  var value = kv.getValue().toString();
+                  if (value.indexOf('scanner-') == 0 && value.indexOf('cf1:qualifier2') != -1) {
+                    isMatched = true
+                  }
+                  var len = kv.getValue().readUInt32BE(0);
+                  // console.log('%j, %j, %j, %d',
+                  //   kv.getRow().toString(), kv.toString(), kv.getValue().toString(), len);
+                }
+                isMatched.should.equal(true);
+              });
+
+              if (closed) {
+                return scanner.close(done);
+              }
+
+              index++;
+              next(numberOfRows);
             });
-
-            if (closed) {
-              return scanner.close(done);
-            }
-
-            index++;
-            next(numberOfRows);
-          });
-        };
-        next(1);
+          };
+          next(1);
+        });
       });
+
     });
 
     describe('put(table, put)', function () {
