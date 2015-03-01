@@ -17,7 +17,7 @@ var should = require('should');
 var mm = require('mm');
 var pedding = require('pedding');
 var hbase = require('../');
-var config = require('./config_test');
+var config = require('./config');
 
 describe('client_region.test.js', function () {
   var client = null;

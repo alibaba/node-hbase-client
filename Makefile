@@ -13,6 +13,7 @@ test:
 	@NODE_ENV=test ./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
 		--timeout $(TIMEOUT) \
+		--bail \
 		$(MOCHA_OPTS) \
 		$(TESTS)
 

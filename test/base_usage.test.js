@@ -15,7 +15,7 @@
 
 var should = require('should');
 var mm = require('mm');
-var config = require('./config_test');
+var config = require('./config');
 var Client = require('../').Client;
 
 describe('base_usage.test.js', function () {

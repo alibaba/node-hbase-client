@@ -47,6 +47,26 @@ please use [node-hbase](https://github.com/falsecz/node-hbase) which CoffeeScrip
 $ npm install hbase-client --save
 ```
 
+## Run Unit Test
+
+Start local hbase server
+
+```bash
+$ ./start-local-hbase.sh
+```
+
+If everything go fine, run tests
+
+```bash
+$ make test
+```
+
+Stop hbase server
+
+```bash
+$ ./stop-local-hbase.sh
+```
+
 ## Get Started with `CRUD`
 
 * Create a hbase client through zookeeper:

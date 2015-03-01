@@ -20,10 +20,9 @@ var HRegionInfo = require('../lib/hregion_info');
 var HConstants = require('../lib/hconstants');
 var DataInputBuffer = require('../lib/data_input_buffer');
 var Bytes = require('../lib/util/bytes');
-var config = require('./config_test');
+var config = require('./config');
 var interceptor = require('interceptor');
 var ZooKeeperWatcher = require('zookeeper-watcher');
-
 
 var MAGIC = 255;
 var MAGIC_SIZE = Bytes.SIZEOF_BYTE;
@@ -145,11 +144,9 @@ describe('test/connection.test.js', function () {
         done();
       });
     });
-
   });
 
-  describe('mock network error', function () {
-
+  describe.skip('mock network error', function () {
     var proxy = interceptor.create(config.regionServer, 100);
     var conn = null;
     var port = 36021;
