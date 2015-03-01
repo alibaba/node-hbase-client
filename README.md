@@ -316,7 +316,7 @@ var family = 'cf1';
 var qualifier = 'qualifier2';
 filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'LESS_OR_EQUAL', 'scanner-row0 cf1:qualifier2'));
 filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'GREATER_OR_EQUAL', new filters.BinaryPrefixComparator('scanner-')));
-filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.BitComparator('0', 'XOR')));
+filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.BitComparator('0', filters.BitComparator.BitwiseOp.XOR)));
 filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.NullComparator()));
 filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'EQUAL', new filters.RegexStringComparator('scanner-*')));
 filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'EQUAL', new filters.SubstringComparator('cf1:qualifier2')));

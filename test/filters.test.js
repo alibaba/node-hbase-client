@@ -109,7 +109,7 @@ describe('test/filters.test.js', function () {
   describe('BitComparator()', function () {
     describe('write()', function () {
       it ('should convert BitComparator to bytes', function () {
-        var comparator = new filters.BitComparator('0', 'AND');
+        var comparator = new filters.BitComparator('0', filters.BitComparator.BitwiseOp.AND);
         var out = new DataOutputBuffer();
         comparator.write(out);
         var bytes = out.getData();
