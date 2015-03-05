@@ -400,6 +400,19 @@ describe('test/client.test.js', function () {
           done();
         });
       });
+
+      it('should getRow and convert buffer to json', function (done) {
+        client.putRow(table, 'json-data', {'cf1:name': 'foo name', 'cf1:age': '18'}, function (err) {
+          should.not.exist(err);
+          client.getRow(table, 'json-data', function (err, row) {
+            should.not.exist(err);
+            should.exist(row);
+            row['cf1:name'].toString().should.equal('foo name');
+            row['cf1:age'].toString().should.equal('18');
+            done();
+          });
+        });
+      });
     });
 
     describe('get(table, get)', function () {

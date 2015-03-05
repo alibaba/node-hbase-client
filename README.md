@@ -163,11 +163,22 @@ client.put('user', put, function (err) {
 });
 ```
 
-### `putRow(table, row, data, callback)`
+### `putRow(table, rowKey, data, callback)`
 
 ```js
-client.putRow(table, row, {'f1:name': 'foo name', 'f1:age': '18'}, function (err) {
+client.putRow(table, rowKey, {'f1:name': 'foo name', 'f1:age': '18'}, function (err) {
   should.not.exists(err);
+  client.getRow(table, rowKey, function (err, row) {
+    should.not.exist(err);
+    should.exist(row);
+    // {
+    //   'cf1:age': <Buffer 31 38>,
+    //   'cf1:name': <Buffer 66 6f 6f 20 6e 61 6d 65>
+    // }
+    row['cf1:name'].toString().should.equal('foo name');
+    row['cf1:age'].toString().should.equal('18');
+    done();
+  });
 });
 ```
 
