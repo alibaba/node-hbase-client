@@ -290,6 +290,44 @@ client.getScanner('user', scan, function (err, scanner) {\
 });
 ```
 
+### Scan table and return row filtered by single column value
+
+Java code:
+
+```java
+byte [] family = Bytes.toBytes("cf1");
+byte [] qualifier = Bytes.toBytes("qualifier2");
+FilterList filterList = new FilterList({operator: FilterList.Operator.MUST_PASS_ALL});
+filterList.addFilter(new SingleColumnValueFilter(family, qualifier, CompareOp.LESS_OR_EQUAL, Bytes.toBytes("scanner-row0 cf1:qualifier2")));
+filterList.addFilter(new SingleColumnValueFilter(family, qualifier, CompareOp.GREATER_OR_EQUAL, new BinaryPrefixComparator(Bytes.toBytes("scanner-"))));
+filterList.addFilter(new SingleColumnValueFilter(family, qualifier, CompareOp.NOT_EQUAL, new BitComparator(Bytes.toBytes("0"), BitComparator.BitwiseOp.XOR)));
+filterList.addFilter(new SingleColumnValueFilter(family, qualifier, CompareOp.NOT_EQUAL, new NullComparator()));
+filterList.addFilter(new SingleColumnValueFilter(family, qualifier, CompareOp.EQUAL, new RegexStringComparator("scanner-*"))));
+filterList.addFilter(new SingleColumnValueFilter(family, qualifier, CompareOp.EQUAL, new SubstringComparator("cf1:qualifier2"))));
+Scan scan = new Scan(Bytes.toBytes("scanner-row0"));
+scan.setFilter(filterList);
+```
+
+Nodejs code:
+
+```js
+var filterList = new filters.FilterList({operator: filters.FilterList.Operator.MUST_PASS_ALL});
+var family = 'cf1';
+var qualifier = 'qualifier2';
+filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'LESS_OR_EQUAL', 'scanner-row0 cf1:qualifier2'));
+filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'GREATER_OR_EQUAL', new filters.BinaryPrefixComparator('scanner-')));
+filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.BitComparator('0', filters.BitComparator.BitwiseOp.XOR)));
+filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'NOT_EQUAL', new filters.NullComparator()));
+filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'EQUAL', new filters.RegexStringComparator('scanner-*')));
+filterList.addFilter(new filters.SingleColumnValueFilter(family, qualifier, 'EQUAL', new filters.SubstringComparator('cf1:qualifier2')));
+var scan = new Scan('scanner-row0');
+scan.setFilter(filterList);
+
+client.getScanner('user', scan, function (err, scanner) {\
+  //TODO:...
+});
+```
+
 ## TODO
 
 - [√] support `put`
@@ -305,6 +343,7 @@ client.getScanner('user', scan, function (err, scanner) {\
     - [√] FilterList
     - [√] FirstKeyOnlyFilter
     - [√] KeyOnlyFilter
+    - [√] SingleColumnValueFilter
 
 ## Benchmarks
 
