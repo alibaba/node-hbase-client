@@ -1,4 +1,12 @@
 
+1.3.0 / 2015-03-05
+==================
+
+ * Add SingleColumnValueFilter (@hase1031)
+ * Fixes HbaseObjectWritable when clazz not in CLASS_TO_CODE (@hase1031)
+ * Add Comparators for filter (@hase1031)
+ * add 0.96 help
+
 1.2.2 / 2015-01-20
 ==================
 
