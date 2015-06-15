@@ -256,7 +256,7 @@ scan.setFilter(filterList);
 Nodejs code:
 
 ```js
-var filters = require('hbase').filters;
+var filters = require('hbase-client').filters;
 
 var filterList = new filters.FilterList({operator: filters.FilterList.Operator.MUST_PASS_ALL});
 filterList.addFilter(new filters.FirstKeyOnlyFilter());
