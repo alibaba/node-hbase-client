@@ -162,4 +162,18 @@ describe('test/filters.test.js', function () {
       });
     });
   });
+  describe('RowFilter()', function () {
+    describe('write()', function () {
+      it('should convert RowFilter to bytes', function () {
+        var filter = new filters.RowFilter('EQUAL', new filters.RegexStringComparator('ab*'));
+        var out = new DataOutputBuffer();
+        filter.write(out);
+        var bytes = out.getData();
+        bytes.length.should.above(0);
+        testJavaBytes('write', 'RowFilter', bytes);
+
+        filter.toString().should.equal('RowFilter(compareOp: EQUAL, comparator: RegexStringComparator(pattern: ab*, charset: UTF-8))');
+      });
+    });
+  });
 });
