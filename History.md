@@ -1,4 +1,10 @@
 
+1.4.0 / 2015-08-10
+==================
+
+ * feat: Added RowFilter support to enable easier scans for specific group of rows.
+ * doc: Change url and name of hbase protobuf implementation
+
 1.3.0 / 2015-03-05
 ==================
 
