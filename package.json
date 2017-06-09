@@ -4,10 +4,13 @@
   "description": "Asynchronous HBase client for Node.js, pure javascript implementation.",
   "main": "index.js",
   "files": [
-    "index.js", "lib/"
+    "index.js",
+    "lib/"
   ],
   "scripts": {
-    "test": "make test-all"
+    "test": "make test-all",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "config": {
     "blanket": {
@@ -18,12 +21,13 @@
     }
   },
   "dependencies": {
-    "debug": "~1.0.4",
+    "debug": "~2.6.7",
     "eventproxy": "~0.3.1",
     "long": "~1.1.5",
     "readable-stream": "1.1.11",
     "utility": "~0.1.16",
-    "zookeeper-watcher": "~0.2.0"
+    "zookeeper-watcher": "~0.2.0",
+    "snyk": "^1.34.3"
   },
   "devDependencies": {
     "autod": "*",
@@ -45,8 +49,11 @@
     "url": "git://github.com/alibaba/node-hbase-client.git"
   },
   "keywords": [
-    "node-hbase-client", "hbase", "hbase-client"
+    "node-hbase-client",
+    "hbase",
+    "hbase-client"
   ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "snyk": true
 }
