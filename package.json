@@ -4,7 +4,8 @@
   "description": "Asynchronous HBase client for Node.js, pure javascript implementation.",
   "main": "index.js",
   "files": [
-    "index.js", "lib/"
+    "index.js",
+    "lib/"
   ],
   "scripts": {
     "test": "make test-all"
@@ -19,7 +20,7 @@
   },
   "dependencies": {
     "debug": "~1.0.4",
-    "eventproxy": "~0.3.1",
+    "eventproxy": "~1.0.0",
     "long": "~1.1.5",
     "readable-stream": "1.1.11",
     "utility": "~0.1.16",
@@ -45,7 +46,9 @@
     "url": "git://github.com/alibaba/node-hbase-client.git"
   },
   "keywords": [
-    "node-hbase-client", "hbase", "hbase-client"
+    "node-hbase-client",
+    "hbase",
+    "hbase-client"
   ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)",
   "license": "MIT"
