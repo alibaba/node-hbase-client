@@ -1,4 +1,10 @@
 
+1.5.0 / 2017-08-16
+==================
+
+**features**
+  * [[`f175bd7`](http://github.com/alibaba/node-hbase-client/commit/f175bd7d82b04ec4a0e4b2d7da34e64e1f14d5c5)] - feat: make zk as a parameter (#94) (zōng yǔ <<gxcsoccer@users.noreply.github.com>>)
+
 1.4.0 / 2015-08-10
 ==================
 
