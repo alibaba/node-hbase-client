@@ -998,11 +998,17 @@ describe('test/client.test.js', function () {
       describe('delete columns', function () {
         var data = {'cf1:name-t': 't-test01', 'cf1:value-t': 't-test02'};
         var columns = ['cf1:name-t', 'cf1:value-t'];
+        var rowkey = '58c8MDAwMDAwMDAwMDAwMDAwMQ==1';
         before(function (done) {
           client.putRow(table, rowkey, data, function (err) {
             should.not.exists(err);
-            done();
+            setTimeout(done, 100);
           });
+        });
+        after(function () {
+          client.deleteRow(table, rowkey, function (err, result) {
+            should.not.exists(err);
+          }); // delete
         });
 
         it('should work', function (done) {
@@ -1030,46 +1036,48 @@ describe('test/client.test.js', function () {
         var columns = ['cf1:name-t', 'cf1:value-t'];
         client.putRow(table, rowkey, data, function (err, result) {
           should.not.exists(err);
-          client.putRow(table, rowkey, data, function (err, result) {
-            should.not.exists(err);
-            var get = new Get(rowkey);
-            get.setMaxVersions(2);
-            for (var i = 0; i < columns.length; i++) {
-              var col = columns[i].split(':');
-              get.addColumn(col[0], col[1]);
-            }
-            client.get(table, get, function (err, result) {
+          setTimeout(function() {
+            client.putRow(table, rowkey, data, function (err, result) {
               should.not.exists(err);
-              should.exists(result);
-              var rs = result.getColumn('cf1', 'name-t');
-              rs.length.should.eql(2);
-              rs.forEach(function (kv) {
-                kv.getValue().toString().should.eql('t-test01');
-              });
-              //result.should.have.keys('f:name-t', 'f:value-t');
-              var del = new Delete(rowkey);
-              del.deleteColumn('cf1', 'name-t');
-              client.delete(table, del, function (err, result) {
+              var get = new Get(rowkey);
+              get.setMaxVersions(2);
+              for (var i = 0; i < columns.length; i++) {
+                var col = columns[i].split(':');
+                get.addColumn(col[0], col[1]);
+              }
+              client.get(table, get, function (err, result) {
                 should.not.exists(err);
-                var get = new Get(rowkey);
-                get.setMaxVersions(2);
-                for (var i = 0; i < columns.length; i++) {
-                  var col = columns[i].split(':');
-                  get.addColumn(col[0], col[1]);
-                }
-                client.get(table, get, function (err, result) {
+                should.exists(result);
+                var rs = result.getColumn('cf1', 'name-t');
+                rs.length.should.eql(2);
+                rs.forEach(function (kv) {
+                  kv.getValue().toString().should.eql('t-test01');
+                });
+                //result.should.have.keys('f:name-t', 'f:value-t');
+                var del = new Delete(rowkey);
+                del.deleteColumn('cf1', 'name-t');
+                client.delete(table, del, function (err, result) {
                   should.not.exists(err);
-                  should.exists(result);
-                  var rs = result.getColumn('cf1', 'name-t');
-                  rs.length.should.eql(1);
-                  rs.forEach(function (kv) {
-                    kv.getValue().toString().should.eql('t-test01');
-                  });
-                  done();
-                }); // get
-              }); // delete
-            }); // get
-          }); // put version2
+                  var get = new Get(rowkey);
+                  get.setMaxVersions(2);
+                  for (var i = 0; i < columns.length; i++) {
+                    var col = columns[i].split(':');
+                    get.addColumn(col[0], col[1]);
+                  }
+                  client.get(table, get, function (err, result) {
+                    should.not.exists(err);
+                    should.exists(result);
+                    var rs = result.getColumn('cf1', 'name-t');
+                    rs.length.should.eql(1);
+                    rs.forEach(function (kv) {
+                      kv.getValue().toString().should.eql('t-test01');
+                    });
+                    done();
+                  }); // get
+                }); // delete
+              }); // get
+            }); // put version2
+          }, 10);
         }); // put version1
       });
 
@@ -1254,7 +1262,7 @@ describe('test/client.test.js', function () {
           should.not.exists(err);
 
           client.mget(tableName, ['a98eMDAwMDAwMDAwMDAwMDAwMg==md'], ['cf1:history', 'cf1:qualifier2'], function (err, result) {
-			should.not.exists(err);
+      should.not.exists(err);
             should.exists(result);
             result.length.should.eql(1);
 

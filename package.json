@@ -7,7 +7,7 @@
     "index.js", "lib/"
   ],
   "scripts": {
-    "test": "make test-all"
+    "test": "make test"
   },
   "config": {
     "blanket": {
