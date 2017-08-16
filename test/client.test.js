@@ -1036,7 +1036,7 @@ describe('test/client.test.js', function () {
         var columns = ['cf1:name-t', 'cf1:value-t'];
         client.putRow(table, rowkey, data, function (err, result) {
           should.not.exists(err);
-          setTimeout(() => {
+          setTimeout(function() {
             client.putRow(table, rowkey, data, function (err, result) {
               should.not.exists(err);
               var get = new Get(rowkey);
