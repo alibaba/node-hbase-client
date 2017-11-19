@@ -1306,7 +1306,7 @@ describe('test/client.test.js', function () {
           });
       });
 
-      it(`should not overwrite ${rowKey}`, function (done) {
+      it('should not overwrite ' + rowKey, function (done) {
         var put = new Put(rowKey);
         put.add('cf1', 'history', 'changed');
         put.add('cf1', 'qualifier2', 'some value again');
@@ -1326,7 +1326,7 @@ describe('test/client.test.js', function () {
           });
       });
 
-      it(`should overwrite ${rowKey}`, function (done) {
+      it('should overwrite ' + rowKey, function (done) {
         var put = new Put(rowKey);
         put.add('cf1', 'history', 'changed');
         put.add('cf1', 'qualifier2', 'some value again');
