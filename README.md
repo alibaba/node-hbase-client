@@ -32,9 +32,9 @@ Asynchronous HBase client for Node.js, **pure JavaScript** implementation.
 
 ## Support HBase Server Versions
 
-* [√] 0.94.x
-    * [√] 0.94.0
-    * [√] 0.94.16
+* [x] 0.94.x
+    * [x] 0.94.0
+    * [x] 0.94.16
 * [ ] 0.96.x
 * [ ] 0.98.x
 

@@ -34,7 +34,7 @@
     "interceptor": "0.1.4",
     "jshint": "*",
     "mm": "~0.2.1",
-    "mocha": "*",
+    "mocha": "^3.5.0",
     "moment": "*",
     "pedding": "~1.0.0",
     "should": "3",
