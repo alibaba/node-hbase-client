@@ -2,11 +2,13 @@
 
 var should = require('should');
 
+var bytes = require('../lib/util/bytes');
+
 var buffers = {
-  foo: Buffer.alloc(3, 'foo'),
-  bar: Buffer.alloc(3, 'bar'),
-  baz: Buffer.alloc(3, 'baz'),
-  val: Buffer.alloc(3, 'val')
+  foo: bytes.toBytes('foo'),
+  bar: bytes.toBytes('bar'),
+  baz: bytes.toBytes('baz'),
+  val: bytes.toBytes('val')
 };
 
 function testError(exp, msg) {
