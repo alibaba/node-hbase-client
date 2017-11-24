@@ -1347,6 +1347,50 @@ describe('test/client.test.js', function () {
       });
     });
 
+    describe('checkAndDelete', function() {
+      var tableName = config.tableUser;
+      var rowKey = 'a98eMDAwMDAwMDAwMDAwMDAwMg==cap';
+
+      it('should not delete column', function (done) {
+        var deleter = new Delete(rowKey);
+        deleter.deleteColumns('cf1', 'history');
+
+        client.checkAndDelete(tableName, rowKey, 'cf1', 'qualifier2', null, deleter,
+          function(err, result) {
+            should.ifError(err);
+            result.should.equal(false);
+
+            client.getRow(tableName, rowKey, null, function(err, ret) {
+              should.ifError(err);
+              ret['cf1:history'].toString().should.equal('changed');
+              ret['cf1:qualifier2'].toString().should.equal('some value again');
+
+              done();
+            });
+          });
+      });
+
+      it('should delete columns', function (done) {
+        var deleter = new Delete(rowKey);
+        deleter.deleteColumns('cf1', 'history');
+        deleter.deleteColumns('cf1', 'qualifier2')
+
+        client.checkAndDelete(tableName, rowKey, 'cf1', 'qualifier2', 'some value again', deleter,
+          function(err, result) {
+            should.ifError(err);
+            result.should.equal(true);
+
+            client.getRow(tableName, rowKey, null, function(err, ret) {
+              should.ifError(err);
+              should(ret).equal(null);
+
+              done();
+            });
+          });
+      });
+    });
+
+
   });
   }); // clusters end
 });
