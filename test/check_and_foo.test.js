@@ -69,9 +69,9 @@ function each(method) {
     });
 
     it('should throw errors', function() {
-      testError(() => new Clz(), 'Row key is invalid');
-      testError(() => new Clz('foo'), 'Family is invalid');
-      testError(() => new Clz('foo', 'bar'), 'Qualifier is invalid');
+      testError(function() { new Clz(); }, 'Row key is invalid');
+      testError(function() { new Clz('foo'); }, 'Family is invalid');
+      testError(function() { new Clz('foo', 'bar'); }, 'Qualifier is invalid');
     });
   });
 }
