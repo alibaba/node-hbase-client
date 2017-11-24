@@ -239,6 +239,58 @@ client.mdelete(tableName, rowKeys, function (err, results) {
 
 ```
 
+## Atomic Operations
+
+HBase 0.94 provides two `checkAnd*` atomic operations.
+
+### `checkAndPut(tableName, family, qualifier, value, put, callback)`
+
+Atomically checks if a row/family/qualifier value matches the expected value.
+
++ If it does, it adds the put.
++ If the passed value is null, the check is for the lack of column (ie: non-existance)
+
+eg.
+
+```js
+var put = new Put('rowKey');
+put.add('f:col1', 'value');
+
+client.checkAndPut(tableName, 'rowKey', 'f', 'col1', 'val1', put, function (err, hasPut) {
+  if (err) {
+    // Do something
+  }
+
+  console.log(hasPut); // true or false, indicates if check passed and put
+});
+```
+
+> **Refs:** [https://hbase.apache.org/0.94/apidocs/org/apache/hadoop/hbase/client/HTableInterface.html#checkAndPut(byte[],%20byte[],%20byte[],%20byte[],%20org.apache.hadoop.hbase.client.Put)](https://hbase.apache.org/0.94/apidocs/org/apache/hadoop/hbase/client/HTableInterface.html#checkAndPut(byte[],%20byte[],%20byte[],%20byte[],%20org.apache.hadoop.hbase.client.Put))
+
+### `checkAndDelete(tableName, family, qualifier, value, deleter, callback)`
+
+Atomically checks if a row/family/qualifier value matches the expected value.
+
++ If it does, it adds the delete.
++ If the passed value is null, the check is for the lack of column (ie: non-existance)
+
+eg.
+
+```js
+var deleter = new Delete('rowKey');
+deleter.deleteColumns('f', 'col1');
+
+client.checkAndDelete(tableName, 'rowKey', 'f', 'col1', null, deleter, function (err, hasDeleted) {
+  if (err) {
+    // Do something
+  }
+
+  console.log(hasPut); // true or false, indicates if check passed and deleted
+});
+```
+
+> **Refs:** [https://hbase.apache.org/0.94/apidocs/org/apache/hadoop/hbase/client/HTableInterface.html#checkAndDelete(byte%5B%5D,%20byte%5B%5D,%20byte%5B%5D,%20byte%5B%5D,%20org.apache.hadoop.hbase.client.Delete)](https://hbase.apache.org/0.94/apidocs/org/apache/hadoop/hbase/client/HTableInterface.html#checkAndDelete(byte%5B%5D,%20byte%5B%5D,%20byte%5B%5D,%20byte%5B%5D,%20org.apache.hadoop.hbase.client.Delete))
+
 ## Scan
 
 ### Scan table and return row key only
@@ -341,20 +393,20 @@ client.getScanner('user', scan, function (err, scanner) {\
 
 ## TODO
 
-- [√] support `put`
-- [√] benchmark
-- [√] more stable
-- [√] support `delete`
-- [√] multi actions
-    - [√] multi get
-    - [√] multi put
-    - [√] multi delete
-- [√] fail retry
+- [x] support `put`
+- [x] benchmark
+- [x] more stable
+- [x] support `delete`
+- [x] multi actions
+    - [x] multi get
+    - [x] multi put
+    - [x] multi delete
+- [x] fail retry
 - [ ] filters
-    - [√] FilterList
-    - [√] FirstKeyOnlyFilter
-    - [√] KeyOnlyFilter
-    - [√] SingleColumnValueFilter
+    - [x] FilterList
+    - [x] FirstKeyOnlyFilter
+    - [x] KeyOnlyFilter
+    - [x] SingleColumnValueFilter
 
 ## Benchmarks
 
