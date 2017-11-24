@@ -1276,6 +1276,77 @@ describe('test/client.test.js', function () {
 
     });
 
+    describe('checkAndPut', function() {
+      var tableName = config.tableUser;
+      var rowKey = 'a98eMDAwMDAwMDAwMDAwMDAwMg==cap';
+
+      before(function(done) {
+        client.deleteRow(tableName, rowKey, function() {
+          done();
+        });
+      });
+
+      it('should insert 1 row after checking', function (done) {
+        var put = new Put(rowKey);
+        put.add('cf1', 'history', 'checked');
+        put.add('cf1', 'qualifier2', 'some value');
+
+        client.checkAndPut(tableName, rowKey, 'cf1', 'qualifier2', null, put,
+          function(err, result) {
+            should.ifError(err);
+            result.should.equal(true);
+
+            client.getRow(tableName, rowKey, null, function(err, ret) {
+              should.ifError(err);
+              ret['cf1:history'].toString().should.equal('checked');
+              ret['cf1:qualifier2'].toString().should.equal('some value');
+
+              done();
+            });
+          });
+      });
+
+      it(`should not overwrite ${rowKey}`, function (done) {
+        var put = new Put(rowKey);
+        put.add('cf1', 'history', 'changed');
+        put.add('cf1', 'qualifier2', 'some value again');
+
+        client.checkAndPut(tableName, rowKey, 'cf1', 'qualifier2', null, put,
+          function(err, result) {
+            should.ifError(err);
+            result.should.equal(false);
+
+            client.getRow(tableName, rowKey, null, function(err, ret) {
+              should.ifError(err);
+              ret['cf1:history'].toString().should.equal('checked');
+              ret['cf1:qualifier2'].toString().should.equal('some value');
+
+              done();
+            });
+          });
+      });
+
+      it(`should overwrite ${rowKey}`, function (done) {
+        var put = new Put(rowKey);
+        put.add('cf1', 'history', 'changed');
+        put.add('cf1', 'qualifier2', 'some value again');
+
+        client.checkAndPut(tableName, rowKey, 'cf1', 'qualifier2', 'some value', put,
+          function(err, result) {
+            should.ifError(err);
+            result.should.equal(true);
+
+            client.getRow(tableName, rowKey, null, function(err, ret) {
+              should.ifError(err);
+              ret['cf1:history'].toString().should.equal('changed');
+              ret['cf1:qualifier2'].toString().should.equal('some value again');
+
+              done();
+            });
+          });
+      });
+    });
+
   });
   }); // clusters end
 });
