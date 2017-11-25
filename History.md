@@ -2,18 +2,9 @@
 1.6.0 / 2017-11-24
 ==================
 
+**features**
+  * [[`bf83163`](https://github.com/alibaba/node-hbase-client.git/commit/bf831639474f7f2ef267899bc93e57665b0cefa1)] - feat: add client.checkAnd* support (#99) (Khaidi Chu <<i@2333.moe>>)
 **others**
-  * [[`bf83163`](https://github.com/alibaba/node-hbase-client.git/commit/bf831639474f7f2ef267899bc93e57665b0cefa1)] - feature: add client.checkAnd* support (#99) (Khaidi Chu <<i@2333.moe>>)
-  * [[`7680b52`](https://github.com/alibaba/node-hbase-client.git/commit/7680b52659d2785972e68cc8c18afc542707c701)] - test: can't pass test because some incompatible code in mocha (#98) (Khaidi Chu <<i@2333.moe>>)
-
-1.6.0 / 2017-11-24
-==================
-
-1.6.0 / 2017-11-24
-==================
-
-**others**
-  * [[`bf83163`](https://github.com/alibaba/node-hbase-client.git/commit/bf831639474f7f2ef267899bc93e57665b0cefa1)] - feature: add client.checkAnd* support (#99) (Khaidi Chu <<i@2333.moe>>)
   * [[`7680b52`](https://github.com/alibaba/node-hbase-client.git/commit/7680b52659d2785972e68cc8c18afc542707c701)] - test: can't pass test because some incompatible code in mocha (#98) (Khaidi Chu <<i@2333.moe>>)
 
 1.5.0 / 2017-08-16
