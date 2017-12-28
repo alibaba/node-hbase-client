@@ -319,5 +319,73 @@ describe('client_region.test.js', function () {
         next();
       });
     });
+
+    it('should scan through regions with stop row', function(done) {
+      var scan = new Scan(null, '7fffffdd');
+      scan.caching = 10;
+      var rows = [];
+
+      var count = function() {
+        rows.length.should.equal(24);
+        done();
+      };
+
+      client.getScanner(config.tableUser, scan, function(err, scanner) {
+        var next = function() {
+          scanner.next(function(err, row) {
+            should.ifError(err);
+
+            if (!row) {
+              return count();
+            }
+
+            rows.push(row);
+            next();
+          });
+        };
+
+        next();
+      });
+    });
+
+    it('should scan error', function(done) {
+      var scan = new Scan(null, '7fffffdd');
+      scan.caching = 10;
+      var rows = [];
+
+      var count = function() {
+        rows.length.should.equal(10);
+        done();
+      };
+
+      var times = 0;
+      client.getScanner(config.tableUser, scan, function(err, scanner) {
+        var next = function() {
+          scanner.next(function(err, row) {
+            times++;
+            if (times < 11) {
+              should.ifError(err);
+            } else {
+              err.message.should.startWith(
+                'java.io.IOException: java.lang.NoSuchMethodException: ' +
+                'org.apache.hadoop.hbase.ipc.HRegionInterface.next(int, int)');
+              return count();
+            }
+
+            if (!rows.length) {
+              rows.push(row);
+              scanner.id = -1;
+              return next();
+            }
+
+            rows.push(row);
+            next();
+          });
+        };
+
+        next();
+      });
+    });
+
   });
 });
