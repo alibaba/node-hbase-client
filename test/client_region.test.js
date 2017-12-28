@@ -13,6 +13,7 @@
  * Module dependencies.
  */
 
+var async = require('async');
 var should = require('should');
 var mm = require('mm');
 var pedding = require('pedding');
@@ -76,7 +77,6 @@ describe('client_region.test.js', function () {
         should.not.exist(err);
         results.should.length(1);
         var location = client.getCachedLocation(table, get.getRow());
-        // console.log('location: ', location.toString());
         mm(client, 'locateRegion', function () {
           var cb = arguments[arguments.length - 1];
           cb(null, location);
@@ -223,6 +223,38 @@ describe('client_region.test.js', function () {
         err.name.should.equal('ConnectionRefusedException');
         should.not.exist(result);
         done();
+      });
+    });
+  });
+
+  describe('scan through regions', function() {
+    var Scan = require('../lib/scan');
+
+    it('should through regions', function(done) {
+      var scan = new Scan();
+      scan.caching = 10;
+      var rows = [];
+
+      var count = function() {
+        rows.length.should.equal(49);
+        done();
+      };
+
+      client.getScanner(config.tableUser, scan, function(err, scanner) {
+        var next = function() {
+          scanner.next(function(err, row) {
+            should.ifError(err);
+
+            if (!row) {
+              return count();
+            }
+
+            rows.push(row);
+            next();
+          });
+        };
+
+        next();
       });
     });
   });
