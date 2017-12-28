@@ -232,7 +232,6 @@ describe('client_region.test.js', function () {
 
     it('should through regions', function(done) {
       var scan = new Scan();
-      scan.caching = 10;
       var rows = [];
 
       var count = function() {
@@ -244,6 +243,69 @@ describe('client_region.test.js', function () {
         var next = function() {
           scanner.next(function(err, row) {
             should.ifError(err);
+
+            if (!row) {
+              return count();
+            }
+
+            rows.push(row);
+            next();
+          });
+        };
+
+        next();
+      });
+    });
+
+    it('should through regions with cache 10', function(done) {
+      var scan = new Scan();
+      scan.caching = 10;
+      var rows = [];
+
+      var count = function() {
+        rows.length.should.equal(49);
+        done();
+      };
+
+      client.getScanner(config.tableUser, scan, function(err, scanner) {
+        var next = function() {
+          scanner.next(3, function(err, ret) {
+            should.ifError(err);
+
+            if (!ret.length) {
+              return count();
+            }
+
+            rows = Array.prototype.concat.apply(rows, ret);
+            next();
+          });
+        };
+
+        next();
+      });
+    });
+
+    it('should cache even it\'s closed', function(done) {
+      var scan = new Scan();
+      scan.caching = 10;
+      var rows = [];
+
+      var count = function() {
+        rows.length.should.equal(10);
+        done();
+      };
+
+      client.getScanner(config.tableUser, scan, function(err, scanner) {
+        var next = function() {
+          scanner.next(function(err, row) {
+            should.ifError(err);
+
+            if (!rows.length) {
+              return scanner.close(function() {
+                rows.push(row);
+                next();
+              });
+            }
 
             if (!row) {
               return count();
