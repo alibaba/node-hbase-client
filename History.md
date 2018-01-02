@@ -1,4 +1,13 @@
 
+1.6.1 / 2018-01-02
+==================
+
+**fixes**
+  * [[`27886f2`](http://github.com/alibaba/node-hbase-client/commit/27886f2dfb99bd49e91cc20b3b2a889bb2c5420c)] - fix: let scanner scan through regions (#101) (Khaidi Chu <<i@2333.moe>>)
+
+**others**
+  * [[`3f46ff3`](http://github.com/alibaba/node-hbase-client/commit/3f46ff39ca66de14414642df0aeb9e3a8aa4a040)] - doc: fix history (#100) (zōng yǔ <<gxcsoccer@users.noreply.github.com>>)
+
 1.6.0 / 2017-11-24
 ==================
 
