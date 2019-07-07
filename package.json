@@ -8,7 +8,9 @@
     "lib/"
   ],
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "config": {
     "blanket": {
@@ -26,7 +28,8 @@
     "long": "~1.1.5",
     "readable-stream": "1.1.11",
     "utility": "~0.1.16",
-    "zookeeper-watcher": "~0.2.0"
+    "zookeeper-watcher": "~0.2.0",
+    "snyk": "^1.192.3"
   },
   "devDependencies": {
     "autod": "*",
@@ -53,5 +56,6 @@
     "hbase-client"
   ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "snyk": true
 }
