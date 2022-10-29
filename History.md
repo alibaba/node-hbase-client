@@ -1,4 +1,10 @@
 
+1.7.0 / 2022-10-29
+==================
+
+**features**
+  * [[`ba60c22`](http://github.com/alibaba/node-hbase-client/commit/ba60c2299e51a88d5c0a4f13e57ad288eefcf766)] - 👌 IMPROVE: Upgrade utility to v1 (#113) (fengmk2 <<fengmk2@gmail.com>>)
+
 1.6.1 / 2018-01-02
 ==================
 
